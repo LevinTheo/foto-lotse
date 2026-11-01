@@ -1,0 +1,1521 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<title>Holtcraft Foto-Lotse</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: eine Spalte (max. 592 px) mit dem Fenster und der Foto-Liste wie in der Anfrage.
+   Die Kamera liegt als Vollbild darüber, am Computer in Handybreite.
+   Farben und Schrift aus dem Holtcraft Design System: eckig, Linien statt Schatten, Orange nur für den Hauptknopf. */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk-Variable.ttf") format("truetype");
+  font-weight: 300 700;
+  font-display: swap;
+}
+:root {
+  --surface: #f2f0ea;
+  --surface-raised: #fbfaf7;
+  --surface-sunken: #e6e3da;
+  --line: #d5d1c6;
+  --line-strong: #7a847d;
+  --ink: #0f1b16;
+  --ink-muted: #4a5850;
+  --primary: #e3803e;
+  --primary-hover: #ec955a;
+  --primary-pressed: #d97534;
+  --on-primary: #0f1b16;
+  --focus: #0f1b16;
+  --success: #2b6643;
+  --success-soft: #dbeadf;
+  --danger: #b3261e;
+  /* Kamera: immer dunkel, egal welches Theme */
+  --cam-bg: #0f1b16;
+  --cam-deep: #050a08;
+  --cam-ink: #f2f0ea;
+  --cam-muted: #a9b5ae;
+  --cam-line: rgba(242, 240, 234, 0.26);
+  --cam-panel: rgba(15, 27, 22, 0.84);
+  --cam-ok: #80c99d;
+  --font: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #0f1b16;
+    --surface-raised: #18261f;
+    --surface-sunken: #0a130f;
+    --line: #2b3b33;
+    --line-strong: #76857c;
+    --ink: #f2f0ea;
+    --ink-muted: #a9b5ae;
+    --focus: #f2f0ea;
+    --success: #80c99d;
+    --success-soft: #15301f;
+    --danger: #f28d82;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --surface: #0f1b16;
+  --surface-raised: #18261f;
+  --surface-sunken: #0a130f;
+  --line: #2b3b33;
+  --line-strong: #76857c;
+  --ink: #f2f0ea;
+  --ink-muted: #a9b5ae;
+  --focus: #f2f0ea;
+  --success: #80c99d;
+  --success-soft: #15301f;
+  --danger: #f28d82;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- Seite ---------- */
+.seite {
+  max-width: 592px;
+  margin: 0 auto;
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 24px;
+}
+.marke { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.marke__logo { height: 34px; width: auto; display: block; color: var(--ink); }
+.marke__label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.kopf { display: grid; gap: 8px; }
+.dach { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.lead { margin: 0; color: var(--ink-muted); max-width: 52ch; }
+
+.stueck {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+}
+.stueck__skizze { color: var(--ink); display: block; }
+.stueck__skizze svg { display: block; }
+.stueck__text { min-width: 0; }
+.stueck__name { margin: 0; font-weight: 600; }
+.stueck__mass { margin: 0; font-size: 14px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.stueck__aendern { min-height: 44px; padding: 0 14px; background: none; border: 1px solid var(--ink); font-weight: 600; cursor: pointer; border-radius: 0; }
+
+.form { display: grid; gap: 18px; padding: 16px; border: 1px solid var(--line); background: var(--surface-raised); margin-top: -12px; }
+.form fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; min-width: 0; }
+.form legend, .feld__name { font-size: 14px; font-weight: 600; padding: 0; margin-bottom: 8px; }
+.feld__name { margin-bottom: 0; }
+.wahl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.wahl label { position: relative; display: block; }
+.wahl input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.wahl span { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 8px; border: 1px solid var(--line-strong); font-weight: 600; text-align: center; }
+.wahl input:checked + span { border: 2px solid var(--ink); background: var(--surface-sunken); }
+.wahl input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+.felder { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.feld { display: grid; gap: 6px; min-width: 0; }
+.feld__eingabe { display: flex; align-items: center; border: 1px solid var(--line-strong); background: var(--surface); }
+.feld__eingabe:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
+.feld input { width: 100%; min-width: 0; min-height: 48px; border: 0; background: transparent; padding: 0 12px; font-size: 17px; font-variant-numeric: tabular-nums; outline: none; }
+.feld__einheit { padding: 0 12px; color: var(--ink-muted); }
+.form__fehler { margin: 0; color: var(--danger); font-size: 14px; font-weight: 600; }
+.form__knoepfe { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.liste-kopf { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.liste-kopf h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.liste-kopf span { font-size: 14px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.fotos { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.fotos li { border-bottom: 1px solid var(--line); }
+.foto {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 56px;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 4px;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.foto:hover { background: var(--surface-sunken); }
+.foto__pikto { color: var(--ink); display: block; }
+.foto__text { display: grid; min-width: 0; }
+.foto__titel { font-weight: 600; }
+.foto__sub { font-size: 14px; color: var(--ink-muted); }
+.foto__status { width: 56px; height: 56px; display: grid; place-items: center; border: 1px dashed var(--line-strong); font-size: 12px; color: var(--ink-muted); }
+.foto__status img { width: 56px; height: 56px; object-fit: cover; display: block; }
+.foto__status--da { border: 1px solid var(--line); }
+
+.knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 24px;
+  border: 2px solid transparent;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  border-radius: 0;
+}
+.knopf--haupt { background: var(--primary); color: var(--on-primary); width: 100%; }
+.knopf--haupt:hover { background: var(--primary-hover); }
+.knopf--haupt:active { background: var(--primary-pressed); }
+.knopf--rand { background: transparent; border-color: var(--ink); color: var(--ink); min-height: 48px; }
+.knopf--klein { min-height: 48px; font-size: 16px; }
+.knopf svg { flex: none; }
+
+.fertig { display: grid; gap: 12px; padding: 16px; background: var(--success-soft); color: var(--ink); }
+.fertig p { margin: 0; }
+.fertig strong { color: var(--success); }
+
+.hinweis { padding: 16px; background: var(--surface-sunken); display: grid; gap: 6px; }
+.hinweis h3 { margin: 0; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.hinweis p { margin: 0; font-size: 15px; }
+
+/* ---------- Kamera ---------- */
+.kamera {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  background: var(--cam-deep);
+  color: var(--cam-ink);
+  font-family: var(--font);
+}
+.geraet { position: relative; width: 100%; max-width: 460px; height: 100%; overflow: hidden; background: var(--cam-bg); }
+.buehne { position: absolute; inset: 0; }
+.buehne video, .buehne canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.buehne video { object-fit: cover; }
+#hilfe { touch-action: none; }
+.zieh #hilfe { cursor: grab; }
+.zieh #hilfe:active { cursor: grabbing; }
+.blitz { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+.blitz.an { animation: blitz 0.38s ease-out; }
+@keyframes blitz { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+
+.k-kopf {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 10px);
+  padding-bottom: 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: linear-gradient(rgba(15, 27, 22, 0.94), rgba(15, 27, 22, 0.72) 70%, rgba(15, 27, 22, 0));
+  pointer-events: none;
+  display: grid;
+  gap: 4px;
+}
+.k-kopf button { pointer-events: auto; }
+.k-zeile { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.k-rund {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: var(--cam-panel);
+  border: 1px solid var(--cam-line);
+  color: var(--cam-ink);
+  cursor: pointer;
+  border-radius: 0;
+  font-size: 22px;
+  line-height: 1;
+}
+.k-rund:focus-visible, .k-text:focus-visible, .ausloeser:focus-visible, .kbtn:focus-visible { outline: 2px solid var(--cam-ink); outline-offset: 2px; }
+.k-chips { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; }
+.k-chip {
+  position: relative;
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border: 1px solid var(--cam-line);
+  color: var(--cam-muted);
+}
+.k-chip--jetzt { border: 2px solid var(--cam-ink); color: var(--cam-ink); }
+.k-chip--da { border-color: var(--cam-ok); color: var(--cam-ok); }
+.k-chip--da::after {
+  content: "";
+  position: absolute; right: -4px; top: -4px;
+  width: 12px; height: 12px;
+  background: var(--cam-ok);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--cam-bg);
+}
+.k-modus { width: 44px; text-align: right; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cam-muted); line-height: 1.2; }
+.k-nr { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cam-muted); font-variant-numeric: tabular-nums; }
+.k-titel { margin: 0; font-size: 21px; line-height: 1.2; font-weight: 600; text-wrap: balance; }
+.k-tipp { margin: 0; font-size: 15px; line-height: 1.4; color: var(--cam-muted); max-width: 36ch; }
+
+.k-zoom {
+  position: absolute;
+  right: max(12px, calc(env(safe-area-inset-right, 0px) + 12px));
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 8px;
+}
+
+.k-fuss {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding-top: 36px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: linear-gradient(rgba(15, 27, 22, 0), rgba(15, 27, 22, 0.78) 35%, rgba(15, 27, 22, 0.94));
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  pointer-events: none;
+}
+.k-fuss button { pointer-events: auto; }
+.pille {
+  margin: 0;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--cam-panel);
+  border: 1px solid var(--cam-line);
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+}
+.pille--ok { background: var(--cam-ok); border-color: var(--cam-ok); color: #0f1b16; }
+.pille--warn { border-color: var(--primary); }
+.k-leiste { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.k-links { justify-self: start; display: grid; justify-items: start; }
+.k-leiste > :last-child { justify-self: end; }
+.k-text {
+  min-height: 40px;
+  padding: 0 4px;
+  background: none;
+  border: 0;
+  color: var(--cam-ink);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--cam-line);
+}
+.ausloeser {
+  --p: 0;
+  width: 78px; height: 78px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  display: grid; place-items: center;
+  background: conic-gradient(var(--cam-ok) calc(var(--p) * 1turn), rgba(242, 240, 234, 0.92) 0);
+  cursor: pointer;
+}
+.ausloeser span { width: 64px; height: 64px; border-radius: 50%; background: var(--cam-ink); box-shadow: 0 0 0 4px var(--cam-bg); transition: transform 0.12s; }
+.ausloeser:active span { transform: scale(0.92); }
+
+.k-karte {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(340px, calc(100% - 32px));
+  padding: 20px;
+  background: var(--cam-bg);
+  border: 1px solid var(--cam-line);
+  display: grid;
+  gap: 12px;
+}
+.k-karte h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.k-karte p { margin: 0; font-size: 15px; line-height: 1.45; color: var(--cam-muted); }
+.k-karte ul { margin: 0; padding-left: 18px; font-size: 15px; line-height: 1.45; display: grid; gap: 4px; }
+
+.kbtn { min-height: 52px; padding: 0 20px; font-weight: 600; font-size: 16px; cursor: pointer; border-radius: 0; }
+.kbtn--haupt { background: var(--primary); color: #0f1b16; border: 0; }
+.kbtn--zweit { background: transparent; color: var(--cam-ink); border: 1px solid var(--cam-ink); }
+
+.k-pruefen {
+  position: absolute;
+  inset: 0;
+  background: var(--cam-bg);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.k-pruefen__kopf { display: grid; gap: 4px; }
+.k-pruefen__bild { min-height: 0; display: grid; place-items: center; position: relative; }
+.k-pruefen__bild img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; border: 1px solid var(--cam-line); }
+.k-pruefen__marke { position: absolute; left: 8px; top: 8px; padding: 2px 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--cam-panel); color: var(--cam-muted); }
+.k-pruefen__knoepfe { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blitz.an { animation: none; }
+  .ausloeser span { transition: none; }
+}
+</style>
+
+<main class="seite">
+  <header class="marke">
+    <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
+    <span class="marke__label">Foto-Lotse · Test</span>
+  </header>
+
+  <div class="kopf">
+    <p class="dach">Anfrage · Fenster 1 von 1 · Fotos</p>
+    <h1>Fotos von deinem Fenster</h1>
+    <p class="lead">Wir führen dich Foto für Foto. Halt das Handy so, dass das Fenster in den weißen Linien liegt. Die Hinweise unten sagen dir, ob du näher ran oder zurück musst. Passt es, werden die Linien grün und das Foto macht sich von selbst.</p>
+  </div>
+
+  <div class="stueck">
+    <span class="stueck__skizze" id="skizze"></span>
+    <div class="stueck__text">
+      <p class="stueck__name" id="stueck-name"></p>
+      <p class="stueck__mass" id="stueck-mass"></p>
+    </div>
+    <button class="stueck__aendern" id="aendern" type="button" aria-expanded="false" aria-controls="form">Ändern</button>
+  </div>
+
+  <form class="form" id="form" hidden novalidate>
+    <fieldset>
+      <legend>Flügel</legend>
+      <div class="wahl">
+        <label><input type="radio" name="flu" id="flu-1" value="1" checked><span>1 Flügel</span></label>
+        <label><input type="radio" name="flu" id="flu-2" value="2"><span>2 Flügel</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Oberlicht</legend>
+      <div class="wahl">
+        <label><input type="radio" name="ol" id="ol-nein" value="nein" checked><span>Ohne</span></label>
+        <label><input type="radio" name="ol" id="ol-ja" value="ja"><span>Mit Oberlicht</span></label>
+      </div>
+    </fieldset>
+    <div class="felder">
+      <label class="feld" for="f-b"><span class="feld__name">Breite</span><span class="feld__eingabe"><input id="f-b" type="number" inputmode="numeric" min="40" max="250" value="80"><span class="feld__einheit">cm</span></span></label>
+      <label class="feld" for="f-h"><span class="feld__name">Höhe</span><span class="feld__eingabe"><input id="f-h" type="number" inputmode="numeric" min="50" max="260" value="100"><span class="feld__einheit">cm</span></span></label>
+      <label class="feld" for="f-olh" id="feld-olh" hidden><span class="feld__name">Höhe Oberlicht</span><span class="feld__eingabe"><input id="f-olh" type="number" inputmode="numeric" min="30" max="120" value="40"><span class="feld__einheit">cm</span></span></label>
+    </div>
+    <p class="form__fehler" id="fehler" role="alert" hidden></p>
+    <div class="form__knoepfe">
+      <button class="knopf knopf--rand knopf--klein" type="submit">Übernehmen</button>
+    </div>
+  </form>
+
+  <section>
+    <div class="liste-kopf">
+      <h2>Deine Fotos</h2>
+      <span id="zaehler">0 von 4 Pflichtfotos</span>
+    </div>
+    <ol class="fotos" id="fotos"></ol>
+  </section>
+
+  <div class="fertig" id="fertig" hidden>
+    <p><strong>Alle Pflichtfotos sind da.</strong> In der echten Anfrage geht es jetzt weiter mit „Was soll gemacht werden?“.</p>
+    <button class="knopf knopf--rand" id="neu" type="button">Nochmal von vorn</button>
+  </div>
+
+  <button class="knopf knopf--haupt" id="start" type="button">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+    <span id="start-text">Kamera öffnen</span>
+  </button>
+
+  <section class="hinweis">
+    <h3>Zum Testen</h3>
+    <p>Mit „Ändern“ stellst du Flügel, Oberlicht und Maße deines Fensters ein, dann passen die Linien dazu. Gibt es keine Kamera, zum Beispiel in der Vorschau in claude.ai, übst du mit einem gezeichneten Fenster. Über „Galerie“ kannst du auch ein vorhandenes Foto nehmen und es unter die Linien schieben. Die Fotos bleiben auf deinem Handy, die Seite schickt nichts weg.</p>
+  </section>
+</main>
+
+<input type="file" id="galerie" accept="image/*" hidden>
+
+<div class="kamera" id="kamera" role="dialog" aria-modal="true" aria-labelledby="k-titel" hidden>
+  <div class="geraet">
+    <div class="buehne" id="buehne">
+      <video id="video" playsinline muted autoplay hidden></video>
+      <canvas id="szene"></canvas>
+      <canvas id="hilfe" aria-hidden="true"></canvas>
+      <div class="blitz" id="blitz"></div>
+    </div>
+
+    <div class="k-kopf" id="k-kopf">
+      <div class="k-zeile">
+        <button class="k-rund" id="k-zu" type="button" aria-label="Kamera schließen">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <ol class="k-chips" id="k-chips" aria-label="Fotos"></ol>
+        <span class="k-modus" id="k-modus"></span>
+      </div>
+      <p class="k-nr" id="k-nr"></p>
+      <h2 class="k-titel" id="k-titel"></h2>
+      <p class="k-tipp" id="k-tipp"></p>
+    </div>
+
+    <div class="k-zoom" id="k-zoom" hidden>
+      <button class="k-rund" id="k-plus" type="button" aria-label="Näher ran">+</button>
+      <button class="k-rund" id="k-minus" type="button" aria-label="Weiter weg">−</button>
+    </div>
+
+    <div class="k-fuss" id="k-fuss">
+      <p class="pille" id="k-status" aria-live="polite">Kamera startet …</p>
+      <div class="k-leiste">
+        <div class="k-links">
+          <button class="k-text" id="k-galerie" type="button">Galerie</button>
+          <button class="k-text" id="k-zeig" type="button" hidden>Zeig’s mir</button>
+        </div>
+        <button class="ausloeser" id="k-ausloeser" type="button" aria-label="Foto machen"><span></span></button>
+        <button class="k-text" id="k-skip" type="button" hidden>Überspringen</button>
+      </div>
+    </div>
+
+    <div class="k-karte" id="k-karte" hidden>
+      <h2>Übungsmodus</h2>
+      <p>Hier gibt es keine Kamera. Stell dir vor, das Bild ist dein Handy-Display.</p>
+      <ul>
+        <li>Ein Finger: Bild verschieben</li>
+        <li>Zwei Finger oder + und −: näher ran, weiter weg</li>
+        <li>Am Computer: ziehen und Mausrad</li>
+      </ul>
+      <button class="kbtn kbtn--haupt" id="k-karte-ok" type="button">Los geht’s</button>
+    </div>
+
+    <div class="k-pruefen" id="k-pruefen" hidden>
+      <div class="k-pruefen__kopf">
+        <p class="k-nr" id="p-nr"></p>
+        <h2 class="k-titel">Gut geworden?</h2>
+        <p class="k-tipp">Ist es scharf und ist alles drauf, was in den Linien war?</p>
+      </div>
+      <div class="k-pruefen__bild">
+        <img id="p-bild" alt="Dein Foto">
+        <span class="k-pruefen__marke" id="p-marke" hidden></span>
+      </div>
+      <div class="k-pruefen__knoepfe">
+        <button class="kbtn kbtn--zweit" id="p-nochmal" type="button">Nochmal</button>
+        <button class="kbtn kbtn--haupt" id="p-weiter" type="button">Passt, weiter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var DPR = Math.min(2, window.devicePixelRatio || 1);
+  var RUHIG = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function z1(x) { return Math.round(x * 10) / 10; }
+
+  /* ---------- Skizzen (48 × 48, wie auf der Website) ---------- */
+  var PIKTO = {
+    innen: '<rect x="15" y="11" width="18" height="25"/><rect x="18" y="14" width="12" height="19"/><path d="M5 5h7M5 5v7M43 5h-7M43 5v7M5 43h7M5 43v-7M43 43h-7M43 43v-7"/>',
+    griff: '<path d="M14 4v40M34 4v40"/><rect x="20.5" y="11" width="7" height="11"/><path d="M24 18v19" stroke-width="3.5"/>',
+    ecklager: '<path d="M12 5v31h31"/><path d="M17 5v26h26"/><rect x="8" y="31" width="9" height="11"/>',
+    schere: '<path d="M12 43V12h31"/><path d="M17 43V17h26"/><rect x="8" y="6" width="9" height="11"/>',
+    aussen: '<path d="M5 43V9h38v34"/><rect x="16" y="17" width="16" height="19"/><rect x="19" y="20" width="10" height="11"/><path d="M14 38h20"/>'
+  };
+  function pikto(k, g) {
+    return '<svg viewBox="0 0 48 48" width="' + g + '" height="' + g + '" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">' + PIKTO[k] + '</svg>';
+  }
+
+  /* ---------- Das Fenster aus Aufteilung und Maßen ----------
+     Maße in cm, Ursprung oben links am Blendrahmen. Rahmen sichtbar 4 cm, Kämpfer 8 cm, Flügelholz 7 cm.
+     Dreh-Kipp. 1 Flügel: Scharniere links, Griff rechts. 2 Flügel: Stulp in der Mitte, Griff am rechten Flügel. */
+  var P = { nU: 1, ol: false, b: 80, h: 100, olH: 40 };
+  var G;
+  function geometrie(p) {
+    var B = p.b, H = p.h, ol = p.ol, olH = ol ? p.olH : 0;
+    var top = ol ? olH + 4 : 4;
+    var bw = (B - 8) / p.nU, fh = H - 4 - top;
+    var g = { B: B, H: H, ol: ol, olH: olH, top: top, fluegel: [], leisten: [], glaeser: [] };
+    for (var i = 0; i < p.nU; i++) {
+      var f = [4 + i * bw, top, bw, fh];
+      g.fluegel.push(f);
+      g.leisten.push([f[0] + 5, f[1] + 5, f[2] - 10, f[3] - 10]);
+      g.glaeser.push([f[0] + 7, f[1] + 7, f[2] - 14, f[3] - 14]);
+    }
+    if (ol) {
+      g.olFluegel = [4, 4, B - 8, olH - 8];
+      g.olLeiste = [9, 9, B - 18, olH - 18];
+      g.olGlas = [11, 11, B - 22, olH - 22];
+    }
+    var hx = p.nU === 2 ? 4 + bw + 3.5 : B - 7.5, hy = top + fh / 2;
+    g.hx = hx; g.hy = hy;
+    g.rosette = [hx - 1.6, hy - 3.8, 3.2, 7.6];
+    g.hebel = [hx - 1, hy + 0.6, 2, 13.4];
+    g.eck = [1.6, H - 10.5, 4.4, 8];
+    g.scher = [1.6, top - 1.5, 4.4, 7];
+    var xm = 4 + bw;
+    g.griffLinien = p.nU === 2 ? [[xm - 7, 0], [xm - 5, 1], [xm, 0], [xm + 5, 1], [xm + 7, 0]] : [[B - 11, 0], [B - 9, 1], [B - 4, 0], [B, 1]];
+    // Von außen: Flügelflächen hinter dem Blendrahmen, Glas, Wetterschenkel unten am Flügel
+    var a = { flaechen: [], glaeser: [], wetter: [] };
+    var at = ol ? olH + 4 : 5, aw = (B - 10) / p.nU, ah = H - 5 - at;
+    for (var j = 0; j < p.nU; j++) {
+      var fl = [5 + j * aw, at, aw, ah];
+      a.flaechen.push(fl);
+      a.glaeser.push([fl[0] + 5, fl[1] + 5, fl[2] - 10, fl[3] - 18]);
+      a.wetter.push([fl[0] + 1, fl[1] + fl[3] - 12, fl[2] - 2, 5]);
+    }
+    if (ol) { a.flaechen.push([5, 5, B - 10, olH - 9]); a.glaeser.push([10, 10, B - 20, olH - 19]); }
+    g.aussen = a;
+    return g;
+  }
+  G = geometrie(P);
+
+  /* ---------- Die Fotos ----------
+     ziel: der Ausschnitt (cm), der genau in die Linien passen soll. rand: Platz drumherum.
+     auto: das Foto macht sich von selbst, wenn die Linien passen. */
+  var SCHRITTE = [
+    { id: 'innen', titel: 'Das ganze Fenster von innen', pflicht: true, szene: 'innen', rand: 0.08, auto: true,
+      tipp: 'Stell dich mittig vor das Fenster. Das ganze Fenster in die Linien, mit etwas Wand drumherum.', ding: 'Fenster' },
+    { id: 'griff', titel: 'Der Griff', pflicht: true, szene: 'innen', rand: 0.06,
+      tipp: 'Geh nah an den Griff. Griff und Kante vom Flügel in die Linien.', ding: 'Griff' },
+    { id: 'ecklager', titel: 'Das Ecklager unten', pflicht: true, szene: 'innen', rand: 0.06,
+      tipp: 'Die untere Ecke links an den Scharnieren. Die Abdeckung vom Ecklager in den Kasten.', ding: 'Abdeckung' },
+    { id: 'schere', titel: 'Das Scherenlager oben', pflicht: true, szene: 'innen', rand: 0.06,
+      tipp: 'Die obere Ecke links an den Scharnieren. Die Abdeckung vom Scherenlager in den Kasten.', ding: 'Abdeckung' },
+    { id: 'aussen', titel: 'Das ganze Fenster von außen', pflicht: false, szene: 'aussen', rand: 0.08, auto: true,
+      tipp: 'Nur wenn du gefahrlos rankommst, zum Beispiel im Erdgeschoss. Das ganze Fenster in die Linien.', ding: 'Fenster' }
+  ];
+  var PFLICHT = SCHRITTE.filter(function (s) { return s.pflicht; }).length;
+
+  function zielVon(s) {
+    switch (s.id) {
+      case 'griff': return [G.hx - 8, G.hy - 9, 16, 26];
+      case 'ecklager': return [-3, G.H - 17, 18, 22];
+      case 'schere': return [-3, G.top - 9, 18, 20];
+    }
+    return [0, 0, G.B, G.H];
+  }
+  // Wo die Übung anfängt: Mitte (cm) und Abstand (Faktor zum ganzen Fenster)
+  function startVon(s) {
+    switch (s.id) {
+      case 'innen': return { x: G.B * 0.39, y: G.H * 0.64, f: 0.64 };
+      case 'griff': return { x: G.B * 0.55, y: G.H * 0.52, f: 1 };
+      case 'ecklager': return { x: Math.min(26, G.B * 0.33), y: G.H - 28, f: 1.5 };
+      case 'schere': return { x: Math.min(28, G.B * 0.35), y: G.top + 26, f: 1.5 };
+    }
+    return { x: G.B * 0.68, y: G.H * 0.38, f: 0.72 };
+  }
+
+  // Hilfslinien je Foto (cm). r = Rechteck, l = Linie. gr: Umriss für die Fenster-Suche. klein, fein: zählt nicht bei der Suche.
+  function R(r, o) { o = o || {}; return { t: 'r', r: r, rund: o.rund || 0, klein: !!o.klein, fein: !!o.fein, gr: o.gr || null }; }
+  function L(x1, y1, x2, y2, fein) { return { t: 'l', a: [x1, y1, x2, y2], fein: !!fein }; }
+  function formen(s) {
+    var g = G, out = [], H = g.H, t = g.top;
+    switch (s.id) {
+      case 'innen':
+        out.push(R([0, 0, g.B, H], { gr: 'rahmen' }));
+        g.fluegel.forEach(function (f) { out.push(R(f, { fein: true })); });
+        g.glaeser.forEach(function (r) { out.push(R(r, { gr: 'glas' })); });
+        if (g.ol) { out.push(R(g.olFluegel, { fein: true }), R(g.olGlas, { gr: 'glas' })); }
+        out.push(R(g.rosette, { rund: 0.8, klein: true }), R(g.hebel, { rund: 1, klein: true }));
+        break;
+      case 'griff':
+        g.griffLinien.forEach(function (l) { out.push(L(l[0], g.hy - 60, l[0], g.hy + 60, !!l[1])); });
+        out.push(R(g.rosette, { rund: 0.8 }), R(g.hebel, { rund: 1 }));
+        break;
+      case 'ecklager':
+        out.push(L(0, H - 40, 0, H), L(-20, H, 40, H), L(4, H - 40, 4, H - 4, true), L(4, H - 4, 40, H - 4, true),
+          L(11, H - 40, 11, H - 11), L(11, H - 11, 40, H - 11), R(g.eck, { rund: 0.6 }));
+        break;
+      case 'schere':
+        out.push(L(0, g.ol ? t - 20 : 0, 0, t + 30), L(0, t - 4, 40, t - 4), L(4, t, 4, t + 30, true), L(4, t, 40, t, true),
+          L(11, t + 7, 11, t + 30), L(11, t + 7, 40, t + 7), R(g.scher, { rund: 0.6 }));
+        break;
+      case 'aussen':
+        out.push(R([0, 0, g.B, H], { gr: 'rahmen' }));
+        g.aussen.flaechen.forEach(function (f) { out.push(R(f, { fein: true })); });
+        g.aussen.glaeser.forEach(function (r) { out.push(R(r, { gr: 'glas' })); });
+        g.aussen.wetter.forEach(function (r) { out.push(R(r, { klein: true })); });
+        break;
+    }
+    return out;
+  }
+
+  /* ---------- Skizze und Beschreibung auf der Seite ---------- */
+  function skizze() {
+    var g = G, s = Math.min(40 / g.B, 52 / g.H), x0 = (48 - g.B * s) / 2, y0 = (60 - g.H * s) / 2;
+    function r(q, extra) { return '<rect x="' + z1(x0 + q[0] * s) + '" y="' + z1(y0 + q[1] * s) + '" width="' + z1(q[2] * s) + '" height="' + z1(q[3] * s) + '"' + (extra || '') + '/>'; }
+    var out = r([0, 0, g.B, g.H]);
+    if (g.ol) out += r(g.olFluegel) + r(g.olGlas, ' stroke-width="1"');
+    g.fluegel.forEach(function (f) { out += r(f); });
+    g.glaeser.forEach(function (q, i) {
+      out += r(q, ' stroke-width="1"');
+      var X = x0 + q[0] * s, Y = y0 + q[1] * s, W = q[2] * s, Hh = q[3] * s;
+      var links = !(P.nU === 2 && i === 1);
+      var dreh = links ? 'M' + z1(X + W) + ' ' + z1(Y) + 'L' + z1(X) + ' ' + z1(Y + Hh / 2) + 'L' + z1(X + W) + ' ' + z1(Y + Hh)
+        : 'M' + z1(X) + ' ' + z1(Y) + 'L' + z1(X + W) + ' ' + z1(Y + Hh / 2) + 'L' + z1(X) + ' ' + z1(Y + Hh);
+      var kipp = 'M' + z1(X) + ' ' + z1(Y) + 'L' + z1(X + W / 2) + ' ' + z1(Y + Hh) + 'L' + z1(X + W) + ' ' + z1(Y);
+      out += '<path d="' + dreh + '" stroke-dasharray="2.5 2" stroke-width="0.9"/><path d="' + kipp + '" stroke-dasharray="2.5 2" stroke-width="0.9"/>';
+    });
+    out += '<path d="M' + z1(x0 + g.hx * s) + ' ' + z1(y0 + g.hy * s - 3) + 'v7" stroke-width="2.4"/>';
+    $('skizze').innerHTML = '<svg viewBox="0 0 48 60" width="48" height="60" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true">' + out + '</svg>';
+    $('stueck-name').textContent = 'Holzfenster, ' + P.nU + ' Flügel' + (P.ol ? ' mit Oberlicht' : '') + ', Dreh-Kipp';
+    $('stueck-mass').textContent = P.b + ' × ' + P.h + ' cm' + (P.ol ? ' · Oberlicht ' + P.olH + ' cm' : '') + ' · Scharniere ' + (P.nU === 1 ? 'links' : 'außen');
+  }
+
+  /* ---------- Übungsfenster zeichnen (in cm) ---------- */
+  function pfadRund(c, x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r);
+    c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+  function flaeche(c, r, fuell, linie, lw) {
+    if (fuell) { c.fillStyle = fuell; c.fillRect(r[0], r[1], r[2], r[3]); }
+    if (linie) { c.strokeStyle = linie; c.lineWidth = lw || 0.3; c.strokeRect(r[0], r[1], r[2], r[3]); }
+  }
+  function strich(c, x1, y1, x2, y2) { c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); }
+  function punkt(c, x, y, r) { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); }
+  function kappe(c, r) {
+    pfadRund(c, r[0], r[1], r[2], r[3], 0.6);
+    c.fillStyle = '#dfe1de'; c.fill();
+    c.strokeStyle = '#9da29c'; c.lineWidth = 0.22; c.stroke();
+    c.fillStyle = '#a3a8a2';
+    punkt(c, r[0] + r[2] / 2, r[1] + 1.4, 0.45);
+    punkt(c, r[0] + r[2] / 2, r[1] + r[3] - 1.4, 0.45);
+  }
+  function glasInnen(c, r) {
+    var H = G.H, B = G.B;
+    c.save();
+    c.beginPath(); c.rect(r[0], r[1], r[2], r[3]); c.clip();
+    var g = c.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#a3b8c8'); g.addColorStop(0.5, '#d6dfe4'); g.addColorStop(1, '#e2e5e1');
+    c.fillStyle = g; c.fillRect(r[0], r[1], r[2], r[3]);
+    // Das Haus gegenüber
+    var yb = H * 0.46;
+    c.fillStyle = '#bba78a'; c.fillRect(r[0], yb, r[2], H);
+    c.fillStyle = '#cfbea1'; c.fillRect(r[0], yb - 1.6, r[2], 2.2);
+    for (var x = 13; x < B; x += 14) {
+      [H * 0.53, H * 0.72].forEach(function (y) {
+        c.fillStyle = '#5e666a'; c.fillRect(x, y, 8, 12);
+        c.fillStyle = '#d7c8ad'; c.fillRect(x - 0.7, y + 12, 9.4, 1);
+        c.strokeStyle = '#8b8f8c'; c.lineWidth = 0.3; strich(c, x + 4, y, x + 4, y + 12);
+      });
+    }
+    // Spiegelung
+    c.fillStyle = 'rgba(255,255,255,0.17)';
+    var sx = r[0] + r[2] * 0.17;
+    c.beginPath(); c.moveTo(sx, r[1]); c.lineTo(sx + 16, r[1]); c.lineTo(sx - 6, r[1] + r[3]); c.lineTo(sx - 22, r[1] + r[3]); c.closePath(); c.fill();
+    c.strokeStyle = 'rgba(40,40,30,0.28)'; c.lineWidth = 0.7; c.strokeRect(r[0] + 0.35, r[1] + 0.35, r[2] - 0.7, r[3] - 0.7);
+    c.restore();
+  }
+  function fluegelInnen(c, f, leiste, glas) {
+    flaeche(c, [f[0] - 0.5, f[1] - 0.5, f[2] + 1, f[3] + 1], 'rgba(72,60,40,0.3)');
+    flaeche(c, f, '#fbfaf6', '#b3ac9c', 0.3);
+    c.strokeStyle = '#e1dccf'; c.lineWidth = 0.25; c.strokeRect(f[0] + 1.3, f[1] + 1.3, f[2] - 2.6, f[3] - 2.6);
+    flaeche(c, leiste, null, '#c8c1b1', 0.28);
+    glasInnen(c, glas);
+  }
+  function szeneInnen(c) {
+    var g = G, B = g.B, H = g.H;
+    var w = c.createRadialGradient(B / 2, H * 0.4, 20, B / 2, H * 0.6, 2.6 * Math.max(B, H));
+    w.addColorStop(0, '#f1ede5'); w.addColorStop(1, '#cbc4b4');
+    c.fillStyle = w; c.fillRect(-3000, -3000, 6000, 6000);
+    // Heizkörper unter dem Fenster
+    var rw = Math.min(B - 12, 140), rx = (B - rw) / 2;
+    flaeche(c, [rx, H + 14, rw, 44], '#ece9e2', '#c2bcaf', 0.35);
+    c.strokeStyle = '#d0cabd'; c.lineWidth = 0.3;
+    for (var x = rx + 3.4; x < rx + rw; x += 3.4) strich(c, x, H + 15, x, H + 57);
+    flaeche(c, [rx, H + 58, rw, 1.4], 'rgba(60,50,35,0.14)');
+    // Fuge, Blendrahmen, Flügel
+    flaeche(c, [-1.4, -1.4, B + 2.8, H + 2.8], 'rgba(70,58,38,0.14)');
+    flaeche(c, [0, 0, B, H], '#f6f4ef', '#bdb6a7', 0.3);
+    if (g.ol) {
+      flaeche(c, [0, g.olH - 4, B, 8], null, '#c9c2b4', 0.25);
+      fluegelInnen(c, g.olFluegel, g.olLeiste, g.olGlas);
+    }
+    g.fluegel.forEach(function (f, i) { fluegelInnen(c, f, g.leisten[i], g.glaeser[i]); });
+    kappe(c, g.eck);
+    kappe(c, g.scher);
+    // Griff
+    var ro = g.rosette, he = g.hebel;
+    pfadRund(c, ro[0], ro[1], ro[2], ro[3], 0.8);
+    c.fillStyle = '#d9dbd8'; c.fill(); c.strokeStyle = '#949994'; c.lineWidth = 0.22; c.stroke();
+    flaeche(c, [he[0] + he[2], he[1] + 1.2, 0.6, he[3] - 1.6], 'rgba(40,40,35,0.2)');
+    pfadRund(c, he[0], he[1], he[2], he[3], 1);
+    c.fillStyle = '#e8eae7'; c.fill(); c.stroke();
+    // Fensterbank innen
+    flaeche(c, [-8, H, B + 16, 3.6], '#ddd4c3', '#b8ae9a', 0.25);
+    flaeche(c, [-8, H, B + 16, 0.7], '#ece5d7');
+    flaeche(c, [-8, H + 3.6, B + 16, 1.8], 'rgba(60,48,30,0.17)');
+  }
+  function szeneAussen(c) {
+    var g = G, B = g.B, H = g.H, a = g.aussen;
+    var w = c.createLinearGradient(0, -200, 0, H + 200);
+    w.addColorStop(0, '#d3be9d'); w.addColorStop(1, '#b39b77');
+    c.fillStyle = w; c.fillRect(-3000, -3000, 6000, 6000);
+    flaeche(c, [-13, -13, B + 26, H + 13], '#dccaa9', '#b9a37e', 0.3);
+    flaeche(c, [-19, -24, B + 38, 6], '#e4d4b5', '#b09a74', 0.3);
+    flaeche(c, [-17, -18, B + 34, 1.8], 'rgba(70,50,20,0.22)');
+    var l = c.createLinearGradient(0, -6, 0, H);
+    l.addColorStop(0, '#8c7859'); l.addColorStop(1, '#a8926f');
+    c.fillStyle = l; c.fillRect(-6, -6, B + 12, H + 6);
+    flaeche(c, [0, 0, B, H], '#f1efe9', '#a9a293', 0.3);
+    a.flaechen.forEach(function (f) {
+      flaeche(c, [f[0] - 0.4, f[1] - 0.4, f[2] + 0.8, f[3] + 0.8], 'rgba(70,58,38,0.28)');
+      flaeche(c, f, '#f5f3ee', '#b3ac9c', 0.3);
+    });
+    a.glaeser.forEach(function (r, i) {
+      c.save();
+      c.beginPath(); c.rect(r[0], r[1], r[2], r[3]); c.clip();
+      var gg = c.createLinearGradient(0, 0, 0, H);
+      gg.addColorStop(0, '#5e6d76'); gg.addColorStop(1, '#2e393f');
+      c.fillStyle = gg; c.fillRect(r[0], r[1], r[2], r[3]);
+      c.fillStyle = 'rgba(232,228,218,0.2)';
+      if (i === 0) for (var x = r[0] + 1; x < r[0] + Math.min(17, r[2]); x += 3.2) c.fillRect(x, r[1], 1.6, r[3]);
+      c.fillStyle = 'rgba(205,220,230,0.2)';
+      var sx = r[0] + r[2] * 0.5;
+      c.beginPath(); c.moveTo(sx, r[1]); c.lineTo(sx + 16, r[1]); c.lineTo(sx - 8, r[1] + r[3]); c.lineTo(sx - 24, r[1] + r[3]); c.closePath(); c.fill();
+      c.restore();
+      c.strokeStyle = 'rgba(0,0,0,0.32)'; c.lineWidth = 0.4; c.strokeRect(r[0], r[1], r[2], r[3]);
+    });
+    a.wetter.forEach(function (r) {
+      flaeche(c, r, '#efece5', '#a39c8d', 0.28);
+      flaeche(c, [r[0], r[1], r[2], 1], '#fbfaf6');
+      flaeche(c, [r[0], r[1] + r[3], r[2], 1.3], 'rgba(40,30,15,0.24)');
+    });
+    flaeche(c, [-10, H, B + 20, 4.6], '#98a1a4', '#6f777a', 0.3);
+    flaeche(c, [-10, H, B + 20, 1], '#c5ccce');
+    flaeche(c, [-10, H + 4.6, B + 20, 2.6], 'rgba(40,30,15,0.26)');
+  }
+
+  // Zeichnet, was gerade „vor der Kamera“ ist: das Übungsfenster (cm) oder ein Foto aus der Galerie (Pixel)
+  function zeichneSzene(c, w, h, cam, art, faktor) {
+    c.setTransform(faktor, 0, 0, faktor, 0, 0);
+    c.fillStyle = '#0f1b16'; c.fillRect(0, 0, w, h);
+    c.setTransform(faktor * cam.s, 0, 0, faktor * cam.s, faktor * (w / 2 - cam.x * cam.s), faktor * (h / 2 - cam.y * cam.s));
+    if (art === 'foto') { if (k.bild) c.drawImage(k.bild, 0, 0); }
+    else if (art === 'aussen') szeneAussen(c);
+    else szeneInnen(c);
+    c.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  /* ---------- Fenster im Bild suchen ----------
+     Das Bild wird klein gerechnet (128 px breit). Daraus Kantenbilder (Sobel), quer zur Kante etwas verbreitert.
+     Dann werden die Linien in vielen Größen und Lagen darübergelegt. Wo Rahmen UND Glas fast ganz auf Kanten liegen,
+     ist das Fenster. Daraus folgt: näher ran, zurück, links, rechts, oben, unten oder passt. */
+  /*SUCHE*/
+  function kantenBild(grau, w, h) {
+    var n = w * h, gx = new Float32Array(n), gy = new Float32Array(n), x, y, i, max = 0;
+    for (y = 1; y < h - 1; y++) for (x = 1; x < w - 1; x++) {
+      i = y * w + x;
+      var a = grau[i - w - 1], b = grau[i - w], c = grau[i - w + 1], d = grau[i - 1], f = grau[i + 1], g = grau[i + w - 1], k = grau[i + w], m = grau[i + w + 1];
+      gx[i] = Math.abs((c + 2 * f + m) - (a + 2 * d + g));
+      gy[i] = Math.abs((g + 2 * k + m) - (a + 2 * b + c));
+      if (gx[i] > max) max = gx[i];
+      if (gy[i] > max) max = gy[i];
+    }
+    // Was als Kante zählt, richtet sich nach dem Bild: unter den stärksten 10 % fängt es an, ab den stärksten 3 % zählt es voll
+    var bins = 256, hist = new Uint32Array(bins), sk = max > 0 ? (bins - 1) / max : 0;
+    for (i = 0; i < n; i++) { hist[Math.round(gx[i] * sk)]++; hist[Math.round(gy[i] * sk)]++; }
+    var t0 = 0, t1 = 0, summe = 0, ges = 2 * n;
+    for (i = 0; i < bins; i++) {
+      summe += hist[i];
+      if (!t0 && summe >= ges * 0.9) t0 = i / sk;
+      if (!t1 && summe >= ges * 0.97) { t1 = i / sk; break; }
+    }
+    t0 = Math.max(t0, 0.04); t1 = Math.max(t1, t0 + 0.06);
+    for (i = 0; i < n; i++) {
+      gx[i] = gx[i] <= t0 ? 0 : gx[i] >= t1 ? 1 : (gx[i] - t0) / (t1 - t0);
+      gy[i] = gy[i] <= t0 ? 0 : gy[i] >= t1 ? 1 : (gy[i] - t0) / (t1 - t0);
+    }
+    function breit(src, r, quer) {
+      var out = new Float32Array(n);
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+        var v = 0;
+        for (var o = -r; o <= r; o++) {
+          var xx = quer ? x + o : x, yy = quer ? y : y + o;
+          if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+          var q = src[yy * w + xx]; if (q > v) v = q;
+        }
+        out[y * w + x] = v;
+      }
+      return out;
+    }
+    return { w: w, h: h, fx: breit(gx, 1, true), fy: breit(gy, 1, false), gx3: breit(gx, 3, true), gy3: breit(gy, 3, false) };
+  }
+  // Wie viel der Linien liegt auf einer Kante (0 bis 1)? Jeder Umriss (Rahmen, Glas) für sich, der schwächste zählt.
+  function umrissWert(K, gruppen, grob) {
+    var w = K.w, h = K.h, mx = grob ? K.gx3 : K.fx, my = grob ? K.gy3 : K.fy, schritt = grob ? 3 : 1.5, schwach = Infinity;
+    for (var gi = 0; gi < gruppen.length; gi++) {
+      var segs = gruppen[gi], summe = 0, n = 0, soll = 0;
+      for (var si = 0; si < segs.length; si++) {
+        var q = segs[si], senk = Math.abs(q[0] - q[2]) < Math.abs(q[1] - q[3]);
+        var a0 = senk ? Math.min(q[1], q[3]) : Math.min(q[0], q[2]), a1 = senk ? Math.max(q[1], q[3]) : Math.max(q[0], q[2]);
+        var fest = Math.round(senk ? q[0] : q[1]);
+        for (var t = a0; t <= a1; t += schritt) {
+          soll++;
+          var x = senk ? fest : Math.round(t), y = senk ? Math.round(t) : fest;
+          if (x < 1 || y < 1 || x > w - 2 || y > h - 2) continue;
+          summe += senk ? mx[y * w + x] : my[y * w + x];
+          n++;
+        }
+      }
+      if (!soll || n < soll * 0.6) return 0;
+      var mittel = summe / soll;
+      if (mittel < schwach) schwach = mittel;
+    }
+    return schwach === Infinity ? 0 : schwach;
+  }
+  // b: Linien-Box im kleinen Bild. gruppenFuer(box) liefert die Umrisse für eine verschobene und skalierte Box.
+  function suchen(K, gruppenFuer, b) {
+    function box(f, ox, oy) { var bw = b.w * f, bh = b.h * f; return { x: b.x + b.w / 2 + ox - bw / 2, y: b.y + b.h / 2 + oy - bh / 2, w: bw, h: bh }; }
+    var best = { wert: 0, f: 1, ox: 0, oy: 0 }, f, ox, oy, v;
+    for (f = 0.55; f <= 1.66; f *= 1.07)
+      for (ox = -0.35 * b.w; ox <= 0.35 * b.w + 0.01; ox += 0.05 * b.w)
+        for (oy = -0.3 * b.h; oy <= 0.3 * b.h + 0.01; oy += 0.05 * b.h) {
+          v = umrissWert(K, gruppenFuer(box(f, ox, oy)), true);
+          if (v > best.wert) best = { wert: v, f: f, ox: ox, oy: oy };
+        }
+    var g0 = best;
+    best = { wert: 0, f: g0.f, ox: g0.ox, oy: g0.oy };
+    for (var i = -2; i <= 2; i++) for (var j = -3; j <= 3; j++) for (var l = -3; l <= 3; l++) {
+      f = g0.f * (1 + i * 0.018); ox = g0.ox + j * 0.012 * b.w; oy = g0.oy + l * 0.012 * b.h;
+      v = umrissWert(K, gruppenFuer(box(f, ox, oy)), false);
+      if (v > best.wert) best = { wert: v, f: f, ox: ox, oy: oy };
+    }
+    best.box = box(best.f, best.ox, best.oy);
+    return best;
+  }
+  /*SUCHE-ENDE*/
+  var GEFUNDEN = 0.55, PASST = 0.75;   // Anteil der Linien auf Kanten: ab 55 % erkannt, ab 75 % passt
+
+  /* ---------- Zustand ---------- */
+  var fotos = {};          // id -> { url, art } oder { skip: true }
+  var kameraGeht = null;   // null: noch nicht versucht
+  var W = 0, H = 0;
+  var szene = $('szene'), hilfe = $('hilfe');
+  var sctx = szene.getContext('2d'), hctx = hilfe.getContext('2d');
+  var ana = document.createElement('canvas'), actx = ana.getContext('2d', { willReadFrequently: true });
+  var k = {
+    offen: false, i: 0, basis: 'uebung', modus: 'uebung', stream: null, raf: 0, box: null, loch: null, s0: 1,
+    cam: { x: 40, y: 50, s: 3 }, zeiger: new Map(), anim: null, bild: null, formen: [],
+    passtSeit: 0, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
+    letzteAnalyse: 0, treffer: null, lage: null, statusText: '', statusArt: '', karte: true, zurueck: null
+  };
+
+  /* ---------- Liste in der Anfrage ---------- */
+  function liste() {
+    $('fotos').innerHTML = SCHRITTE.map(function (s, i) {
+      var f = fotos[s.id];
+      var status = f && f.url ? '<span class="foto__status foto__status--da"><img src="' + f.url + '" alt=""></span>'
+        : f && f.skip ? '<span class="foto__status">Ohne</span>'
+        : '<span class="foto__status">Offen</span>';
+      return '<li><button class="foto" type="button" data-i="' + i + '">' +
+        '<span class="foto__pikto">' + pikto(s.id, 40) + '</span>' +
+        '<span class="foto__text"><span class="foto__titel">' + esc(s.titel) + '</span>' +
+        '<span class="foto__sub">' + (s.pflicht ? 'Pflicht' : 'Freiwillig') + '</span></span>' + status + '</button></li>';
+    }).join('');
+    var da = SCHRITTE.filter(function (s) { return s.pflicht && fotos[s.id] && fotos[s.id].url; }).length;
+    $('zaehler').textContent = da + ' von ' + PFLICHT + ' Pflichtfotos';
+    var alle = da === PFLICHT;
+    $('fertig').hidden = !alle;
+    $('start').hidden = alle;
+    $('start-text').textContent = (da || Object.keys(fotos).length) ? 'Weiter fotografieren' : 'Kamera öffnen';
+  }
+  function ersterOffen() {
+    for (var i = 0; i < SCHRITTE.length; i++) if (!fotos[SCHRITTE[i].id]) return i;
+    return 0;
+  }
+
+  /* ---------- Form und Maße ändern ---------- */
+  function formZeigen(an) {
+    $('form').hidden = !an;
+    $('aendern').setAttribute('aria-expanded', an ? 'true' : 'false');
+    $('aendern').textContent = an ? 'Schließen' : 'Ändern';
+  }
+  function olFeld() { $('feld-olh').hidden = !$('ol-ja').checked; }
+  $('aendern').addEventListener('click', function () { formZeigen($('form').hidden); });
+  $('ol-ja').addEventListener('change', olFeld);
+  $('ol-nein').addEventListener('change', olFeld);
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nU = $('flu-2').checked ? 2 : 1, ol = $('ol-ja').checked;
+    var b = parseInt($('f-b').value, 10), h = parseInt($('f-h').value, 10), olH = parseInt($('f-olh').value, 10);
+    var fehler = '';
+    if (!(b >= 40 && b <= 250)) fehler = 'Die Breite muss zwischen 40 und 250 cm liegen.';
+    else if (!(h >= 50 && h <= 260)) fehler = 'Die Höhe muss zwischen 50 und 260 cm liegen.';
+    else if (nU === 2 && b < 70) fehler = 'Für 2 Flügel muss das Fenster mindestens 70 cm breit sein.';
+    else if (ol && !(olH >= 30 && olH <= h - 45)) fehler = 'Das Oberlicht muss mindestens 30 cm hoch sein und unten 45 cm Platz lassen.';
+    $('fehler').textContent = fehler;
+    $('fehler').hidden = !fehler;
+    if (fehler) return;
+    P = { nU: nU, ol: ol, b: b, h: h, olH: ol ? olH : P.olH };
+    G = geometrie(P);
+    skizze();
+    formZeigen(false);
+    $('aendern').focus();
+  });
+
+  /* ---------- Neigung des Handys ----------
+     Aus der Schwerkraft: Neigung zur Seite (Handy schief) und nach vorn oder hinten (Handy gekippt).
+     Auf dem iPhone muss der Kunde das einmal erlauben, die Frage kommt beim Tippen auf „Kamera öffnen“. */
+  var lauscht = false;
+  function lageSensor() {
+    var D = window.DeviceMotionEvent;
+    if (!D) return;
+    if (typeof D.requestPermission === 'function') {
+      try { D.requestPermission().then(function (r) { if (r === 'granted') lauschen(); }, function () {}); } catch (e) {}
+    } else lauschen();
+  }
+  function lauschen() {
+    if (lauscht) return;
+    lauscht = true;
+    window.addEventListener('devicemotion', function (e) {
+      var g = e.accelerationIncludingGravity;
+      if (!g || g.y == null) return;
+      var ax = Math.abs(g.x || 0), ay = Math.abs(g.y || 0), az = Math.abs(g.z || 0);
+      if (ay < 4) { k.lage = null; return; }   // flach oder quer gehalten
+      var roll = Math.atan2(ax, ay) * 180 / Math.PI, pitch = Math.atan2(az, ay) * 180 / Math.PI;
+      k.lage = k.lage ? { roll: k.lage.roll * 0.7 + roll * 0.3, pitch: k.lage.pitch * 0.7 + pitch * 0.3 } : { roll: roll, pitch: pitch };
+    });
+  }
+
+  /* ---------- Kamera öffnen und schließen ---------- */
+  function kameraStarten() {
+    if (kameraGeht === false || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(null);
+    if (k.stream) return Promise.resolve(k.stream);
+    var anfrage;
+    try {
+      anfrage = navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1440 } } });
+    } catch (e) { kameraGeht = false; return Promise.resolve(null); }
+    // Die Frage nach der Erlaubnis darf dauern; ohne Antwort nach 20 s geht es mit der Übung weiter
+    var zeit = new Promise(function (ja) { setTimeout(function () { ja('zeit'); }, 20000); });
+    return Promise.race([anfrage.catch(function () { return null; }), zeit]).then(function (s) {
+      if (s === 'zeit') {
+        anfrage.then(function (st) { st.getTracks().forEach(function (t) { t.stop(); }); }, function () {});
+        kameraGeht = false;
+        return null;
+      }
+      kameraGeht = !!s;
+      return s;
+    });
+  }
+  function modusSetzen(m) {
+    k.modus = m;
+    var v = $('video');
+    v.hidden = m !== 'kamera';
+    szene.hidden = m === 'kamera';
+    $('kamera').classList.toggle('zieh', m !== 'kamera');
+    $('k-modus').textContent = m === 'uebung' ? 'Übung' : m === 'foto' ? 'Foto' : '';
+    $('k-zoom').hidden = m === 'kamera';
+    $('k-zeig').hidden = m !== 'uebung';
+    $('k-galerie').textContent = m === 'foto' ? (k.basis === 'kamera' ? 'Zur Kamera' : 'Zur Übung') : 'Galerie';
+  }
+  function oeffnen(i, knopf) {
+    k.offen = true;
+    k.zurueck = knopf || null;
+    $('kamera').hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    setStatus('Kamera startet …', '');
+    kameraStarten().then(function (stream) {
+      if (!k.offen) return;
+      if (stream) {
+        k.stream = stream;
+        k.basis = 'kamera';
+        var v = $('video');
+        if (v.srcObject !== stream) v.srcObject = stream;
+        var p = v.play(); if (p && p.catch) p.catch(function () {});
+      } else k.basis = 'uebung';
+      modusSetzen(k.basis);
+      schritt(i);
+      if (k.modus === 'uebung' && k.karte) { $('k-karte').hidden = false; $('k-karte-ok').focus(); }
+      else $('k-ausloeser').focus();
+      cancelAnimationFrame(k.raf);
+      k.raf = requestAnimationFrame(schleife);
+    });
+  }
+  function schliessen() {
+    k.offen = false;
+    cancelAnimationFrame(k.raf);
+    if (k.stream) { k.stream.getTracks().forEach(function (t) { t.stop(); }); k.stream = null; }
+    $('video').srcObject = null;
+    kameraGeht = kameraGeht === true ? null : kameraGeht;   // beim nächsten Öffnen neu starten
+    $('kamera').hidden = true;
+    $('k-pruefen').hidden = true;
+    $('k-karte').hidden = true;
+    k.pruefen = false;
+    k.bild = null;
+    document.documentElement.style.overflow = '';
+    liste();
+    var ziel = k.zurueck && document.body.contains(k.zurueck) && !k.zurueck.hidden ? k.zurueck : ($('start').hidden ? $('neu') : $('start'));
+    if (ziel && ziel.focus) ziel.focus();
+  }
+  function karteWeg() {
+    if (!k.karte) return;
+    k.karte = false;
+    $('k-karte').hidden = true;
+  }
+
+  /* ---------- Ein Foto vorbereiten ---------- */
+  function boxFuer(s) {
+    var z = zielVon(s);
+    var oben = $('k-kopf').offsetHeight - 14;
+    var unten = H - $('k-fuss').offsetHeight + 18;
+    var ah = Math.max(140, unten - oben), aw = W * 0.86;
+    var a = z[2] / z[3], r = s.rand;
+    var bw = Math.min(aw / (1 + 2 * r), ah / (1 / a + 2 * r));
+    if (s.id !== 'innen' && s.id !== 'aussen') bw *= 0.84;
+    var bh = bw / a;
+    return { x: (W - bw) / 2, y: oben + (ah - bh) / 2, w: bw, h: bh };
+  }
+  function messen() {
+    var b = $('buehne');
+    W = b.clientWidth; H = b.clientHeight;
+    [szene, hilfe].forEach(function (cv) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); });
+    var s = SCHRITTE[k.i];
+    k.box = boxFuer(s);
+    var p = k.box.w * s.rand;
+    k.loch = { x: k.box.x - p, y: k.box.y - p, w: k.box.w + 2 * p, h: k.box.h + 2 * p };
+    k.s0 = boxFuer(SCHRITTE[0]).w / G.B;
+  }
+  function chips() {
+    $('k-chips').innerHTML = SCHRITTE.map(function (s, i) {
+      var f = fotos[s.id];
+      var cls = 'k-chip' + (i === k.i ? ' k-chip--jetzt' : '') + (f && f.url ? ' k-chip--da' : '');
+      var name = s.titel + (f && f.url ? ', fertig' : i === k.i ? ', jetzt' : '');
+      return '<li class="' + cls + '" aria-label="' + esc(name) + '"' + (i === k.i ? ' aria-current="step"' : '') + '>' + pikto(s.id, 24) + '</li>';
+    }).join('');
+  }
+  function schritt(i) {
+    k.i = i;
+    var s = SCHRITTE[i];
+    $('k-nr').textContent = (i + 1) + ' von ' + SCHRITTE.length + (s.pflicht ? '' : ' · freiwillig');
+    $('k-titel').textContent = s.titel;
+    $('k-tipp').textContent = s.tipp;
+    $('k-skip').hidden = s.pflicht;
+    chips();
+    k.formen = formen(s);
+    k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
+    messen();
+    if (k.modus === 'foto') fotoStart();
+    else { var st = startVon(s); k.cam = { x: st.x, y: st.y, s: k.s0 * st.f }; }
+  }
+
+  /* ---------- Übung: Lage aus der Zeichnung ---------- */
+  function mitWackeln(t) {
+    if (RUHIG || k.modus !== 'uebung') return k.cam;
+    var s = k.cam.s;
+    return { x: k.cam.x + Math.sin(t / 1100) * 2.2 / s, y: k.cam.y + Math.cos(t / 1450) * 1.8 / s, s: s };
+  }
+  function lageUebung(cam) {
+    var z = zielVon(SCHRITTE[k.i]), b = k.box;
+    var tw = z[2] * cam.s, th = z[3] * cam.s;
+    var tx = (z[0] + z[2] / 2 - cam.x) * cam.s + W / 2, ty = (z[1] + z[3] / 2 - cam.y) * cam.s + H / 2;
+    var r = tw / b.w, dx = (tx - b.x - b.w / 2) / b.w, dy = (ty - b.y - b.h / 2) / b.h;
+    var war = k.letzteArt === 'passt', tolR = war ? 0.13 : 0.085, tolL = war ? 0.08 : 0.055;
+    var art;
+    if (r < 1 - tolR) art = 'naeher';
+    else if (r > 1 + tolR) art = 'zurueck';
+    else if (Math.abs(dx) > tolL || Math.abs(dy) > tolL) art = 'schieben';
+    else art = 'passt';
+    return { art: art, erkannt: { x: tx - tw / 2, y: ty - th / 2, w: tw, h: th } };
+  }
+
+  /* ---------- Kamera und Foto: Lage aus der Suche ---------- */
+  function gruppenFuer(bb) {
+    var z = zielVon(SCHRITTE[k.i]), m = bb.w / z[2], gr = {}, liste = [];
+    for (var i = 0; i < k.formen.length; i++) {
+      var f = k.formen[i];
+      if (!f.gr) continue;
+      var r = f.r, x1 = bb.x + (r[0] - z[0]) * m, y1 = bb.y + (r[1] - z[1]) * m, x2 = x1 + r[2] * m, y2 = y1 + r[3] * m;
+      if (!gr[f.gr]) { gr[f.gr] = []; liste.push(gr[f.gr]); }
+      gr[f.gr].push([x1, y1, x2, y1], [x2, y1, x2, y2], [x2, y2, x1, y2], [x1, y2, x1, y1]);
+    }
+    return liste;
+  }
+  function ausschnitt(v) {
+    var kf = Math.max(W / v.videoWidth, H / v.videoHeight);
+    var sw = W / kf, sh = H / kf;
+    return { sx: (v.videoWidth - sw) / 2, sy: (v.videoHeight - sh) / 2, sw: sw, sh: sh };
+  }
+  function analysieren() {
+    var aw = 128, ah = Math.max(16, Math.round(128 * H / W));
+    if (ana.width !== aw || ana.height !== ah) { ana.width = aw; ana.height = ah; }
+    if (k.modus === 'kamera') {
+      var v = $('video');
+      if (!v.videoWidth) return null;
+      var a = ausschnitt(v);
+      actx.drawImage(v, a.sx, a.sy, a.sw, a.sh, 0, 0, aw, ah);
+    } else actx.drawImage(szene, 0, 0, szene.width, szene.height, 0, 0, aw, ah);
+    var d = actx.getImageData(0, 0, aw, ah).data, grau = new Float32Array(aw * ah);
+    for (var i = 0, j = 0; i < grau.length; i++, j += 4) grau[i] = (0.299 * d[j] + 0.587 * d[j + 1] + 0.114 * d[j + 2]) / 255;
+    var fx = aw / W, fy = ah / H;
+    var b = { x: k.box.x * fx, y: k.box.y * fy, w: k.box.w * fx, h: k.box.h * fy };
+    var tr = suchen(kantenBild(grau, aw, ah), gruppenFuer, b);
+    tr.rel = { f: tr.f, dx: tr.ox / b.w, dy: tr.oy / b.h };
+    tr.erkannt = { x: tr.box.x / fx, y: tr.box.y / fy, w: tr.box.w / fx, h: tr.box.h / fy };
+    return tr;
+  }
+  function deuten(tr) {
+    if (k.modus === 'kamera' && k.lage) {
+      if (k.lage.roll > 8) return { art: 'gerade' };
+      if (k.lage.pitch > 15) return { art: 'senkrecht' };
+    }
+    if (!tr || tr.wert < GEFUNDEN) return { art: 'suchen' };
+    var war = k.letzteArt === 'passt', tf = war ? 0.1 : 0.07, tl = war ? 0.07 : 0.05, r = tr.rel, art;
+    if (r.f < 1 - tf) art = 'naeher';
+    else if (r.f > 1 + tf) art = 'zurueck';
+    else if (Math.abs(r.dx) > tl || Math.abs(r.dy) > tl) {
+      art = Math.abs(r.dx) >= Math.abs(r.dy) ? (r.dx < 0 ? 'links' : 'rechts') : (r.dy < 0 ? 'oben' : 'unten');
+    } else art = tr.wert >= PASST ? 'passt' : 'fast';
+    return { art: art, erkannt: tr.erkannt };
+  }
+
+  /* ---------- Hauptschleife ---------- */
+  var TEXTE = {
+    kamera: {
+      naeher: 'Geh näher ran', zurueck: 'Geh etwas zurück', links: 'Handy etwas nach links', rechts: 'Handy etwas nach rechts',
+      oben: 'Handy etwas nach oben', unten: 'Handy etwas nach unten', fast: 'Fast. Noch etwas genauer.', passt: 'Passt. Halt still …',
+      gerade: 'Handy gerade halten', senkrecht: 'Handy senkrecht halten, nicht kippen', manuell: 'Liegt es in den Linien? Dann auslösen.'
+    },
+    foto: {
+      naeher: 'Bild größer ziehen', zurueck: 'Bild kleiner ziehen', links: 'Fenster in die Linien schieben', rechts: 'Fenster in die Linien schieben',
+      oben: 'Fenster in die Linien schieben', unten: 'Fenster in die Linien schieben', fast: 'Fast. Noch etwas genauer.', passt: 'Passt. Einen Moment …',
+      suchen: 'Fenster in die Linien schieben', manuell: 'Liegt es im Kasten? Dann auslösen.'
+    },
+    uebung: { naeher: 'Geh näher ran', zurueck: 'Geh etwas zurück', passt: 'Passt. Halt still …' }
+  };
+  function setStatus(text, art) {
+    if (text === k.statusText && art === k.statusArt) return;
+    k.statusText = text; k.statusArt = art;
+    var el = $('k-status');
+    el.textContent = text;
+    el.classList.toggle('pille--ok', art === 'passt');
+    el.classList.toggle('pille--warn', art === 'gerade' || art === 'senkrecht');
+  }
+  function statusText(z, s) {
+    var t = TEXTE[k.modus] || {};
+    if (z.art === 'schieben') return s.ding + (s.id === 'ecklager' || s.id === 'schere' ? ' in den Kasten' : ' in die Linien');
+    if (z.art === 'suchen') return t.suchen || (s.ding + ' in die Linien');
+    if (z.art === 'manuell' && s.id !== 'innen' && s.id !== 'aussen') return k.modus === 'foto' ? 'Schieb die Stelle in den Kasten, dann auslösen.' : 'Liegt es im Kasten? Dann auslösen.';
+    return t[z.art] || '';
+  }
+
+  function schleife(t) {
+    if (!k.offen) return;
+    k.raf = requestAnimationFrame(schleife);
+    if (k.pruefen) return;
+    var s = SCHRITTE[k.i], z;
+    if (k.anim) animieren(t);
+    if (k.modus !== 'kamera') zeichneSzene(sctx, W, H, mitWackeln(t), k.modus === 'foto' ? 'foto' : s.szene, DPR);
+    if (k.modus === 'uebung') {
+      z = lageUebung(mitWackeln(t));
+    } else if (s.auto) {
+      if (t - k.letzteAnalyse > 220) {
+        k.letzteAnalyse = t;
+        k.treffer = analysieren();
+        var neu = deuten(k.treffer);
+        k.passtZaehler = neu.art === 'passt' ? k.passtZaehler + 1 : 0;
+        k.deutung = neu;
+      }
+      z = k.deutung || { art: 'suchen' };
+      if (z.art === 'passt' && k.passtZaehler < 2) z = { art: 'fast', erkannt: z.erkannt };
+      if (k.modus === 'kamera' && k.lage && (k.lage.roll > 8 || k.lage.pitch > 15)) z = deuten(null);
+    } else z = { art: 'manuell' };
+    setStatus(statusText(z, s), z.art);
+    if (z.art !== 'passt') k.sperre = false;
+    var darf = z.art === 'passt' && !k.sperre && !k.gemacht;
+    if (darf) { if (!k.passtSeit) k.passtSeit = t; } else k.passtSeit = 0;
+    var p = k.passtSeit ? Math.min(1, (t - k.passtSeit) / 900) : 0;
+    $('k-ausloeser').style.setProperty('--p', p.toFixed(3));
+    k.letzteArt = z.art;
+    zeichneHilfe(z, s);
+    if (p >= 1) ausloesen();
+  }
+
+  function zeichneHilfe(z, s) {
+    var c = hctx, b = k.box, lo = k.loch;
+    var ok = z.art === 'passt';
+    var farbe = ok ? '#80c99d' : '#f2f0ea';
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.clearRect(0, 0, W, H);
+    // Abdunkeln außerhalb
+    c.fillStyle = 'rgba(6, 12, 9, 0.5)';
+    c.beginPath();
+    c.rect(0, 0, W, H);
+    c.rect(lo.x, lo.y, lo.w, lo.h);
+    c.fill('evenodd');
+    // Erkanntes Fenster gestrichelt: da ist es gerade
+    var ganz = s.id === 'innen' || s.id === 'aussen';
+    if (z.erkannt && !ok && ganz) {
+      var e = z.erkannt;
+      c.save();
+      c.strokeStyle = 'rgba(242, 240, 234, 0.85)'; c.lineWidth = 2; c.setLineDash([8, 6]);
+      c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 3;
+      c.strokeRect(e.x, e.y, e.w, e.h);
+      c.restore();
+    }
+    // Hilfslinien
+    var zl = zielVon(s), m = b.w / zl[2];
+    function X(x) { return b.x + (x - zl[0]) * m; }
+    function Y(y) { return b.y + (y - zl[1]) * m; }
+    c.save();
+    c.beginPath(); c.rect(b.x - 1, b.y - 1, b.w + 2, b.h + 2); c.clip();
+    c.strokeStyle = farbe;
+    c.lineCap = 'square'; c.lineJoin = 'miter';
+    c.shadowColor = 'rgba(0,0,0,0.45)'; c.shadowBlur = 3;
+    k.formen.forEach(function (f) {
+      c.lineWidth = f.fein ? 1 : 2;
+      c.globalAlpha = f.fein ? 0.6 : 1;
+      if (f.t === 'r') {
+        var r = f.r;
+        if (f.rund) { pfadRund(c, X(r[0]), Y(r[1]), r[2] * m, r[3] * m, f.rund * m); c.stroke(); }
+        else c.strokeRect(X(r[0]), Y(r[1]), r[2] * m, r[3] * m);
+      } else {
+        c.beginPath(); c.moveTo(X(f.a[0]), Y(f.a[1])); c.lineTo(X(f.a[2]), Y(f.a[3])); c.stroke();
+      }
+    });
+    c.restore();
+    // Ecken wie beim Ausweis-Scan
+    var el = Math.min(30, lo.w * 0.16);
+    c.strokeStyle = farbe; c.lineWidth = 4; c.lineCap = 'square'; c.globalAlpha = 1;
+    c.beginPath();
+    c.moveTo(lo.x, lo.y + el); c.lineTo(lo.x, lo.y); c.lineTo(lo.x + el, lo.y);
+    c.moveTo(lo.x + lo.w - el, lo.y); c.lineTo(lo.x + lo.w, lo.y); c.lineTo(lo.x + lo.w, lo.y + el);
+    c.moveTo(lo.x + lo.w, lo.y + lo.h - el); c.lineTo(lo.x + lo.w, lo.y + lo.h); c.lineTo(lo.x + lo.w - el, lo.y + lo.h);
+    c.moveTo(lo.x + el, lo.y + lo.h); c.lineTo(lo.x, lo.y + lo.h); c.lineTo(lo.x, lo.y + lo.h - el);
+    c.stroke();
+    // Pfeil beim Schieben (Übung und Foto): von dort, wo das Ding gerade ist, in die Mitte der Linien
+    var schieben = z.art === 'schieben' || (k.modus === 'foto' && /^(links|rechts|oben|unten)$/.test(z.art));
+    if (schieben && z.erkannt) {
+      var bx = b.x + b.w / 2, by = b.y + b.h / 2;
+      var ax = Math.max(24, Math.min(W - 24, z.erkannt.x + z.erkannt.w / 2)), ay = Math.max(24, Math.min(H - 24, z.erkannt.y + z.erkannt.h / 2));
+      var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy);
+      if (len > 28) {
+        var ux = dx / len, uy = dy / len, ende = len - 10;
+        c.strokeStyle = '#f2f0ea'; c.fillStyle = '#f2f0ea'; c.lineWidth = 3;
+        c.setLineDash([7, 6]);
+        c.beginPath(); c.moveTo(ax, ay); c.lineTo(ax + ux * (ende - 12), ay + uy * (ende - 12)); c.stroke();
+        c.setLineDash([]);
+        var px = ax + ux * ende, py = ay + uy * ende;
+        c.beginPath();
+        c.moveTo(px, py);
+        c.lineTo(px - ux * 16 - uy * 9, py - uy * 16 + ux * 9);
+        c.lineTo(px - ux * 16 + uy * 9, py - uy * 16 - ux * 9);
+        c.closePath(); c.fill();
+        c.beginPath(); c.arc(ax, ay, 6, 0, Math.PI * 2); c.fill();
+      }
+    }
+  }
+
+  /* ---------- Auslösen und prüfen ---------- */
+  function fotoSzene() {
+    var f = 2, cv = document.createElement('canvas');
+    cv.width = Math.round(W * f); cv.height = Math.round(H * f);
+    zeichneSzene(cv.getContext('2d'), W, H, k.cam, k.modus === 'foto' ? 'foto' : SCHRITTE[k.i].szene, f);
+    return cv.toDataURL('image/jpeg', 0.85);
+  }
+  function fotoKamera() {
+    var v = $('video'), a = ausschnitt(v), cv = document.createElement('canvas');
+    cv.width = Math.round(a.sw); cv.height = Math.round(a.sh);
+    cv.getContext('2d').drawImage(v, a.sx, a.sy, a.sw, a.sh, 0, 0, cv.width, cv.height);
+    return cv.toDataURL('image/jpeg', 0.9);
+  }
+  function ausloesen() {
+    if (k.gemacht || k.pruefen) return;
+    k.gemacht = true;
+    karteWeg();
+    var url = null;
+    try { url = k.modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { url = null; }
+    var bl = $('blitz');
+    bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
+    setTimeout(function () { pruefen(url); }, RUHIG ? 0 : 280);
+  }
+  function pruefen(url) {
+    if (!k.offen) return;
+    k.pruefen = true;
+    k.url = url;
+    $('p-nr').textContent = (k.i + 1) + ' von ' + SCHRITTE.length + ' · ' + SCHRITTE[k.i].titel;
+    $('p-bild').src = url || '';
+    $('p-marke').hidden = k.modus === 'kamera';
+    $('p-marke').textContent = k.modus === 'foto' ? 'Aus der Galerie' : 'Übungsfoto';
+    $('p-weiter').textContent = naechster(k.i) < 0 ? 'Passt, fertig' : 'Passt, weiter';
+    $('k-pruefen').hidden = false;
+    $('p-weiter').focus();
+  }
+  // Nächstes offenes Foto nach i, sonst ein offenes davor
+  function naechster(i) {
+    for (var j = i + 1; j < SCHRITTE.length; j++) if (!fotos[SCHRITTE[j].id]) return j;
+    for (j = 0; j < i; j++) if (!fotos[SCHRITTE[j].id]) return j;
+    return -1;
+  }
+  function weiter() {
+    fotos[SCHRITTE[k.i].id] = { url: k.url, art: k.modus };
+    k.pruefen = false;
+    $('k-pruefen').hidden = true;
+    var n = naechster(k.i);
+    if (n < 0) { schliessen(); return; }
+    if (k.modus === 'foto') { k.bild = null; modusSetzen(k.basis); }
+    schritt(n);
+    $('k-ausloeser').focus();
+  }
+  function nochmal() {
+    k.pruefen = false;
+    k.gemacht = false;
+    k.sperre = true;
+    k.passtSeit = 0;
+    $('k-pruefen').hidden = true;
+    $('k-ausloeser').focus();
+  }
+  function ueberspringen() {
+    fotos[SCHRITTE[k.i].id] = { skip: true };
+    var n = naechster(k.i);
+    if (n < 0) { schliessen(); return; }
+    if (k.modus === 'foto') { k.bild = null; modusSetzen(k.basis); }
+    schritt(n);
+  }
+
+  /* ---------- Foto aus der Galerie ---------- */
+  function fotoStart() {
+    var b = k.bild;
+    if (!b) return;
+    var s = Math.max(W / b.naturalWidth, H / b.naturalHeight);
+    k.cam = { x: b.naturalWidth / 2, y: b.naturalHeight / 2, s: s };
+    k.fotoS = s;
+  }
+  $('k-galerie').addEventListener('click', function () {
+    if (k.modus === 'foto') { k.bild = null; modusSetzen(k.basis); schritt(k.i); return; }
+    $('galerie').value = '';
+    $('galerie').click();
+  });
+  $('galerie').addEventListener('change', function () {
+    var datei = this.files && this.files[0];
+    if (!datei) return;
+    var img = new Image();
+    img.onload = function () {
+      k.bild = img;
+      karteWeg();
+      modusSetzen('foto');
+      fotoStart();
+      k.passtSeit = 0; k.passtZaehler = 0; k.treffer = null; k.deutung = null; k.gemacht = false; k.sperre = false;
+    };
+    img.onerror = function () { setStatus('Das Foto ließ sich nicht öffnen.', ''); };
+    img.src = URL.createObjectURL(datei);
+  });
+
+  /* ---------- Übung und Foto: Bewegen und Zoomen ---------- */
+  function begrenzen(s) {
+    if (k.modus === 'foto') return Math.max(k.fotoS * 0.25, Math.min(k.fotoS * 8, s));
+    return Math.max(k.s0 * 0.35, Math.min(Math.max(k.s0 * 10, 40), s));
+  }
+  function zoomBei(px, py, f) {
+    var wx = k.cam.x + (px - W / 2) / k.cam.s, wy = k.cam.y + (py - H / 2) / k.cam.s;
+    var s = begrenzen(k.cam.s * f);
+    k.cam = { x: wx - (px - W / 2) / s, y: wy - (py - H / 2) / s, s: s };
+  }
+  function animieren(t) {
+    var a = k.anim;
+    if (!a.t0) a.t0 = t;
+    var q = Math.min(1, (t - a.t0) / a.dauer);
+    var e = q < 0.5 ? 2 * q * q : 1 - Math.pow(-2 * q + 2, 2) / 2;
+    var ls = Math.log(a.von.s) + (Math.log(a.nach.s) - Math.log(a.von.s)) * e;
+    k.cam = { x: a.von.x + (a.nach.x - a.von.x) * e, y: a.von.y + (a.nach.y - a.von.y) * e, s: Math.exp(ls) };
+    if (q >= 1) k.anim = null;
+  }
+  function zeigen() {
+    karteWeg();
+    var s = SCHRITTE[k.i], z = zielVon(s), b = k.box;
+    var sz = b.w / z[2];
+    var nach = { x: z[0] + z[2] / 2 - (b.x + b.w / 2 - W / 2) / sz, y: z[1] + z[3] / 2 - (b.y + b.h / 2 - H / 2) / sz, s: sz };
+    if (RUHIG) { k.cam = nach; return; }
+    k.anim = { von: { x: k.cam.x, y: k.cam.y, s: k.cam.s }, nach: nach, dauer: 1300, t0: 0 };
+  }
+  function ziehbar() { return k.modus !== 'kamera' && !k.pruefen; }
+  hilfe.addEventListener('pointerdown', function (e) {
+    if (!ziehbar()) return;
+    karteWeg();
+    k.anim = null;
+    try { hilfe.setPointerCapture(e.pointerId); } catch (x) {}
+    k.zeiger.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  });
+  hilfe.addEventListener('pointermove', function (e) {
+    if (!k.zeiger.has(e.pointerId) || !ziehbar()) return;
+    var alt = k.zeiger.get(e.pointerId), neu = { x: e.offsetX, y: e.offsetY };
+    if (k.zeiger.size === 1) {
+      k.cam.x -= (neu.x - alt.x) / k.cam.s;
+      k.cam.y -= (neu.y - alt.y) / k.cam.s;
+    } else {
+      var anderer = null;
+      k.zeiger.forEach(function (p, id) { if (id !== e.pointerId && !anderer) anderer = p; });
+      var d0 = Math.hypot(alt.x - anderer.x, alt.y - anderer.y), d1 = Math.hypot(neu.x - anderer.x, neu.y - anderer.y);
+      var m0 = { x: (alt.x + anderer.x) / 2, y: (alt.y + anderer.y) / 2 }, m1 = { x: (neu.x + anderer.x) / 2, y: (neu.y + anderer.y) / 2 };
+      if (d0 > 4) zoomBei(m1.x, m1.y, d1 / d0);
+      k.cam.x -= (m1.x - m0.x) / k.cam.s;
+      k.cam.y -= (m1.y - m0.y) / k.cam.s;
+    }
+    k.zeiger.set(e.pointerId, neu);
+  });
+  function zeigerWeg(e) { k.zeiger.delete(e.pointerId); }
+  hilfe.addEventListener('pointerup', zeigerWeg);
+  hilfe.addEventListener('pointercancel', zeigerWeg);
+  hilfe.addEventListener('wheel', function (e) {
+    if (!ziehbar()) return;
+    e.preventDefault();
+    karteWeg(); k.anim = null;
+    zoomBei(e.offsetX, e.offsetY, Math.exp(-e.deltaY * 0.0015));
+  }, { passive: false });
+
+  /* ---------- Knöpfe ---------- */
+  $('start').addEventListener('click', function () { lageSensor(); oeffnen(ersterOffen(), this); });
+  $('fotos').addEventListener('click', function (e) {
+    var b = e.target.closest('.foto');
+    if (b) { lageSensor(); oeffnen(parseInt(b.getAttribute('data-i'), 10), b); }
+  });
+  $('neu').addEventListener('click', function () { fotos = {}; liste(); lageSensor(); oeffnen(0, $('start')); });
+  $('k-zu').addEventListener('click', schliessen);
+  $('k-ausloeser').addEventListener('click', ausloesen);
+  $('k-skip').addEventListener('click', ueberspringen);
+  $('k-zeig').addEventListener('click', zeigen);
+  $('k-plus').addEventListener('click', function () { karteWeg(); k.anim = null; zoomBei(W / 2, H / 2, 1.3); });
+  $('k-minus').addEventListener('click', function () { karteWeg(); k.anim = null; zoomBei(W / 2, H / 2, 1 / 1.3); });
+  $('k-karte-ok').addEventListener('click', function () { karteWeg(); $('k-ausloeser').focus(); });
+  $('p-weiter').addEventListener('click', weiter);
+  $('p-nochmal').addEventListener('click', nochmal);
+  document.addEventListener('keydown', function (e) {
+    if (!k.offen) return;
+    if (e.key === 'Escape') { if (k.pruefen) nochmal(); else schliessen(); }
+  });
+  window.addEventListener('resize', function () {
+    if (!k.offen) return;
+    messen();
+    if (k.modus === 'foto') fotoStart();
+  });
+
+  skizze();
+  liste();
+})();
+</script>
+
+</body>
+</html>

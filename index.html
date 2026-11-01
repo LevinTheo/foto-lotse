@@ -265,6 +265,40 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   border-radius: 50%;
   box-shadow: 0 0 0 2px var(--cam-bg);
 }
+.k-mitte { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.k-info { display: grid; gap: 4px; min-width: 0; }
+.k-mini {
+  flex: none;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 4px 4px 3px;
+  background: var(--cam-panel);
+  border: 1px solid var(--cam-line);
+  color: var(--cam-ink);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 0;
+}
+.k-mini canvas, .k-ort canvas { display: block; }
+.k-ort {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(380px, calc(100% - 24px));
+  padding: 18px;
+  background: var(--cam-bg);
+  border: 1px solid var(--cam-line);
+  display: grid;
+  gap: 14px;
+}
+.k-ort h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.k-ort__bilder { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+.k-ort figure { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.k-ort figcaption { font-size: 12px; color: var(--cam-muted); text-align: center; }
 .k-modus { width: 44px; text-align: right; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cam-muted); line-height: 1.2; }
 .k-nr { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cam-muted); font-variant-numeric: tabular-nums; }
 .k-titel { margin: 0; font-size: 21px; line-height: 1.2; font-weight: 600; text-wrap: balance; }
@@ -473,9 +507,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <ol class="k-chips" id="k-chips" aria-label="Fotos"></ol>
         <span class="k-modus" id="k-modus"></span>
       </div>
-      <p class="k-nr" id="k-nr"></p>
-      <h2 class="k-titel" id="k-titel"></h2>
-      <p class="k-tipp" id="k-tipp"></p>
+      <div class="k-mitte">
+        <div class="k-info">
+          <p class="k-nr" id="k-nr"></p>
+          <h2 class="k-titel" id="k-titel"></h2>
+          <p class="k-tipp" id="k-tipp"></p>
+        </div>
+        <button class="k-mini" id="k-mini" type="button" aria-label="Wo am Fenster? Groß zeigen" hidden>
+          <canvas id="k-mini-bild" aria-hidden="true"></canvas>
+          <span>Hier</span>
+        </button>
+      </div>
     </div>
 
     <div class="k-zoom" id="k-zoom" hidden>
@@ -504,6 +546,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <li>Am Computer: ziehen und Mausrad</li>
       </ul>
       <button class="kbtn kbtn--haupt" id="k-karte-ok" type="button">Los geht’s</button>
+    </div>
+
+    <div class="k-ort" id="k-ort" role="dialog" aria-labelledby="k-ort-titel" hidden>
+      <h2 id="k-ort-titel"></h2>
+      <div class="k-ort__bilder">
+        <figure><canvas id="k-ort-karte" aria-hidden="true"></canvas><figcaption>Am Fenster</figcaption></figure>
+        <figure><canvas id="k-ort-nah" aria-hidden="true"></canvas><figcaption>So ungefähr sieht es aus</figcaption></figure>
+      </div>
+      <button class="kbtn kbtn--haupt" id="k-ort-ok" type="button">Verstanden</button>
     </div>
 
     <div class="k-pruefen" id="k-pruefen" hidden>
@@ -599,11 +650,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     { id: 'innen', titel: 'Das ganze Fenster von innen', pflicht: true, szene: 'innen', rand: 0.08, auto: true,
       tipp: 'Stell dich mittig vor das Fenster. Das ganze Fenster in die Linien, mit etwas Wand drumherum.', ding: 'Fenster' },
     { id: 'griff', titel: 'Der Griff', pflicht: true, szene: 'innen', rand: 0.06,
-      tipp: 'Geh nah an den Griff. Griff und Kante vom Flügel in die Linien.', ding: 'Griff' },
+      tipp: 'Geh nah an den Griff. Griff und Kante vom Flügel in die Linien.', ding: 'Griff', wo: 'der Griff' },
     { id: 'ecklager', titel: 'Das Ecklager unten', pflicht: true, szene: 'innen', rand: 0.06,
-      tipp: 'Die untere Ecke links an den Scharnieren. Die Abdeckung vom Ecklager in den Kasten.', ding: 'Abdeckung' },
+      tipp: 'Die untere Ecke links an den Scharnieren. Die Abdeckung vom Ecklager in den Kasten.', ding: 'Abdeckung', wo: 'das Ecklager' },
     { id: 'schere', titel: 'Das Scherenlager oben', pflicht: true, szene: 'innen', rand: 0.06,
-      tipp: 'Die obere Ecke links an den Scharnieren. Die Abdeckung vom Scherenlager in den Kasten.', ding: 'Abdeckung' },
+      tipp: 'Die obere Ecke links an den Scharnieren. Die Abdeckung vom Scherenlager in den Kasten.', ding: 'Abdeckung', wo: 'das Scherenlager' },
     { id: 'aussen', titel: 'Das ganze Fenster von außen', pflicht: false, szene: 'aussen', rand: 0.08, auto: true,
       tipp: 'Nur wenn du gefahrlos rankommst, zum Beispiel im Erdgeschoss. Das ganze Fenster in die Linien.', ding: 'Fenster' }
   ];
@@ -1017,6 +1068,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (fehler) return;
     P = { nU: nU, ol: ol, b: b, h: h, olH: ol ? olH : P.olH };
     G = geometrie(P);
+    if (fotos.innen) fotos.innen.karte = null;
     skizze();
     formZeigen(false);
     $('aendern').focus();
@@ -1110,6 +1162,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('kamera').hidden = true;
     $('k-pruefen').hidden = true;
     $('k-karte').hidden = true;
+    $('k-ort').hidden = true;
     k.pruefen = false;
     k.bild = null;
     document.documentElement.style.overflow = '';
@@ -1160,6 +1213,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('k-titel').textContent = s.titel;
     $('k-tipp').textContent = s.tipp;
     $('k-skip').hidden = s.pflicht;
+    $('k-ort').hidden = true;
+    miniZeigen();
     chips();
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
@@ -1227,6 +1282,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var xs = tr.ecken.map(function (e) { return e[0]; }), ys = tr.ecken.map(function (e) { return e[1]; });
     var x0 = Math.min.apply(null, xs), y0 = Math.min.apply(null, ys);
     tr.erkannt = { x: x0, y: y0, w: Math.max.apply(null, xs) - x0, h: Math.max.apply(null, ys) - y0 };
+    tr.bbS = { x: tr.box.x / fx, y: tr.box.y / fy, w: tr.box.w / fx, h: tr.box.h / fy };
     return tr;
   }
   function deuten(tr, jetzt) {
@@ -1445,6 +1501,92 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return Promise.race([arbeit, zeit]);
   }
 
+  /* ---------- Die Totale als Karte ----------
+     Beim ganzen Fenster merkt sich die Seite, wo das Fenster im Foto lag (erkannt oder aus den Linien).
+     Bei Griff, Ecklager und Scherenlager zeigt sie die Totale dann klein oben rechts, die gesuchte Stelle markiert. */
+  function kartenLage() {
+    if (SCHRITTE[k.i].id !== 'innen') return null;
+    if (k.modus === 'uebung') {
+      var c = k.cam;
+      return { bb: { x: W / 2 - c.x * c.s, y: H / 2 - c.y * c.s, w: G.B * c.s, h: G.H * c.s }, v: null };
+    }
+    var tr = k.treffer;
+    if (tr && tr.wert >= GEFUNDEN && tr.bbS) return { bb: tr.bbS, v: tr.v || null };
+    var b = k.box;
+    return { bb: { x: b.x, y: b.y, w: b.w, h: b.h }, v: null };
+  }
+  // Punkt am Fenster (cm) -> Pixel im Foto der Totalen
+  function aufKarte(kt, x, y) {
+    var p = verzerrt(kt.bb.x + x / kt.B * kt.bb.w, kt.bb.y + y / kt.H * kt.bb.h, kt.bb, kt.v);
+    return [p[0] * kt.sk, p[1] * kt.sk];
+  }
+  function umriss(kt, r) {
+    return [[r[0], r[1]], [r[0] + r[2], r[1]], [r[0] + r[2], r[1] + r[3]], [r[0], r[1] + r[3]]].map(function (q) { return aufKarte(kt, q[0], q[1]); });
+  }
+  function huelle(pkte, rand, bw, bh) {
+    var xs = pkte.map(function (q) { return q[0]; }), ys = pkte.map(function (q) { return q[1]; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    var px = (x1 - x0) * rand, py = (y1 - y0) * rand;
+    x0 = Math.max(0, x0 - px); y0 = Math.max(0, y0 - py); x1 = Math.min(bw, x1 + px); y1 = Math.min(bh, y1 + py);
+    return { x: x0, y: y0, w: Math.max(1, x1 - x0), h: Math.max(1, y1 - y0) };
+  }
+  function totale() {
+    var f = fotos.innen, s = SCHRITTE[k.i];
+    if (!f || !f.url || !f.karte || !s.wo) return null;
+    return f;
+  }
+  // Größe der Leinwand festlegen (sofort, damit der Kopf seine Höhe behält), gezeichnet wird, sobald das Foto geladen ist
+  function leinwand(cv, aus, breit, maxHoch) {
+    var w = breit, h = Math.round(breit * aus.h / aus.w);
+    if (h > maxHoch) { h = maxHoch; w = Math.round(maxHoch * aus.w / aus.h); }
+    cv.style.width = w + 'px'; cv.style.height = h + 'px';
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+  }
+  function kartenBild(cv, f, aus, ziel, markieren) {
+    var img = new Image();
+    img.onload = function () {
+      var c = cv.getContext('2d');
+      c.setTransform(1, 0, 0, 1, 0, 0);
+      c.drawImage(img, aus.x, aus.y, aus.w, aus.h, 0, 0, cv.width, cv.height);
+      if (!markieren) return;
+      var sx = cv.width / aus.w, sy = cv.height / aus.h;
+      var pk = ziel.map(function (q) { return [(q[0] - aus.x) * sx, (q[1] - aus.y) * sy]; });
+      c.fillStyle = 'rgba(6, 12, 9, 0.5)';
+      c.beginPath(); c.rect(0, 0, cv.width, cv.height);
+      pk.forEach(function (q, i) { if (i) c.lineTo(q[0], q[1]); else c.moveTo(q[0], q[1]); });
+      c.closePath(); c.fill('evenodd');
+      c.strokeStyle = '#f2f0ea'; c.lineWidth = 2 * DPR;
+      c.beginPath(); pk.forEach(function (q, i) { if (i) c.lineTo(q[0], q[1]); else c.moveTo(q[0], q[1]); }); c.closePath(); c.stroke();
+    };
+    img.src = f.url;
+  }
+  function miniZeigen() {
+    var f = totale(), knopf = $('k-mini');
+    if (!f) { knopf.hidden = true; return; }
+    var kt = f.karte, s = SCHRITTE[k.i];
+    var fenster = umriss(kt, [0, 0, kt.B, kt.H]), ziel = umriss(kt, zielVon(s));
+    var aus = huelle(fenster.concat(ziel), 0.1, kt.w, kt.h);
+    leinwand($('k-mini-bild'), aus, 78, 104);
+    knopf.setAttribute('aria-label', 'Wo ist ' + s.wo + '? Groß zeigen');
+    knopf.hidden = false;
+    kartenBild($('k-mini-bild'), f, aus, ziel, true);
+  }
+  function ortZeigen() {
+    var f = totale();
+    if (!f) return;
+    var kt = f.karte, s = SCHRITTE[k.i];
+    var fenster = umriss(kt, [0, 0, kt.B, kt.H]), ziel = umriss(kt, zielVon(s));
+    var aus = huelle(fenster.concat(ziel), 0.1, kt.w, kt.h), nah = huelle(ziel, 0.25, kt.w, kt.h);
+    $('k-ort-titel').textContent = 'Hier ist ' + s.wo;
+    $('k-ort').hidden = false;
+    var breit = Math.max(110, Math.floor(($('k-ort').clientWidth - 36 - 10) / 2));
+    leinwand($('k-ort-karte'), aus, breit, 220);
+    leinwand($('k-ort-nah'), nah, breit, 220);
+    kartenBild($('k-ort-karte'), f, aus, ziel, true);
+    kartenBild($('k-ort-nah'), f, nah, ziel, false);
+    $('k-ort-ok').focus();
+  }
+
   /* ---------- Auslösen und prüfen ---------- */
   function fotoSzene() {
     var f = 2, cv = document.createElement('canvas');
@@ -1464,6 +1606,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     karteWeg();
     var cv = null, modus = k.modus;
     try { cv = modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { cv = null; }
+    var lage = cv ? kartenLage() : null;
+    k.aufnahme = lage ? { sk: cv.width / W, w: cv.width, h: cv.height, bb: lage.bb, v: lage.v, B: G.B, H: G.H } : null;
     var bl = $('blitz');
     bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
     var pruefung = cv && modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0);
@@ -1498,7 +1642,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return -1;
   }
   function weiter() {
-    fotos[SCHRITTE[k.i].id] = { url: k.url, art: k.modus };
+    fotos[SCHRITTE[k.i].id] = { url: k.url, art: k.modus, karte: SCHRITTE[k.i].id === 'innen' ? k.aufnahme : null };
     k.pruefen = false;
     $('k-pruefen').hidden = true;
     var n = naechster(k.i);
@@ -1628,11 +1772,13 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   $('k-plus').addEventListener('click', function () { karteWeg(); k.anim = null; zoomBei(W / 2, H / 2, 1.3); });
   $('k-minus').addEventListener('click', function () { karteWeg(); k.anim = null; zoomBei(W / 2, H / 2, 1 / 1.3); });
   $('k-karte-ok').addEventListener('click', function () { karteWeg(); $('k-ausloeser').focus(); });
+  $('k-mini').addEventListener('click', function () { karteWeg(); ortZeigen(); });
+  $('k-ort-ok').addEventListener('click', function () { $('k-ort').hidden = true; $('k-mini').focus(); });
   $('p-weiter').addEventListener('click', weiter);
   $('p-nochmal').addEventListener('click', nochmal);
   document.addEventListener('keydown', function (e) {
     if (!k.offen) return;
-    if (e.key === 'Escape') { if (k.pruefen) nochmal(); else schliessen(); }
+    if (e.key === 'Escape') { if (!$('k-ort').hidden) $('k-ort').hidden = true; else if (k.pruefen) nochmal(); else schliessen(); }
   });
   window.addEventListener('resize', function () {
     if (!k.offen) return;

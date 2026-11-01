@@ -9,7 +9,7 @@ Live: https://levintheo.github.io/foto-lotse/ (sobald GitHub Pages eingeschaltet
 - Nur zum Testen. Die Seite schickt nichts weg, Fotos und Maße bleiben auf dem Handy.
 - Gesichter auf den Fotos werden nach dem Auslösen automatisch verpixelt, direkt auf dem Handy
   (Gesichtserkennung face-api von Vladimir Mandic, MIT-Lizenz, siehe vendor/LICENSE-face-api.txt).
-- Flügel, Oberlicht und Maße lassen sich über „Ändern“ einstellen. Später kommen sie aus der Anfrage auf holtcraft.de.
+- Flügel, Oberlicht und Maße lassen sich über „Ändern“ einstellen. Gemessen wird am Flügel (der Rahmen ist oft eingeputzt), der Rahmen wird daraus geschätzt. Später kommen die Maße aus der Anfrage auf holtcraft.de.
 - Ohne Kamera (zum Beispiel am Computer ohne Freigabe) gibt es einen Übungsmodus mit gezeichnetem Fenster.
 
 Schrift: Space Grotesk, Copyright 2020 The Space Grotesk Project Authors, lizenziert unter der

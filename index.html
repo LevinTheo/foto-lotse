@@ -142,6 +142,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .feld__eingabe:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
 .feld input { width: 100%; min-width: 0; min-height: 48px; border: 0; background: transparent; padding: 0 12px; font-size: 17px; font-variant-numeric: tabular-nums; outline: none; }
 .feld__einheit { padding: 0 12px; color: var(--ink-muted); }
+.form__hinweis { margin: 0; font-size: 14px; color: var(--ink-muted); }
 .form__fehler { margin: 0; color: var(--danger); font-size: 14px; font-weight: 600; }
 .form__knoepfe { display: flex; gap: 10px; flex-wrap: wrap; }
 
@@ -453,10 +454,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <label><input type="radio" name="ol" id="ol-ja" value="ja"><span>Mit Oberlicht</span></label>
       </div>
     </fieldset>
+    <p class="form__hinweis">Miss am Flügel, nicht am Rahmen: von Außenkante zu Außenkante. Bei 2 Flügeln die Breite über beide zusammen.</p>
     <div class="felder">
-      <label class="feld" for="f-b"><span class="feld__name">Breite</span><span class="feld__eingabe"><input id="f-b" type="number" inputmode="numeric" min="40" max="250" value="80"><span class="feld__einheit">cm</span></span></label>
-      <label class="feld" for="f-h"><span class="feld__name">Höhe</span><span class="feld__eingabe"><input id="f-h" type="number" inputmode="numeric" min="50" max="260" value="100"><span class="feld__einheit">cm</span></span></label>
-      <label class="feld" for="f-olh" id="feld-olh" hidden><span class="feld__name">Höhe Oberlicht</span><span class="feld__eingabe"><input id="f-olh" type="number" inputmode="numeric" min="30" max="120" value="40"><span class="feld__einheit">cm</span></span></label>
+      <label class="feld" for="f-b"><span class="feld__name">Breite Flügel</span><span class="feld__eingabe"><input id="f-b" type="number" inputmode="numeric" min="30" max="240" value="72"><span class="feld__einheit">cm</span></span></label>
+      <label class="feld" for="f-h"><span class="feld__name">Höhe Flügel</span><span class="feld__eingabe"><input id="f-h" type="number" inputmode="numeric" min="40" max="250" value="92"><span class="feld__einheit">cm</span></span></label>
+      <label class="feld" for="f-olh" id="feld-olh" hidden><span class="feld__name">Höhe Oberlicht-Flügel</span><span class="feld__eingabe"><input id="f-olh" type="number" inputmode="numeric" min="20" max="110" value="32"><span class="feld__einheit">cm</span></span></label>
     </div>
     <p class="form__fehler" id="fehler" role="alert" hidden></p>
     <div class="form__knoepfe">
@@ -602,10 +604,13 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   /* ---------- Das Fenster aus Aufteilung und Maßen ----------
      Maße in cm, Ursprung oben links am Blendrahmen. Rahmen sichtbar 4 cm, Kämpfer 8 cm, Flügelholz 7 cm.
      Dreh-Kipp. 1 Flügel: Scharniere links, Griff rechts. 2 Flügel: Stulp in der Mitte, Griff am rechten Flügel. */
-  var P = { nU: 1, ol: false, b: 80, h: 100, olH: 40 };
+  // Eingabe ist das Flügelmaß, weil der Rahmen oft eingeputzt ist und sich nicht messen lässt.
+  // fb: Breite über alle Flügel, fh: Höhe der unteren Flügel, ofh: Höhe des Oberlicht-Flügels.
+  var P = { nU: 1, ol: false, fb: 72, fh: 92, ofh: 32 };
   var G;
   function geometrie(p) {
-    var B = p.b, H = p.h, ol = p.ol, olH = ol ? p.olH : 0;
+    // Rahmen aus dem Flügel: rundum 4 cm sichtbarer Rahmen, beim Oberlicht 8 cm Kämpfer dazwischen
+    var ol = p.ol, olH = ol ? p.ofh + 8 : 0, B = p.fb + 8, H = (ol ? olH + 4 : 4) + p.fh + 4;
     var top = ol ? olH + 4 : 4;
     var bw = (B - 8) / p.nU, fh = H - 4 - top;
     var g = { B: B, H: H, ol: ol, olH: olH, top: top, fluegel: [], leisten: [], glaeser: [] };
@@ -680,16 +685,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
 
   // Hilfslinien je Foto (cm). r = Rechteck, l = Linie. gr: Umriss für die Fenster-Suche. klein, fein: zählt nicht bei der Suche.
-  function R(r, o) { o = o || {}; return { t: 'r', r: r, rund: o.rund || 0, klein: !!o.klein, fein: !!o.fein, gr: o.gr || null }; }
+  function R(r, o) { o = o || {}; return { t: 'r', r: r, rund: o.rund || 0, klein: !!o.klein, fein: !!o.fein, strich: !!o.strich, gr: o.gr || null }; }
   function L(x1, y1, x2, y2, fein) { return { t: 'l', a: [x1, y1, x2, y2], fein: !!fein }; }
   function formen(s) {
     var g = G, out = [], H = g.H, t = g.top;
     switch (s.id) {
       case 'innen':
-        out.push(R([0, 0, g.B, H], { gr: 'rahmen' }));
-        g.fluegel.forEach(function (f) { out.push(R(f, { fein: true })); });
+        out.push(R([0, 0, g.B, H], { fein: true, strich: true }));
+        g.fluegel.forEach(function (f) { out.push(R(f, { gr: 'fluegel' })); });
         g.glaeser.forEach(function (r) { out.push(R(r, { gr: 'glas' })); });
-        if (g.ol) { out.push(R(g.olFluegel, { fein: true }), R(g.olGlas, { gr: 'glas' })); }
+        if (g.ol) { out.push(R(g.olFluegel, { gr: 'fluegel' }), R(g.olGlas, { gr: 'glas' })); }
         out.push(R(g.rosette, { rund: 0.8, klein: true }), R(g.hebel, { rund: 1, klein: true }));
         break;
       case 'griff':
@@ -705,8 +710,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           L(11, t + 7, 11, t + 30), L(11, t + 7, 40, t + 7), R(g.scher, { rund: 0.6 }));
         break;
       case 'aussen':
-        out.push(R([0, 0, g.B, H], { gr: 'rahmen' }));
-        g.aussen.flaechen.forEach(function (f) { out.push(R(f, { fein: true })); });
+        out.push(R([0, 0, g.B, H], { fein: true, strich: true }));
+        g.aussen.flaechen.forEach(function (f) { out.push(R(f, { gr: 'fluegel' })); });
         g.aussen.glaeser.forEach(function (r) { out.push(R(r, { gr: 'glas' })); });
         g.aussen.wetter.forEach(function (r) { out.push(R(r, { klein: true })); });
         break;
@@ -733,7 +738,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     out += '<path d="M' + z1(x0 + g.hx * s) + ' ' + z1(y0 + g.hy * s - 3) + 'v7" stroke-width="2.4"/>';
     $('skizze').innerHTML = '<svg viewBox="0 0 48 60" width="48" height="60" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true">' + out + '</svg>';
     $('stueck-name').textContent = 'Holzfenster, ' + P.nU + ' Flügel' + (P.ol ? ' mit Oberlicht' : '') + ', Dreh-Kipp';
-    $('stueck-mass').textContent = P.b + ' × ' + P.h + ' cm' + (P.ol ? ' · Oberlicht ' + P.olH + ' cm' : '') + ' · Scharniere ' + (P.nU === 1 ? 'links' : 'außen');
+    $('stueck-mass').textContent = 'Flügel ' + P.fb + ' × ' + P.fh + ' cm' + (P.ol ? ' · Oberlicht-Flügel ' + P.ofh + ' cm hoch' : '') + ' · Scharniere ' + (P.nU === 1 ? 'links' : 'außen');
   }
 
   /* ---------- Übungsfenster zeichnen (in cm) ---------- */
@@ -1059,14 +1064,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var nU = $('flu-2').checked ? 2 : 1, ol = $('ol-ja').checked;
     var b = parseInt($('f-b').value, 10), h = parseInt($('f-h').value, 10), olH = parseInt($('f-olh').value, 10);
     var fehler = '';
-    if (!(b >= 40 && b <= 250)) fehler = 'Die Breite muss zwischen 40 und 250 cm liegen.';
-    else if (!(h >= 50 && h <= 260)) fehler = 'Die Höhe muss zwischen 50 und 260 cm liegen.';
-    else if (nU === 2 && b < 70) fehler = 'Für 2 Flügel muss das Fenster mindestens 70 cm breit sein.';
-    else if (ol && !(olH >= 30 && olH <= h - 45)) fehler = 'Das Oberlicht muss mindestens 30 cm hoch sein und unten 45 cm Platz lassen.';
+    if (!(b >= 30 && b <= 240)) fehler = 'Die Breite der Flügel muss zwischen 30 und 240 cm liegen.';
+    else if (!(h >= 40 && h <= 250)) fehler = 'Die Höhe der Flügel muss zwischen 40 und 250 cm liegen.';
+    else if (nU === 2 && b < 60) fehler = 'Bei 2 Flügeln muss die Breite über beide mindestens 60 cm sein.';
+    else if (ol && !(olH >= 20 && olH <= 110)) fehler = 'Der Oberlicht-Flügel muss zwischen 20 und 110 cm hoch sein.';
     $('fehler').textContent = fehler;
     $('fehler').hidden = !fehler;
     if (fehler) return;
-    P = { nU: nU, ol: ol, b: b, h: h, olH: ol ? olH : P.olH };
+    P = { nU: nU, ol: ol, fb: b, fh: h, ofh: ol ? olH : P.ofh };
     G = geometrie(P);
     if (fotos.innen) fotos.innen.karte = null;
     skizze();
@@ -1277,8 +1282,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var tr = suchen(kantenBild(grau, aw, ah), gruppenFuer, b);
     var v = tr.v || { yaw: 0, pitch: 0 };
     tr.rel = { f: tr.f, dx: tr.ox / b.w, dy: tr.oy / b.h, yaw: v.yaw, pitch: v.pitch };
-    // Ecken des erkannten Rahmens (der erste Umriss ist immer der Rahmen), zurück in Bildschirm-Pixel
-    tr.ecken = gruppenFuer(tr.box, v)[0].slice(0, 4).map(function (q) { return [q[0] / fx, q[1] / fy]; });
+    // Ecken des Rahmens, wie er aus dem erkannten Fenster folgt, zurück in Bildschirm-Pixel
+    var bx = tr.box;
+    tr.ecken = [[bx.x, bx.y], [bx.x + bx.w, bx.y], [bx.x + bx.w, bx.y + bx.h], [bx.x, bx.y + bx.h]].map(function (q) {
+      var e = verzerrt(q[0], q[1], bx, v); return [e[0] / fx, e[1] / fy];
+    });
     var xs = tr.ecken.map(function (e) { return e[0]; }), ys = tr.ecken.map(function (e) { return e[1]; });
     var x0 = Math.min.apply(null, xs), y0 = Math.min.apply(null, ys);
     tr.erkannt = { x: x0, y: y0, w: Math.max.apply(null, xs) - x0, h: Math.max.apply(null, ys) - y0 };
@@ -1409,6 +1417,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.formen.forEach(function (f) {
       c.lineWidth = f.fein ? 1 : 2;
       c.globalAlpha = f.fein ? 0.6 : 1;
+      c.setLineDash(f.strich ? [6, 5] : []);
       if (f.t === 'r') {
         var r = f.r;
         if (f.rund) { pfadRund(c, X(r[0]), Y(r[1]), r[2] * m, r[3] * m, f.rund * m); c.stroke(); }

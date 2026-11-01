@@ -369,9 +369,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .k-pruefen__kopf { display: grid; gap: 4px; }
-.k-pruefen__bild { min-height: 0; display: grid; place-items: center; position: relative; }
-.k-pruefen__bild img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; border: 1px solid var(--cam-line); }
-.k-pruefen__marke { position: absolute; left: 8px; top: 8px; padding: 2px 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--cam-panel); color: var(--cam-muted); }
+/* Das Foto füllt genau den freien Platz zwischen Kopf und Knöpfen, nie mehr */
+.k-pruefen__bild { min-height: 0; position: relative; overflow: hidden; }
+.k-pruefen__bild img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.k-pruefen__marken { position: absolute; left: 8px; top: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.k-pruefen__marke { padding: 3px 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--cam-panel); color: var(--cam-muted); }
+.k-pruefen__marke--ok { color: #0f1b16; background: var(--cam-ok); }
 .k-pruefen__knoepfe { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -447,7 +450,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 
   <section class="hinweis">
     <h3>Zum Testen</h3>
-    <p>Mit „Ändern“ stellst du Flügel, Oberlicht und Maße deines Fensters ein, dann passen die Linien dazu. Gibt es keine Kamera, zum Beispiel in der Vorschau in claude.ai, übst du mit einem gezeichneten Fenster. Über „Galerie“ kannst du auch ein vorhandenes Foto nehmen und es unter die Linien schieben. Die Fotos bleiben auf deinem Handy, die Seite schickt nichts weg.</p>
+    <p>Mit „Ändern“ stellst du Flügel, Oberlicht und Maße deines Fensters ein, dann passen die Linien dazu. Gibt es keine Kamera, zum Beispiel in der Vorschau in claude.ai, übst du mit einem gezeichneten Fenster. Über „Galerie“ kannst du auch ein vorhandenes Foto nehmen und es unter die Linien schieben. Gesichter auf den Fotos werden automatisch verpixelt. Die Fotos bleiben auf deinem Handy, die Seite schickt nichts weg.</p>
   </section>
 </main>
 
@@ -511,7 +514,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       </div>
       <div class="k-pruefen__bild">
         <img id="p-bild" alt="Dein Foto">
-        <span class="k-pruefen__marke" id="p-marke" hidden></span>
+        <div class="k-pruefen__marken">
+          <span class="k-pruefen__marke" id="p-marke" hidden></span>
+          <span class="k-pruefen__marke k-pruefen__marke--ok" id="p-gesicht" hidden></span>
+        </div>
       </div>
       <div class="k-pruefen__knoepfe">
         <button class="kbtn kbtn--zweit" id="p-nochmal" type="button">Nochmal</button>
@@ -864,45 +870,84 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
     return { w: w, h: h, fx: breit(gx, 1, true), fy: breit(gy, 1, false), gx3: breit(gx, 3, true), gy3: breit(gy, 3, false) };
   }
+  // Schräge Sicht, angenähert: yaw = linke und rechte Kante verschieden hoch (man steht seitlich davor),
+  // pitch = oben und unten verschieden breit (Handy nach oben oder unten gekippt)
+  function verzerrt(x, y, bb, v) {
+    if (!v || (!v.yaw && !v.pitch)) return [x, y];
+    var u = (x - bb.x) / bb.w, w = (y - bb.y) / bb.h, cx = bb.x + bb.w / 2, cy = bb.y + bb.h / 2;
+    return [cx + (x - cx) * (1 + v.pitch * (0.5 - w)), cy + (y - cy) * (1 + v.yaw * (0.5 - u))];
+  }
   // Wie viel der Linien liegt auf einer Kante (0 bis 1)? Jeder Umriss (Rahmen, Glas) für sich, der schwächste zählt.
+  // Was außerhalb des Bildes liegt, zählt nicht mit. Von jedem Umriss muss aber mindestens ein Drittel im Bild sein.
   function umrissWert(K, gruppen, grob) {
     var w = K.w, h = K.h, mx = grob ? K.gx3 : K.fx, my = grob ? K.gy3 : K.fy, schritt = grob ? 3 : 1.5, schwach = Infinity;
     for (var gi = 0; gi < gruppen.length; gi++) {
       var segs = gruppen[gi], summe = 0, n = 0, soll = 0;
       for (var si = 0; si < segs.length; si++) {
-        var q = segs[si], senk = Math.abs(q[0] - q[2]) < Math.abs(q[1] - q[3]);
-        var a0 = senk ? Math.min(q[1], q[3]) : Math.min(q[0], q[2]), a1 = senk ? Math.max(q[1], q[3]) : Math.max(q[0], q[2]);
-        var fest = Math.round(senk ? q[0] : q[1]);
-        for (var t = a0; t <= a1; t += schritt) {
+        var q = segs[si], dx = q[2] - q[0], dy = q[3] - q[1], len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 1) continue;
+        var map = Math.abs(dx) < Math.abs(dy) ? mx : my, schritte = Math.max(1, Math.floor(len / schritt));
+        for (var t = 0; t <= schritte; t++) {
           soll++;
-          var x = senk ? fest : Math.round(t), y = senk ? Math.round(t) : fest;
+          var x = Math.round(q[0] + dx * t / schritte), y = Math.round(q[1] + dy * t / schritte);
           if (x < 1 || y < 1 || x > w - 2 || y > h - 2) continue;
-          summe += senk ? mx[y * w + x] : my[y * w + x];
+          summe += map[y * w + x];
           n++;
         }
       }
-      if (!soll || n < soll * 0.6) return 0;
-      var mittel = summe / soll;
+      if (!soll || n < soll * 0.35) return 0;
+      var mittel = summe / n;
       if (mittel < schwach) schwach = mittel;
     }
     return schwach === Infinity ? 0 : schwach;
   }
-  // b: Linien-Box im kleinen Bild. gruppenFuer(box) liefert die Umrisse für eine verschobene und skalierte Box.
+  // b: Linien-Box im kleinen Bild. gruppenFuer(box, verzerrung) liefert die Umrisse für eine verschobene, skalierte und verzerrte Box.
   function suchen(K, gruppenFuer, b) {
     function box(f, ox, oy) { var bw = b.w * f, bh = b.h * f; return { x: b.x + b.w / 2 + ox - bw / 2, y: b.y + b.h / 2 + oy - bh / 2, w: bw, h: bh }; }
-    var best = { wert: 0, f: 1, ox: 0, oy: 0 }, f, ox, oy, v;
-    for (f = 0.55; f <= 1.66; f *= 1.07)
-      for (ox = -0.35 * b.w; ox <= 0.35 * b.w + 0.01; ox += 0.05 * b.w)
-        for (oy = -0.3 * b.h; oy <= 0.3 * b.h + 0.01; oy += 0.05 * b.h) {
-          v = umrissWert(K, gruppenFuer(box(f, ox, oy)), true);
+    var best = { wert: 0, f: 1, ox: 0, oy: 0 }, f, ox, oy, v, i, j, l;
+    // 1. Grob: Größe von halb so groß bis gut doppelt so groß, Lage bis gut ein Drittel daneben
+    for (f = 0.5; f <= 2.3; f *= 1.07)
+      for (ox = -0.36 * b.w; ox <= 0.36 * b.w + 0.01; ox += 0.06 * b.w)
+        for (oy = -0.3 * b.h; oy <= 0.3 * b.h + 0.01; oy += 0.06 * b.h) {
+          v = umrissWert(K, gruppenFuer(box(f, ox, oy), null), true);
           if (v > best.wert) best = { wert: v, f: f, ox: ox, oy: oy };
         }
+    // 2. Fein
     var g0 = best;
     best = { wert: 0, f: g0.f, ox: g0.ox, oy: g0.oy };
-    for (var i = -2; i <= 2; i++) for (var j = -3; j <= 3; j++) for (var l = -3; l <= 3; l++) {
+    for (i = -2; i <= 2; i++) for (j = -3; j <= 3; j++) for (l = -3; l <= 3; l++) {
       f = g0.f * (1 + i * 0.018); ox = g0.ox + j * 0.012 * b.w; oy = g0.oy + l * 0.012 * b.h;
-      v = umrissWert(K, gruppenFuer(box(f, ox, oy)), false);
+      v = umrissWert(K, gruppenFuer(box(f, ox, oy), null), false);
       if (v > best.wert) best = { wert: v, f: f, ox: ox, oy: oy };
+    }
+    // 3. Schräg: passt eine verzerrte Form deutlich besser? Erst grob in der Umgebung, dann fein.
+    var g1 = best, grobBest = { wert: umrissWert(K, gruppenFuer(box(g1.f, g1.ox, g1.oy), null), true) + 0.03, v: null };
+    for (var ya = -0.32; ya <= 0.321; ya += 0.08) for (var pi = -0.2; pi <= 0.201; pi += 0.1) {
+      if (Math.abs(ya) < 0.01 && Math.abs(pi) < 0.01) continue;
+      var vv = { yaw: ya, pitch: pi };
+      for (i = -2; i <= 2; i++) for (j = -2; j <= 2; j++) for (l = -1; l <= 1; l++) {
+        f = g1.f * (1 + i * 0.05); ox = g1.ox + j * 0.04 * b.w; oy = g1.oy + l * 0.04 * b.h;
+        v = umrissWert(K, gruppenFuer(box(f, ox, oy), vv), true);
+        if (v > grobBest.wert) grobBest = { wert: v, f: f, ox: ox, oy: oy, v: vv };
+      }
+    }
+    best = { wert: g1.wert, f: g1.f, ox: g1.ox, oy: g1.oy, v: { yaw: 0, pitch: 0 } };
+    if (grobBest.v) {
+      v = umrissWert(K, gruppenFuer(box(grobBest.f, grobBest.ox, grobBest.oy), grobBest.v), false);
+      best = { wert: v, f: grobBest.f, ox: grobBest.ox, oy: grobBest.oy, v: grobBest.v };
+    }
+    // 4. Schräg gefunden: Größe, Lage und Schräge nochmal genauer
+    if (best.v.yaw || best.v.pitch) {
+      var g2 = best;
+      best = g1.wert >= best.wert ? { wert: g1.wert, f: g1.f, ox: g1.ox, oy: g1.oy, v: { yaw: 0, pitch: 0 } } : best;
+      for (var dy2 = -0.04; dy2 <= 0.041; dy2 += 0.04) for (var dp = -0.05; dp <= 0.051; dp += 0.05) {
+        var v2 = { yaw: g2.v.yaw + dy2, pitch: g2.v.pitch + dp };
+        for (i = -2; i <= 2; i++) for (j = -2; j <= 2; j++) for (l = -2; l <= 2; l++) {
+          f = g2.f * (1 + i * 0.02); ox = g2.ox + j * 0.015 * b.w; oy = g2.oy + l * 0.015 * b.h;
+          v = umrissWert(K, gruppenFuer(box(f, ox, oy), v2), false);
+          if (v > best.wert) best = { wert: v, f: f, ox: ox, oy: oy, v: v2 };
+        }
+      }
     }
     best.box = box(best.f, best.ox, best.oy);
     return best;
@@ -921,7 +966,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     offen: false, i: 0, basis: 'uebung', modus: 'uebung', stream: null, raf: 0, box: null, loch: null, s0: 1,
     cam: { x: 40, y: 50, s: 3 }, zeiger: new Map(), anim: null, bild: null, formen: [],
     passtSeit: 0, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
-    letzteAnalyse: 0, treffer: null, lage: null, statusText: '', statusArt: '', karte: true, zurueck: null
+    letzteAnalyse: 0, treffer: null, lage: null, zuNah: -1e9, statusText: '', statusArt: '', karte: true, zurueck: null
   };
 
   /* ---------- Liste in der Anfrage ---------- */
@@ -1043,6 +1088,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (stream) {
         k.stream = stream;
         k.basis = 'kamera';
+        gesichterBereit();
         var v = $('video');
         if (v.srcObject !== stream) v.srcObject = stream;
         var p = v.play(); if (p && p.catch) p.catch(function () {});
@@ -1143,14 +1189,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
 
   /* ---------- Kamera und Foto: Lage aus der Suche ---------- */
-  function gruppenFuer(bb) {
+  function gruppenFuer(bb, v) {
     var z = zielVon(SCHRITTE[k.i]), m = bb.w / z[2], gr = {}, liste = [];
     for (var i = 0; i < k.formen.length; i++) {
       var f = k.formen[i];
       if (!f.gr) continue;
       var r = f.r, x1 = bb.x + (r[0] - z[0]) * m, y1 = bb.y + (r[1] - z[1]) * m, x2 = x1 + r[2] * m, y2 = y1 + r[3] * m;
+      var a = verzerrt(x1, y1, bb, v), b = verzerrt(x2, y1, bb, v), c = verzerrt(x2, y2, bb, v), d = verzerrt(x1, y2, bb, v);
       if (!gr[f.gr]) { gr[f.gr] = []; liste.push(gr[f.gr]); }
-      gr[f.gr].push([x1, y1, x2, y1], [x2, y1, x2, y2], [x2, y2, x1, y2], [x1, y2, x1, y1]);
+      gr[f.gr].push([a[0], a[1], b[0], b[1]], [b[0], b[1], c[0], c[1]], [c[0], c[1], d[0], d[1]], [d[0], d[1], a[0], a[1]]);
     }
     return liste;
   }
@@ -1173,23 +1220,36 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var fx = aw / W, fy = ah / H;
     var b = { x: k.box.x * fx, y: k.box.y * fy, w: k.box.w * fx, h: k.box.h * fy };
     var tr = suchen(kantenBild(grau, aw, ah), gruppenFuer, b);
-    tr.rel = { f: tr.f, dx: tr.ox / b.w, dy: tr.oy / b.h };
-    tr.erkannt = { x: tr.box.x / fx, y: tr.box.y / fy, w: tr.box.w / fx, h: tr.box.h / fy };
+    var v = tr.v || { yaw: 0, pitch: 0 };
+    tr.rel = { f: tr.f, dx: tr.ox / b.w, dy: tr.oy / b.h, yaw: v.yaw, pitch: v.pitch };
+    // Ecken des erkannten Rahmens (der erste Umriss ist immer der Rahmen), zurück in Bildschirm-Pixel
+    tr.ecken = gruppenFuer(tr.box, v)[0].slice(0, 4).map(function (q) { return [q[0] / fx, q[1] / fy]; });
+    var xs = tr.ecken.map(function (e) { return e[0]; }), ys = tr.ecken.map(function (e) { return e[1]; });
+    var x0 = Math.min.apply(null, xs), y0 = Math.min.apply(null, ys);
+    tr.erkannt = { x: x0, y: y0, w: Math.max.apply(null, xs) - x0, h: Math.max.apply(null, ys) - y0 };
     return tr;
   }
-  function deuten(tr) {
+  function deuten(tr, jetzt) {
     if (k.modus === 'kamera' && k.lage) {
       if (k.lage.roll > 8) return { art: 'gerade' };
       if (k.lage.pitch > 15) return { art: 'senkrecht' };
     }
-    if (!tr || tr.wert < GEFUNDEN) return { art: 'suchen' };
+    if (!tr || tr.wert < GEFUNDEN) {
+      // Eben noch zu nah und jetzt gar nicht mehr zu sehen: dann ist man meist noch näher dran
+      if (jetzt - k.zuNah < 1500) return { art: 'zurueck' };
+      return { art: 'suchen' };
+    }
     var war = k.letzteArt === 'passt', tf = war ? 0.1 : 0.07, tl = war ? 0.07 : 0.05, r = tr.rel, art;
+    var kamera = k.modus === 'kamera';
     if (r.f < 1 - tf) art = 'naeher';
     else if (r.f > 1 + tf) art = 'zurueck';
+    else if (kamera && Math.abs(r.yaw) > (war ? 0.13 : 0.1)) art = r.yaw > 0 ? 'mitteRechts' : 'mitteLinks';
+    else if (kamera && !k.lage && Math.abs(r.pitch) > 0.12) art = 'senkrecht';
     else if (Math.abs(r.dx) > tl || Math.abs(r.dy) > tl) {
       art = Math.abs(r.dx) >= Math.abs(r.dy) ? (r.dx < 0 ? 'links' : 'rechts') : (r.dy < 0 ? 'oben' : 'unten');
     } else art = tr.wert >= PASST ? 'passt' : 'fast';
-    return { art: art, erkannt: tr.erkannt };
+    if (art === 'zurueck') k.zuNah = jetzt;
+    return { art: art, erkannt: tr.erkannt, ecken: tr.ecken };
   }
 
   /* ---------- Hauptschleife ---------- */
@@ -1197,6 +1257,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     kamera: {
       naeher: 'Geh näher ran', zurueck: 'Geh etwas zurück', links: 'Handy etwas nach links', rechts: 'Handy etwas nach rechts',
       oben: 'Handy etwas nach oben', unten: 'Handy etwas nach unten', fast: 'Fast. Noch etwas genauer.', passt: 'Passt. Halt still …',
+      mitteRechts: 'Geh etwas nach rechts, mittig vors Fenster', mitteLinks: 'Geh etwas nach links, mittig vors Fenster',
       gerade: 'Handy gerade halten', senkrecht: 'Handy senkrecht halten, nicht kippen', manuell: 'Liegt es in den Linien? Dann auslösen.'
     },
     foto: {
@@ -1232,16 +1293,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (k.modus === 'uebung') {
       z = lageUebung(mitWackeln(t));
     } else if (s.auto) {
-      if (t - k.letzteAnalyse > 220) {
+      if (t - k.letzteAnalyse > 280) {
         k.letzteAnalyse = t;
         k.treffer = analysieren();
-        var neu = deuten(k.treffer);
+        var neu = deuten(k.treffer, t);
         k.passtZaehler = neu.art === 'passt' ? k.passtZaehler + 1 : 0;
         k.deutung = neu;
       }
       z = k.deutung || { art: 'suchen' };
       if (z.art === 'passt' && k.passtZaehler < 2) z = { art: 'fast', erkannt: z.erkannt };
-      if (k.modus === 'kamera' && k.lage && (k.lage.roll > 8 || k.lage.pitch > 15)) z = deuten(null);
+      if (k.modus === 'kamera' && k.lage && (k.lage.roll > 8 || k.lage.pitch > 15)) z = deuten(null, t);
     } else z = { art: 'manuell' };
     setStatus(statusText(z, s), z.art);
     if (z.art !== 'passt') k.sperre = false;
@@ -1273,7 +1334,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       c.save();
       c.strokeStyle = 'rgba(242, 240, 234, 0.85)'; c.lineWidth = 2; c.setLineDash([8, 6]);
       c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 3;
-      c.strokeRect(e.x, e.y, e.w, e.h);
+      if (z.ecken) {
+        c.beginPath();
+        z.ecken.forEach(function (p, i) { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); });
+        c.closePath(); c.stroke();
+      } else c.strokeRect(e.x, e.y, e.w, e.h);
       c.restore();
     }
     // Hilfslinien
@@ -1329,30 +1394,88 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
   }
 
+  /* ---------- Gesichter unkenntlich machen ----------
+     Nach dem Auslösen sucht eine kleine Gesichtserkennung (face-api, MIT-Lizenz) im Foto nach Gesichtern und
+     verpixelt sie. Sie läuft komplett auf dem Handy, nichts wird verschickt. Geladen wird sie erst, wenn die Kamera aufgeht. */
+  var gesichtLaden = null;
+  function gesichterBereit() {
+    if (gesichtLaden) return gesichtLaden;
+    gesichtLaden = new Promise(function (ja) {
+      if (window.faceapi) { ja(true); return; }
+      var s = document.createElement('script');
+      s.src = 'vendor/face-api.js';
+      s.onload = function () {
+        try {
+          window.faceapi.nets.tinyFaceDetector.loadFromUri('vendor/model').then(function () { ja(true); }, function () { ja(false); });
+        } catch (e) { ja(false); }
+      };
+      s.onerror = function () { ja(false); };
+      document.head.appendChild(s);
+    }).then(function (ok) {
+      if (!ok) return false;
+      // Einmal leer durchlaufen lassen, damit das erste echte Foto schneller geht
+      var leer = document.createElement('canvas'); leer.width = leer.height = 64;
+      return window.faceapi.detectAllFaces(leer, new window.faceapi.TinyFaceDetectorOptions({ inputSize: 128 })).then(function () { return true; }, function () { return true; });
+    });
+    return gesichtLaden;
+  }
+  // Gibt die Zahl der verpixelten Gesichter zurück, oder -1, wenn die Erkennung nicht lief
+  function gesichterVerpixeln(cv) {
+    var arbeit = gesichterBereit().then(function (ok) {
+      if (!ok || !window.faceapi) return -1;
+      var fa = window.faceapi;
+      return fa.detectAllFaces(cv, new fa.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.35 })).then(function (treffer) {
+        var c = cv.getContext('2d');
+        treffer.forEach(function (t) {
+          var b = t.box;
+          var x = Math.max(0, b.x - b.width * 0.25), y = Math.max(0, b.y - b.height * 0.4);
+          var w = Math.min(cv.width - x, b.width * 1.5), h = Math.min(cv.height - y, b.height * 1.7);
+          if (w < 2 || h < 2) return;
+          var klein = document.createElement('canvas');
+          klein.width = 7; klein.height = Math.max(1, Math.round(7 * h / w));
+          klein.getContext('2d').drawImage(cv, x, y, w, h, 0, 0, klein.width, klein.height);
+          c.save(); c.imageSmoothingEnabled = false;
+          c.drawImage(klein, 0, 0, klein.width, klein.height, x, y, w, h);
+          c.restore();
+        });
+        return treffer.length;
+      });
+    }).catch(function () { return -1; });
+    var zeit = new Promise(function (ja) { setTimeout(function () { ja(-1); }, 8000); });
+    return Promise.race([arbeit, zeit]);
+  }
+
   /* ---------- Auslösen und prüfen ---------- */
   function fotoSzene() {
     var f = 2, cv = document.createElement('canvas');
     cv.width = Math.round(W * f); cv.height = Math.round(H * f);
     zeichneSzene(cv.getContext('2d'), W, H, k.cam, k.modus === 'foto' ? 'foto' : SCHRITTE[k.i].szene, f);
-    return cv.toDataURL('image/jpeg', 0.85);
+    return cv;
   }
   function fotoKamera() {
     var v = $('video'), a = ausschnitt(v), cv = document.createElement('canvas');
     cv.width = Math.round(a.sw); cv.height = Math.round(a.sh);
     cv.getContext('2d').drawImage(v, a.sx, a.sy, a.sw, a.sh, 0, 0, cv.width, cv.height);
-    return cv.toDataURL('image/jpeg', 0.9);
+    return cv;
   }
   function ausloesen() {
     if (k.gemacht || k.pruefen) return;
     k.gemacht = true;
     karteWeg();
-    var url = null;
-    try { url = k.modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { url = null; }
+    var cv = null, modus = k.modus;
+    try { cv = modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { cv = null; }
     var bl = $('blitz');
     bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
-    setTimeout(function () { pruefen(url); }, RUHIG ? 0 : 280);
+    var pruefung = cv && modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0);
+    if (modus !== 'uebung') setStatus('Foto wird geprüft …', '');
+    var pause = new Promise(function (ja) { setTimeout(ja, RUHIG ? 0 : 280); });
+    Promise.all([pruefung, pause]).then(function (e) {
+      var url = null;
+      try { url = cv ? cv.toDataURL('image/jpeg', 0.9) : null; } catch (x) { url = null; }
+      pruefen(url, e[0]);
+    });
   }
-  function pruefen(url) {
+  function pruefen(url, gesichter) {
     if (!k.offen) return;
     k.pruefen = true;
     k.url = url;
@@ -1360,6 +1483,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('p-bild').src = url || '';
     $('p-marke').hidden = k.modus === 'kamera';
     $('p-marke').textContent = k.modus === 'foto' ? 'Aus der Galerie' : 'Übungsfoto';
+    var gm = $('p-gesicht');
+    gm.hidden = k.modus === 'uebung' || !gesichter;
+    gm.classList.toggle('k-pruefen__marke--ok', gesichter > 0);
+    gm.textContent = gesichter < 0 ? 'Gesichter nicht geprüft' : gesichter === 1 ? '1 Gesicht verpixelt' : gesichter + ' Gesichter verpixelt';
     $('p-weiter').textContent = naechster(k.i) < 0 ? 'Passt, fertig' : 'Passt, weiter';
     $('k-pruefen').hidden = false;
     $('p-weiter').focus();
@@ -1415,6 +1542,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var img = new Image();
     img.onload = function () {
       k.bild = img;
+      gesichterBereit();
       karteWeg();
       modusSetzen('foto');
       fotoStart();

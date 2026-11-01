@@ -7,6 +7,8 @@ helfen beim Ausrichten. Passt es, werden die Linien grün und das Foto macht sic
 Live: https://levintheo.github.io/foto-lotse/ (sobald GitHub Pages eingeschaltet ist)
 
 - Nur zum Testen. Die Seite schickt nichts weg, Fotos und Maße bleiben auf dem Handy.
+- Gesichter auf den Fotos werden nach dem Auslösen automatisch verpixelt, direkt auf dem Handy
+  (Gesichtserkennung face-api von Vladimir Mandic, MIT-Lizenz, siehe vendor/LICENSE-face-api.txt).
 - Flügel, Oberlicht und Maße lassen sich über „Ändern“ einstellen. Später kommen sie aus der Anfrage auf holtcraft.de.
 - Ohne Kamera (zum Beispiel am Computer ohne Freigabe) gibt es einen Übungsmodus mit gezeichnetem Fenster.
 

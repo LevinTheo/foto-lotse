@@ -691,7 +691,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var g = G, out = [], H = g.H, t = g.top;
     switch (s.id) {
       case 'innen':
-        out.push(R([0, 0, g.B, H], { fein: true, strich: true }));
         g.fluegel.forEach(function (f) { out.push(R(f, { gr: 'fluegel' })); });
         g.glaeser.forEach(function (r) { out.push(R(r, { gr: 'glas' })); });
         if (g.ol) { out.push(R(g.olFluegel, { gr: 'fluegel' }), R(g.olGlas, { gr: 'glas' })); }
@@ -710,7 +709,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           L(11, t + 7, 11, t + 30), L(11, t + 7, 40, t + 7), R(g.scher, { rund: 0.6 }));
         break;
       case 'aussen':
-        out.push(R([0, 0, g.B, H], { fein: true, strich: true }));
         g.aussen.flaechen.forEach(function (f) { out.push(R(f, { gr: 'fluegel' })); });
         g.aussen.glaeser.forEach(function (r) { out.push(R(r, { gr: 'glas' })); });
         g.aussen.wetter.forEach(function (r) { out.push(R(r, { klein: true })); });
@@ -1391,20 +1389,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     c.rect(0, 0, W, H);
     c.rect(lo.x, lo.y, lo.w, lo.h);
     c.fill('evenodd');
-    // Erkanntes Fenster gestrichelt: da ist es gerade
-    var ganz = s.id === 'innen' || s.id === 'aussen';
-    if (z.erkannt && !ok && ganz) {
-      var e = z.erkannt;
-      c.save();
-      c.strokeStyle = 'rgba(242, 240, 234, 0.85)'; c.lineWidth = 2; c.setLineDash([8, 6]);
-      c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 3;
-      if (z.ecken) {
-        c.beginPath();
-        z.ecken.forEach(function (p, i) { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); });
-        c.closePath(); c.stroke();
-      } else c.strokeRect(e.x, e.y, e.w, e.h);
-      c.restore();
-    }
     // Hilfslinien
     var zl = zielVon(s), m = b.w / zl[2];
     function X(x) { return b.x + (x - zl[0]) * m; }
@@ -1445,9 +1429,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (len > 28) {
         var ux = dx / len, uy = dy / len, ende = len - 10;
         c.strokeStyle = '#f2f0ea'; c.fillStyle = '#f2f0ea'; c.lineWidth = 3;
-        c.setLineDash([7, 6]);
         c.beginPath(); c.moveTo(ax, ay); c.lineTo(ax + ux * (ende - 12), ay + uy * (ende - 12)); c.stroke();
-        c.setLineDash([]);
         var px = ax + ux * ende, py = ay + uy * ende;
         c.beginPath();
         c.moveTo(px, py);

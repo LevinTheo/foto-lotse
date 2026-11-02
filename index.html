@@ -445,6 +445,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .k-pruefen__marken { position: absolute; left: 8px; top: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
 .k-pruefen__marke { padding: 3px 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--cam-panel); color: var(--cam-muted); }
 .k-pruefen__marke--ok { color: #0f1b16; background: var(--cam-ok); }
+.k-pruefen__frage { margin: 0; font-size: 15px; line-height: 1.4; color: var(--cam-muted); }
+.k-pruefen__mass { margin: 4px 0 0; padding: 8px 12px; background: var(--cam-panel); border-left: 4px solid var(--cam-ok); font-size: 15px; line-height: 1.35; font-weight: 600; }
+.k-pruefen__mass--warn { border-left-color: var(--primary); }
 .k-pruefen__knoepfe { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -499,7 +502,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <label><input type="radio" name="ol" id="ol-ja" value="ja"><span>Mit Oberlicht</span></label>
       </div>
     </fieldset>
-    <p class="form__hinweis">Miss am Flügel, nicht am Rahmen: von Außenkante zu Außenkante. Bei 2 Flügeln die Breite über beide zusammen.</p>
+    <fieldset>
+      <legend>Maße</legend>
+      <div class="wahl">
+        <label><input type="radio" name="mass" id="mass-blatt" value="blatt" checked><span>Mit dem Maßblatt messen</span></label>
+        <label><input type="radio" name="mass" id="mass-hand" value="hand"><span>Selbst eingeben</span></label>
+      </div>
+    </fieldset>
+    <p class="form__hinweis" id="hinweis-blatt">Maßblatt in 100 % drucken (nicht „an Seite anpassen“) und innen mittig auf die Scheibe kleben, bei 2 Flügeln auf den linken. Beim ersten Foto misst der Lotse den Flügel aus ca. 3 m Abstand. Bis dahin gelten die Werte unten, zum Beispiel für die Übung.</p>
+    <p class="form__hinweis" id="hinweis-hand" hidden>Miss am Flügel, nicht am Rahmen: von Außenkante zu Außenkante. Bei 2 Flügeln die Breite über beide zusammen. Klebt das Maßblatt trotzdem auf der Scheibe, prüft der Lotse dein Maß nach.</p>
     <div class="felder">
       <label class="feld" for="f-b"><span class="feld__name">Breite Flügel</span><span class="feld__eingabe"><input id="f-b" type="number" inputmode="numeric" min="30" max="240" value="81"><span class="feld__einheit">cm</span></span></label>
       <label class="feld" for="f-h"><span class="feld__name">Höhe Flügel</span><span class="feld__eingabe"><input id="f-h" type="number" inputmode="numeric" min="40" max="250" value="124"><span class="feld__einheit">cm</span></span></label>
@@ -532,6 +543,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 
   <section class="hinweis">
     <h3>Zum Testen</h3>
+    <p>Neu: Beim ersten Foto misst der Lotse den Flügel selbst. Dafür klebt das Maßblatt (A4, in 100 % gedruckt) innen auf der Scheibe und du stehst ca. 3 m vor dem Fenster. Statt fester Linien zeigt die Kamera dann das erkannte Fenster, grün, wenn Abstand und Lage passen. Ohne Maßblatt unter „Ändern“ auf „Selbst eingeben“ stellen.</p>
     <p>Mit „Ändern“ stellst du Fenstertyp, Flügel, Oberlicht und Maße deines Fensters ein, dann passen die Linien dazu. Beim Kastenfenster fallen Ecklager und Scherenlager weg, weil es nicht kippt. Gibt es keine Kamera, zum Beispiel in der Vorschau in claude.ai, übst du mit einem gezeichneten Fenster. Über „Galerie“ kannst du auch ein vorhandenes Foto nehmen und es unter die Linien schieben. Gesichter auf den Fotos werden automatisch verpixelt. Die Fotos bleiben auf deinem Handy, die Seite schickt nichts weg.</p>
   </section>
 </main>
@@ -615,7 +627,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       <div class="k-pruefen__kopf">
         <p class="k-nr" id="p-nr"></p>
         <h2 class="k-titel">Gut geworden?</h2>
-        <p class="k-tipp">Ist es scharf und ist alles drauf, was in den Linien war?</p>
+        <p class="k-pruefen__frage">Ist es scharf und ist alles drauf, was in den Linien war?</p>
+        <p class="k-pruefen__mass" id="p-mass" role="status" hidden></p>
       </div>
       <div class="k-pruefen__bild">
         <img id="p-bild" alt="Dein Foto">
@@ -659,18 +672,25 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   // Eingabe ist das Flügelmaß, weil der Rahmen oft eingeputzt ist und sich nicht messen lässt.
   // fb: Breite über alle Flügel, fh: Höhe der unteren Flügel, ofh: Höhe des Oberlicht-Flügels.
   // Startwerte: Levins Testfenster. Die letzte Eingabe merkt sich die Seite auf diesem Handy.
-  var P = { typ: 'holz', nU: 1, ol: false, fb: 81, fh: 124, ofh: 32 }, MERK = 'foto-lotse-fenster';
+  // mass: 'blatt' = Flügel mit dem Maßblatt messen (Standard), 'hand' = selbst eingeben. gemessen: Maß kommt vom Maßblatt.
+  var P = { typ: 'holz', nU: 1, ol: false, fb: 81, fh: 124, ofh: 32, mass: 'blatt', gemessen: false }, MERK = 'foto-lotse-fenster';
   try {
     var gemerkt = JSON.parse(localStorage.getItem(MERK) || 'null');
-    if (gemerkt && gemerkt.fb && gemerkt.fh) P = { typ: gemerkt.typ || 'holz', nU: gemerkt.nU === 2 ? 2 : 1, ol: !!gemerkt.ol, fb: +gemerkt.fb, fh: +gemerkt.fh, ofh: +gemerkt.ofh || 32 };
+    if (gemerkt && gemerkt.fb && gemerkt.fh) P = { typ: gemerkt.typ || 'holz', nU: gemerkt.nU === 2 ? 2 : 1, ol: !!gemerkt.ol, fb: +gemerkt.fb, fh: +gemerkt.fh, ofh: +gemerkt.ofh || 32,
+      mass: gemerkt.mass === 'hand' ? 'hand' : 'blatt', gemessen: !!gemerkt.gemessen };
   } catch (e) {}
+  function merken() {
+    try { localStorage.setItem(MERK, JSON.stringify({ typ: P.typ, nU: P.nU, ol: P.ol, fb: P.fb, fh: P.fh, ofh: P.ofh, mass: P.mass, gemessen: P.gemessen, werte: zeigeWerte })); } catch (e) {}
+  }
   // Sichtbares Flügelholz je Fenstertyp in cm, von der Flügelkante bis zum Glas: s = seitlich und oben, u = unten.
   // Ausgangswerte von Levin; die Erkennung justiert den Abstand zum Glas selbst um bis zu ein Drittel nach.
+  // tiefe: mm von der Außenkante Flügel zurück bis zum Glas (für das Maßblatt). Holz: ca. 40 mm aus dem Test an Levins Fenster,
+  // die anderen sind geschätzt und müssen noch an echten Fenstern geprüft werden.
   var TYPEN = {
-    kasten: { name: 'Kastenfenster', s: 4.5, u: 5.5, kippt: false },
-    verbund: { name: 'Verbundfenster', s: 5, u: 6, kippt: true },
-    holz: { name: 'Holzfenster', s: 6.5, u: 7.5, kippt: true },
-    kunststoff: { name: 'Kunststofffenster', s: 7, u: 7, kippt: true }
+    kasten: { name: 'Kastenfenster', s: 4.5, u: 5.5, kippt: false, tiefe: 30 },
+    verbund: { name: 'Verbundfenster', s: 5, u: 6, kippt: true, tiefe: 35 },
+    holz: { name: 'Holzfenster', s: 6.5, u: 7.5, kippt: true, tiefe: 40 },
+    kunststoff: { name: 'Kunststofffenster', s: 7, u: 7, kippt: true, tiefe: 40 }
   };
   function typ() { return TYPEN[P.typ] || TYPEN.holz; }
   var G;
@@ -811,7 +831,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     out += '<path d="M' + z1(x0 + g.hx * s) + ' ' + z1(y0 + g.hy * s - 3) + 'v7" stroke-width="2.4"/>';
     $('skizze').innerHTML = '<svg viewBox="0 0 48 60" width="48" height="60" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true">' + out + '</svg>';
     $('stueck-name').textContent = typ().name + ', ' + P.nU + ' Flügel' + (P.ol ? ' mit Oberlicht' : '') + (typ().kippt ? ', Dreh-Kipp' : ', Drehflügel');
-    $('stueck-mass').textContent = 'Flügel ' + P.fb + ' × ' + P.fh + ' cm' + (P.ol ? ' · Oberlicht-Flügel ' + P.ofh + ' cm hoch' : '') + ' · Scharniere ' + (P.nU === 1 ? 'links' : 'außen');
+    var quelle = P.mass !== 'blatt' ? '' : P.gemessen ? ', gemessen' : ' (Übungswert, wird gemessen)';
+    $('stueck-mass').textContent = 'Flügel ' + P.fb + ' × ' + P.fh + ' cm' + quelle + (P.ol ? ' · Oberlicht-Flügel ' + P.ofh + ' cm hoch' : '') + ' · Scharniere ' + (P.nU === 1 ? 'links' : 'außen');
   }
 
   /* ---------- Übungsfenster zeichnen (in cm) ---------- */
@@ -865,7 +886,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     c.restore();
   }
   function fluegelInnen(c, f, leiste, glas) {
-    flaeche(c, [f[0] - 0.5, f[1] - 0.5, f[2] + 1, f[3] + 1], 'rgba(72,60,40,0.3)');
+    flaeche(c, [f[0] - 0.5, f[1] - 0.5, f[2] + 1, f[3] + 1], 'rgba(72,60,40,0.42)');   // Schattenfuge zwischen Flügel und Rahmen
     flaeche(c, f, '#fbfaf6', '#b3ac9c', 0.3);
     c.strokeStyle = '#e1dccf'; c.lineWidth = 0.25; c.strokeRect(f[0] + 1.3, f[1] + 1.3, f[2] - 2.6, f[3] - 2.6);
     flaeche(c, leiste, null, '#c8c1b1', 0.28);
@@ -890,6 +911,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       fluegelInnen(c, g.olFluegel, g.olLeiste, g.olGlas);
     }
     g.fluegel.forEach(function (f, i) { fluegelInnen(c, f, g.leisten[i], g.glaeser[i]); });
+    if (blattModus()) blattZeichnen(c, g.glaeser[0]);
     kappe(c, g.eck);
     kappe(c, g.scher);
     // Griff
@@ -903,6 +925,24 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     flaeche(c, [-8, H, B + 16, 3.6], '#ddd4c3', '#b8ae9a', 0.25);
     flaeche(c, [-8, H, B + 16, 0.7], '#ece5d7');
     flaeche(c, [-8, H + 3.6, B + 16, 1.8], 'rgba(60,48,30,0.17)');
+  }
+  // Das Maßblatt (A4, 4 Marker) mittig auf der Scheibe, etwas über der Mitte. Maße in cm wie die Szene.
+  function blattZeichnen(c, gl) {
+    if (!gl || gl[2] < 22 || gl[3] < 31) return;
+    var mb = MASS.MB, bw = mb.b / 10, bh = mb.h / 10, zelle = mb.m / 60;
+    var bx = gl[0] + gl[2] / 2 - bw / 2, by = gl[1] + Math.max(0.5, Math.min(gl[3] - bh - 0.5, gl[3] * 0.42 - bh / 2));
+    flaeche(c, [bx + 0.12, by + 0.18, bw, bh], 'rgba(20, 20, 20, 0.22)');
+    flaeche(c, [bx, by, bw, bh], '#fbfbf8');
+    MASS.MARKER_BITS.forEach(function (bits, id) {
+      var e = MASS.markerEcken(id)[0], x0 = bx + e[0] / 10, y0 = by + e[1] / 10;
+      c.fillStyle = '#151515'; c.fillRect(x0, y0, mb.m / 10, mb.m / 10);
+      c.fillStyle = '#fbfbf8';
+      for (var r = 0; r < 4; r++) for (var q = 0; q < 4; q++) if (bits[r * 4 + q] === '1') c.fillRect(x0 + (q + 1) * zelle, y0 + (r + 1) * zelle, zelle + 0.02, zelle + 0.02);
+    });
+    c.fillStyle = 'rgba(30, 30, 30, 0.75)';
+    c.fillRect(bx + 4, by + 12.6, 13, 0.7);
+    c.fillRect(bx + 4, by + 14, 9, 0.35);
+    c.fillRect(bx + 5.5, by + 17.4, 10, 0.12);
   }
   function szeneAussen(c) {
     var g = G, B = g.B, H = g.H, a = g.aussen;
@@ -1103,7 +1143,596 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var TOL = { groesse: 0.15, lage: 0.09, schraeg: 0.16, kipp: 0.15, gefunden: 0.4, passt: 0.55, halten: 800,
     fastHalten: 1500,      // so lange „Fast“ ruhig gehalten zählt auch als passt
     neigungSeite: 10, neigungKipp: 20,   // Grad, ab dann kommt „Handy gerade halten“ bzw. „senkrecht halten“
-    nachhilfe: 8000 };     // nach so vielen ms ohne Grün kommt der Hinweis, selbst auszulösen
+    nachhilfe: 8000,       // nach so vielen ms ohne Grün kommt der Hinweis, selbst auszulösen
+    // Maßblatt
+    abstand: 3, abstandMin: 2.5, abstandMax: 3.5,   // so weit (m) soll man vom Fenster weg stehen
+    versatz: 450,          // mm: so weit darf man neben der Fenstermitte stehen
+    stabil: 0.025,         // zwei Messungen hintereinander dürfen so weit auseinander liegen (2,5 %)
+    gegenprobe: 0.08,      // ab so viel Abweichung zur Eingabe kommt „Bitte nachmessen“
+    blattPixel: 1280,      // lange Seite des Bildes für die Messung im Livebild
+    blattTakt: 150 };      // ms Pause zwischen zwei Messungen im Livebild
+
+  /* ---------- Maßblatt: Fenster messen ohne Zollstock ----------
+     massModul enthält die ganze Rechnung (Marker finden, Lage, Kanten, Maß). Im Livebild läuft sie in einem
+     Hintergrund-Thread (Web Worker), damit die Kamera nicht ruckelt. Geht das nicht, rechnet die Seite selbst. */
+  function massModul() {
+    'use strict';
+    /*MASS*/
+  /* ---------- Maßblatt: Fenster messen ohne Zollstock ----------
+     Das Maßblatt (A4 hochkant) klebt innen auf der Scheibe. Vier Marker (ArUco 4×4, Nummern 0 bis 3), je 80 mm,
+     12 mm vom Papierrand: 0 oben links, 1 oben rechts, 2 unten rechts, 3 unten links.
+     Aus den Markern ergibt sich der Maßstab auf der Glasebene, der Abstand der Kamera und wie schräg sie steht.
+     Dann sucht die Seite links, rechts, oben und unten vom Blatt die Kante zum Glas und die Außenkante vom Flügel.
+     Die Außenkante liegt etwas vor dem Glas und wirkt deshalb größer; das rechnet die Tiefe je Fenstertyp heraus. */
+  var MB = { b: 210, h: 297, m: 80, r: 12 };
+  var MARKER_BITS = ['1011010100110010', '0000111110011010', '0011001100101101', '1001100101000110'];
+  function markerEcken(id) {
+    var x = (id === 1 || id === 2) ? MB.b - MB.r - MB.m : MB.r, y = id >= 2 ? MB.h - MB.r - MB.m : MB.r;
+    return [[x, y], [x + MB.m, y], [x + MB.m, y + MB.m], [x, y + MB.m]];
+  }
+  function drehe(bits) {   // 4×4 um 90° im Uhrzeigersinn
+    var o = '';
+    for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) o += bits[(3 - j) * 4 + i];
+    return o;
+  }
+  var MARKER_DREH = MARKER_BITS.map(function (b) { var r = [b]; for (var k = 1; k < 4; k++) r.push(drehe(r[k - 1])); return r; });
+
+  // Lineare Gleichungen lösen (Gauß mit Pivot)
+  function loese(A, b) {
+    var n = b.length, M = A.map(function (z, i) { return z.concat([b[i]]); });
+    for (var c = 0; c < n; c++) {
+      var p = c;
+      for (var r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      if (Math.abs(M[p][c]) < 1e-12) return null;
+      var t = M[c]; M[c] = M[p]; M[p] = t;
+      for (r = c + 1; r < n; r++) {
+        var f = M[r][c] / M[c][c];
+        for (var k = c; k <= n; k++) M[r][k] -= f * M[c][k];
+      }
+    }
+    var x = new Array(n);
+    for (var i = n - 1; i >= 0; i--) {
+      var s = M[i][n];
+      for (var j = i + 1; j < n; j++) s -= M[i][j] * x[j];
+      x[i] = s / M[i][i];
+    }
+    return x;
+  }
+  function mal3(A, B) {
+    var C = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) for (var k = 0; k < 3; k++) C[i][j] += A[i][k] * B[k][j];
+    return C;
+  }
+  function inv3(m) {
+    var a = m[0][0], b = m[0][1], c = m[0][2], d = m[1][0], e = m[1][1], f = m[1][2], g = m[2][0], h = m[2][1], i = m[2][2];
+    var A = e * i - f * h, B = -(d * i - f * g), C = d * h - e * g, det = a * A + b * B + c * C;
+    if (Math.abs(det) < 1e-15) return null;
+    return [[A / det, -(b * i - c * h) / det, (b * f - c * e) / det],
+            [B / det, (a * i - c * g) / det, -(a * f - c * d) / det],
+            [C / det, -(a * h - b * g) / det, (a * e - b * d) / det]];
+  }
+  function abb(Hm, x, y) {   // Punkt durch Homographie
+    var w = Hm[2][0] * x + Hm[2][1] * y + Hm[2][2];
+    return [(Hm[0][0] * x + Hm[0][1] * y + Hm[0][2]) / w, (Hm[1][0] * x + Hm[1][1] * y + Hm[1][2]) / w];
+  }
+  // Homographie aus Punktpaaren (von → nach), mit Normierung
+  function homographie(von, nach) {
+    function norm(p) {
+      var cx = 0, cy = 0, n = p.length, d = 0, i;
+      for (i = 0; i < n; i++) { cx += p[i][0]; cy += p[i][1]; }
+      cx /= n; cy /= n;
+      for (i = 0; i < n; i++) d += Math.hypot(p[i][0] - cx, p[i][1] - cy);
+      var s = Math.SQRT2 / (d / n || 1);
+      return { T: [[s, 0, -s * cx], [0, s, -s * cy], [0, 0, 1]], p: p.map(function (q) { return [s * (q[0] - cx), s * (q[1] - cy)]; }) };
+    }
+    var a = norm(von), b = norm(nach), A = [], r = [];
+    for (var i = 0; i < von.length; i++) {
+      var x = a.p[i][0], y = a.p[i][1], u = b.p[i][0], v = b.p[i][1];
+      A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); r.push(u);
+      A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); r.push(v);
+    }
+    var AtA = [], Atb = [];
+    for (var p = 0; p < 8; p++) {
+      AtA.push(new Array(8).fill(0)); Atb.push(0);
+      for (var k = 0; k < A.length; k++) {
+        Atb[p] += A[k][p] * r[k];
+        for (var q = 0; q < 8; q++) AtA[p][q] += A[k][p] * A[k][q];
+      }
+    }
+    var h = loese(AtA, Atb);
+    if (!h) return null;
+    var Hn = [[h[0], h[1], h[2]], [h[3], h[4], h[5]], [h[6], h[7], 1]];
+    var Tb = inv3(b.T);
+    return Tb ? mal3(mal3(Tb, Hn), a.T) : null;
+  }
+  // Ähnlichkeit (Maßstab, Drehung, Verschiebung) aus Punktpaaren
+  function aehnlich(von, nach) {
+    var n = von.length, mx = 0, my = 0, ux = 0, uy = 0, i;
+    for (i = 0; i < n; i++) { mx += von[i][0]; my += von[i][1]; ux += nach[i][0]; uy += nach[i][1]; }
+    mx /= n; my /= n; ux /= n; uy /= n;
+    var a = 0, b = 0, q = 0;
+    for (i = 0; i < n; i++) {
+      var x = von[i][0] - mx, y = von[i][1] - my, u = nach[i][0] - ux, v = nach[i][1] - uy;
+      a += x * u + y * v; b += x * v - y * u; q += x * x + y * y;
+    }
+    if (!q) return null;
+    a /= q; b /= q;
+    return [[a, -b, ux - a * mx + b * my], [b, a, uy - b * mx - a * my], [0, 0, 1]];
+  }
+  function bilinear(g, w, h, x, y) {
+    if (x < 0 || y < 0 || x > w - 1.001 || y > h - 1.001) return -1;
+    var x0 = Math.floor(x), y0 = Math.floor(y), fx = x - x0, fy = y - y0, i = y0 * w + x0;
+    return (g[i] * (1 - fx) + g[i + 1] * fx) * (1 - fy) + (g[i + w] * (1 - fx) + g[i + w + 1] * fx) * fy;
+  }
+
+  // Marker im Graubild suchen. g: Helligkeit 0–255 (Uint8Array), Ergebnis: [{ id, ecken: [[x,y] × 4] }]
+  function findeMarker(g, w, h) {
+    var n = w * h, I = new Float64Array((w + 1) * (h + 1)), x, y, i;
+    for (y = 0; y < h; y++) {
+      var zs = 0;
+      for (x = 0; x < w; x++) { zs += g[y * w + x]; I[(y + 1) * (w + 1) + x + 1] = I[y * (w + 1) + x + 1] + zs; }
+    }
+    var r = Math.max(4, Math.round(Math.min(w, h) / 50)), bin = new Uint8Array(n);
+    for (y = 0; y < h; y++) {
+      var y0 = Math.max(0, y - r), y1 = Math.min(h, y + r + 1);
+      for (x = 0; x < w; x++) {
+        var x0 = Math.max(0, x - r), x1 = Math.min(w, x + r + 1);
+        var s = I[y1 * (w + 1) + x1] - I[y0 * (w + 1) + x1] - I[y1 * (w + 1) + x0] + I[y0 * (w + 1) + x0];
+        if (g[y * w + x] < s / ((x1 - x0) * (y1 - y0)) - 12) bin[y * w + x] = 1;
+      }
+    }
+    var lab = new Uint8Array(n), stapel = new Int32Array(n), gefunden = [], minS = 12;
+    for (var start = 0; start < n; start++) {
+      if (!bin[start] || lab[start]) continue;
+      var top = 0, cnt = 0, mnx = w, mxx = 0, mny = h, mxy = 0;
+      var e = [[0, 0, Infinity], [0, 0, -Infinity], [0, 0, -Infinity], [0, 0, Infinity]];   // min x+y, max x−y, max x+y, min x−y
+      stapel[top++] = start; lab[start] = 1;
+      while (top) {
+        var p = stapel[--top], px = p % w, py = (p - px) / w;
+        cnt++;
+        if (px < mnx) mnx = px; if (px > mxx) mxx = px; if (py < mny) mny = py; if (py > mxy) mxy = py;
+        var s1 = px + py, s2 = px - py;
+        if (s1 < e[0][2]) e[0] = [px, py, s1];
+        if (s2 > e[1][2]) e[1] = [px, py, s2];
+        if (s1 > e[2][2]) e[2] = [px, py, s1];
+        if (s2 < e[3][2]) e[3] = [px, py, s2];
+        for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) {
+          var qx = px + dx, qy = py + dy;
+          if (qx < 0 || qy < 0 || qx >= w || qy >= h) continue;
+          var q = qy * w + qx;
+          if (bin[q] && !lab[q]) { lab[q] = 1; stapel[top++] = q; }
+        }
+      }
+      var bw = mxx - mnx + 1, bh = mxy - mny + 1;
+      if (bw < minS || bh < minS || bw > w * 0.7 || bh > h * 0.7) continue;
+      if (bw / bh > 2.2 || bh / bw > 2.2) continue;
+      var ecken = e.map(function (k) { return [k[0], k[1]]; });
+      var fl = 0;
+      for (i = 0; i < 4; i++) { var a = ecken[i], b = ecken[(i + 1) % 4]; fl += a[0] * b[1] - b[0] * a[1]; }
+      fl = Math.abs(fl) / 2;
+      if (fl < minS * minS || cnt / fl < 0.4 || cnt / fl > 1.1) continue;
+      var m = lesen(g, w, h, ecken);
+      if (m) gefunden.push(m);
+    }
+    // Jede Nummer nur einmal (die größte)
+    var beste = {};
+    gefunden.forEach(function (m) { if (!beste[m.id] || m.groesse > beste[m.id].groesse) beste[m.id] = m; });
+    return Object.keys(beste).map(function (k) { return beste[k]; });
+  }
+  // Viereck auslesen: 6×6 Felder, außen schwarz, innen die 16 Bits
+  function lesen(g, w, h, ecken) {
+    var Hq = homographie([[0, 0], [6, 0], [6, 6], [0, 6]], ecken);
+    if (!Hq) return null;
+    var werte = [];
+    for (var i = 0; i < 6; i++) for (var j = 0; j < 6; j++) {
+      var s = 0, c = 0;
+      for (var a = 0; a < 3; a++) for (var b = 0; b < 3; b++) {
+        var p = abb(Hq, j + 0.3 + 0.2 * b, i + 0.3 + 0.2 * a), v = bilinear(g, w, h, p[0], p[1]);
+        if (v >= 0) { s += v; c++; }
+      }
+      if (!c) return null;
+      werte.push(s / c);
+    }
+    // Schwelle nach Otsu über die 36 Felder
+    var sort = werte.slice().sort(function (p, q) { return p - q; }), bestT = 0, bestV = -1;
+    for (var k = 1; k < 36; k++) {
+      var m0 = 0, m1 = 0;
+      for (var z = 0; z < k; z++) m0 += sort[z];
+      for (z = k; z < 36; z++) m1 += sort[z];
+      m0 /= k; m1 /= 36 - k;
+      var v2 = k * (36 - k) * (m1 - m0) * (m1 - m0);
+      if (v2 > bestV) { bestV = v2; bestT = (sort[k - 1] + sort[k]) / 2; }
+    }
+    if (sort[35] - sort[0] < 40) return null;
+    var rand = 0, bits = '';
+    for (i = 0; i < 6; i++) for (j = 0; j < 6; j++) {
+      var hell = werte[i * 6 + j] > bestT;
+      if (i === 0 || i === 5 || j === 0 || j === 5) { if (!hell) rand++; }
+      else bits += hell ? '1' : '0';
+    }
+    if (rand < 18) return null;
+    for (var id = 0; id < 4; id++) for (var dr = 0; dr < 4; dr++) {
+      var fehler = 0, code = MARKER_DREH[id][dr];
+      for (z = 0; z < 16; z++) if (code[z] !== bits[z]) fehler++;
+      if (fehler <= 1) {
+        var e2 = verfeinern(g, w, h, ecken);
+        var geordnet = [0, 1, 2, 3].map(function (q) { return e2[(q + dr) % 4]; });
+        return { id: id, ecken: geordnet, groesse: Math.hypot(e2[2][0] - e2[0][0], e2[2][1] - e2[0][1]) };
+      }
+    }
+    return null;
+  }
+  // Ecken genauer: an jeder Seite den Übergang schwarz → weiß suchen, Geraden anlegen, schneiden
+  function verfeinern(g, w, h, ecken) {
+    var mx = 0, my = 0, i;
+    for (i = 0; i < 4; i++) { mx += ecken[i][0] / 4; my += ecken[i][1] / 4; }
+    var geraden = [];
+    for (i = 0; i < 4; i++) {
+      var A = ecken[i], B = ecken[(i + 1) % 4], dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy);
+      if (L < 4) return ecken;
+      var nx = dy / L, ny = -dx / L, cx = (A[0] + B[0]) / 2, cy = (A[1] + B[1]) / 2;
+      if ((cx - mx) * nx + (cy - my) * ny < 0) { nx = -nx; ny = -ny; }
+      var pkt = [];
+      for (var k = 1; k < 16; k++) {
+        var s = 0.08 + 0.84 * k / 16, px = A[0] + dx * s, py = A[1] + dy * s, prof = [];
+        for (var u = -3; u <= 3.001; u += 0.25) prof.push(bilinear(g, w, h, px + nx * u, py + ny * u));
+        if (prof.indexOf(-1) !== -1) continue;
+        var lo = Math.min.apply(null, prof), hi = Math.max.apply(null, prof), mid = (lo + hi) / 2;
+        if (hi - lo < 30) continue;
+        var best = null;
+        for (var t = 1; t < prof.length; t++) if (prof[t - 1] < mid && prof[t] >= mid) {
+          var uu = -3 + (t - 1) * 0.25 + 0.25 * (mid - prof[t - 1]) / (prof[t] - prof[t - 1]);
+          if (best === null || Math.abs(uu) < Math.abs(best)) best = uu;
+        }
+        if (best !== null) pkt.push([px + nx * best, py + ny * best]);
+      }
+      if (pkt.length < 5) return ecken;
+      var sx = 0, sy = 0;
+      pkt.forEach(function (p) { sx += p[0]; sy += p[1]; });
+      sx /= pkt.length; sy /= pkt.length;
+      var xx = 0, xy = 0, yy = 0;
+      pkt.forEach(function (p) { var a = p[0] - sx, b = p[1] - sy; xx += a * a; xy += a * b; yy += b * b; });
+      var wnk = 0.5 * Math.atan2(2 * xy, xx - yy);
+      geraden.push([sx, sy, Math.cos(wnk), Math.sin(wnk)]);
+    }
+    var neu = [];
+    for (i = 0; i < 4; i++) {
+      var g1 = geraden[(i + 3) % 4], g2 = geraden[i], det = g1[2] * g2[3] - g1[3] * g2[2];
+      if (Math.abs(det) < 1e-6) return ecken;
+      var tt = ((g2[0] - g1[0]) * g2[3] - (g2[1] - g1[1]) * g2[2]) / det;
+      neu.push([g1[0] + g1[2] * tt, g1[1] + g1[3] * tt]);
+    }
+    for (i = 0; i < 4; i++) if (Math.hypot(neu[i][0] - ecken[i][0], neu[i][1] - ecken[i][1]) > 4) return ecken;
+    return neu;
+  }
+
+  // Lage des Blatts: Homographie (mm → Bild), Abstand, Fußpunkt der Kamera auf der Glasebene, Schräge
+  // f: Brennweite in Pixeln des Bildes, Bildmitte = Mitte der Kamera
+  function blattLage(marker, w, h, f) {
+    if (marker.length < 2) return null;
+    var von = [], nach = [];
+    marker.forEach(function (m) { var e = markerEcken(m.id); for (var i = 0; i < 4; i++) { von.push(e[i]); nach.push(m.ecken[i]); } });
+    var Hm = homographie(von, nach);
+    if (!Hm) return null;
+    var fehler = 0;
+    for (var i = 0; i < von.length; i++) { var p = abb(Hm, von[i][0], von[i][1]); fehler += Math.hypot(p[0] - nach[i][0], p[1] - nach[i][1]); }
+    fehler /= von.length;
+    var Ki = [[1 / f, 0, -w / 2 / f], [0, 1 / f, -h / 2 / f], [0, 0, 1]], M = mal3(Ki, Hm);
+    var m1 = [M[0][0], M[1][0], M[2][0]], m2 = [M[0][1], M[1][1], M[2][1]], m3 = [M[0][2], M[1][2], M[2][2]];
+    var lam = 2 / (Math.hypot(m1[0], m1[1], m1[2]) + Math.hypot(m2[0], m2[1], m2[2]));
+    if (m3[2] < 0) lam = -lam;
+    var r1 = m1.map(function (v) { return v * lam; }), r2 = m2.map(function (v) { return v * lam; }), t = m3.map(function (v) { return v * lam; });
+    var r3 = [r1[1] * r2[2] - r1[2] * r2[1], r1[2] * r2[0] - r1[0] * r2[2], r1[0] * r2[1] - r1[1] * r2[0]];
+    var l3 = Math.hypot(r3[0], r3[1], r3[2]); r3 = r3.map(function (v) { return v / l3; });
+    // Kamera in Blattkoordinaten: C = −Rᵀ t
+    var C = [-(r1[0] * t[0] + r1[1] * t[1] + r1[2] * t[2]), -(r2[0] * t[0] + r2[1] * t[1] + r2[2] * t[2]), -(r3[0] * t[0] + r3[1] * t[1] + r3[2] * t[2])];
+    // Bei fast gerader Sicht ist die volle Perspektive aus dem kleinen Blatt unsicher (kleine Eckfehler kippen sie).
+    // Dann rechnet die Seite mit einer reinen Ähnlichkeit (Maßstab, Drehung, Verschiebung): genauer, solange man ungefähr gerade davorsteht.
+    var Hs = aehnlich(von, nach), neig = Math.acos(Math.min(1, Math.abs(r3[2]))) * 180 / Math.PI, H2 = Hm, z = Math.abs(C[2]), fuss = [C[0], C[1]];
+    if (Hs && neig < 10) {
+      H2 = Hs;
+      var sk = Math.hypot(Hs[0][0], Hs[1][0]);
+      z = f / sk;
+      fuss = abb(inv3(Hs), w / 2, h / 2);
+    }
+    return { H: H2, Hvoll: Hm, z: z, fuss: fuss, fehler: fehler, anzahl: marker.length, neigung: neig,
+      blick: [r1[2], r2[2], r3[2]] };   // Blickrichtung der Kamera in Blattkoordinaten
+  }
+
+  // Kantenkarten für die Suche: senkrechte Kanten (kx) und waagerechte (ky), 0 bis 1 nach Stärke im Bild
+  function kantenKarten(g, w, h) {
+    var n = w * h, kx = new Float32Array(n), ky = new Float32Array(n), x, y, i, max = 0;
+    for (y = 1; y < h - 1; y++) for (x = 1; x < w - 1; x++) {
+      i = y * w + x;
+      var a = g[i - w - 1], b = g[i - w], c = g[i - w + 1], d = g[i - 1], f = g[i + 1], gg = g[i + w - 1], k = g[i + w], m = g[i + w + 1];
+      kx[i] = Math.abs((c + 2 * f + m) - (a + 2 * d + gg));
+      ky[i] = Math.abs((gg + 2 * k + m) - (a + 2 * b + c));
+      if (kx[i] > max) max = kx[i]; if (ky[i] > max) max = ky[i];
+    }
+    var bins = 512, hist = new Uint32Array(bins), sk = max > 0 ? (bins - 1) / max : 0;
+    for (i = 0; i < n; i++) { hist[Math.round(kx[i] * sk)]++; hist[Math.round(ky[i] * sk)]++; }
+    var t0 = 0, t1 = 0, summe = 0;
+    for (i = 0; i < bins; i++) {
+      summe += hist[i];
+      if (!t0 && summe >= 2 * n * 0.88) t0 = i / sk;
+      if (!t1 && summe >= 2 * n * 0.97) { t1 = i / sk; break; }
+    }
+    t0 = Math.max(t0, 8); t1 = Math.max(t1, t0 + 16);
+    for (i = 0; i < n; i++) {
+      kx[i] = kx[i] <= t0 ? 0 : kx[i] >= t1 ? 1 : (kx[i] - t0) / (t1 - t0);
+      ky[i] = ky[i] <= t0 ? 0 : ky[i] >= t1 ? 1 : (ky[i] - t0) / (t1 - t0);
+    }
+    return { w: w, h: h, kx: kx, ky: ky };
+  }
+  // Kantenstärke entlang einer Linie auf der Glasebene: Mittel über das Band, je Punkt das Maximum ±1 Pixel
+  function linienWert(K, Hm, senk, pos, von, bis, schritt) {
+    var map = senk ? K.kx : K.ky, w = K.w, h = K.h, s = 0, c = 0, alle = 0;
+    for (var q = von; q <= bis; q += schritt) {
+      alle++;
+      var p = senk ? abb(Hm, pos, q) : abb(Hm, q, pos), x = Math.round(p[0]), y = Math.round(p[1]);
+      if (x < 1 || y < 1 || x > w - 2 || y > h - 2) continue;
+      var i = y * w + x, v = map[i];
+      if (senk) { if (map[i - 1] > v) v = map[i - 1]; if (map[i + 1] > v) v = map[i + 1]; }
+      else { if (map[i - w] > v) v = map[i - w]; if (map[i + w] > v) v = map[i + w]; }
+      s += v; c++;
+    }
+    return c >= alle * 0.5 ? s / c : -1;
+  }
+  // Profil von der Blattkante nach außen. seite: 'l', 'r', 'o', 'u'. baender: Liste [von, bis] quer dazu (mm)
+  // maxi: das stärkste Band zählt (fürs Holz neben dem Glas: ein Band kann von Beschlägen verdeckt sein), sonst der Mittelwert
+  function profil(K, Hm, seite, baender, bis, schritt, maxi) {
+    var senk = seite === 'l' || seite === 'r', P = [];
+    for (var t = 12; t <= bis; t += schritt) {
+      var pos = seite === 'l' ? -t : seite === 'r' ? MB.b + t : seite === 'o' ? -t : MB.h + t, s = 0, n = 0, m = 0;
+      for (var k = 0; k < baender.length; k++) {
+        var b = baender[k];
+        if (b[1] - b[0] < 4) continue;
+        var v = linienWert(K, Hm, senk, pos, b[0], b[1], Math.max(2, (b[1] - b[0]) / 40));
+        if (v >= 0) { s += v; n++; if (v > m) m = v; }
+      }
+      if (!n) break;
+      P.push(maxi ? m : s / n);
+    }
+    return P;
+  }
+  function glatt(P) {
+    var n = P.length, S = new Float32Array(n);
+    for (var i = 0; i < n; i++) S[i] = (P[Math.max(0, i - 1)] + 2 * P[i] + P[Math.min(n - 1, i + 1)]) / 4;
+    return S;
+  }
+  // Paar Glaskante g und Flügelkante s, Abstand ungefähr F (mm). Ergebnis in mm ab Blattkante.
+  // aussen: Profil über die Holzteile neben dem Glas (Seitenteile bzw. Ober- und Unterstück).
+  // Die Außenkante vom Flügel läuft dort durch, die Kante zum Glas und Linien draußen hinter der Scheibe nicht.
+  function holzBeleg(v) { return Math.max(0, Math.min(1, (v - 0.25) / 0.35)); }   // unter 0,25 Rauschen, ab 0,6 sicher eine Kante
+  function paar(P, aussen, schritt, F) {
+    var S = glatt(P), O = aussen ? glatt(aussen) : null, n = S.length, i, spitzen = [], lage = {};
+    // Spitzen: auch flache Kuppen (gesättigte Kanten); die Lage ist der Schwerpunkt über der halben Höhe
+    for (i = 1; i < n - 1; i++) {
+      if (!(S[i] > S[i - 1] && S[i] >= S[i + 1] && S[i] > 0.16)) continue;
+      var j = i;
+      while (j + 1 < n && S[j + 1] === S[i]) j++;
+      if (j + 1 < n && S[j + 1] > S[i]) continue;
+      var k = Math.round((i + j) / 2), halb = S[i] / 2, a0 = i, a1 = j;
+      while (a0 > 0 && S[a0 - 1] > halb && S[a0 - 1] <= S[a0]) a0--;
+      while (a1 < n - 1 && S[a1 + 1] > halb && S[a1 + 1] <= S[a1]) a1++;
+      var sw = 0, sx = 0;
+      for (var q = a0; q <= a1; q++) { var gw = S[q] - halb; sw += gw; sx += gw * q; }
+      lage[k] = sw > 0 ? sx / sw : k;
+      spitzen.push(k);
+      i = j;
+    }
+    function mm(k) { return 12 + lage[k] * schritt; }
+    function aus(k) { if (!O) return 0; var v = 0; for (var j = Math.max(0, k - 2); j <= Math.min(O.length - 1, k + 2); j++) v = Math.max(v, O[j]); return v; }
+    var kand = [];
+    for (var a = 0; a < spitzen.length; a++) for (var b = a + 1; b < spitzen.length; b++) {
+      var g = mm(spitzen[a]), s = mm(spitzen[b]), ab = s - g;
+      if (ab < 0.55 * F || ab > 1.7 * F) continue;
+      if (n - 1 - spitzen[b] < 40 / schritt) continue;   // hinter der Flügelkante muss noch Rahmen zu sehen sein
+      var wert = S[spitzen[a]] + S[spitzen[b]] - 0.8 * Math.abs(ab - F) / F;
+      // Gesättigt: Es zählt, OB die Kante im Holz weiterläuft, nicht wie kräftig (Bänder und Beschläge verdecken sie oft teilweise)
+      if (O) wert += 1.2 * (holzBeleg(aus(spitzen[b])) - holzBeleg(aus(spitzen[a])));
+      kand.push({ g: g, s: s, wert: wert });
+    }
+    if (!kand.length) return null;
+    var max = Math.max.apply(null, kand.map(function (k) { return k.wert; }));
+    // Mit Holz-Profil: unter den fast besten die innerste Flügelkante. Weiter außen liegt nur noch der Rahmen.
+    if (O) {
+      var nah = kand.filter(function (k) { return k.wert >= max - 0.15; });
+      nah.sort(function (p, q) { return p.s - q.s; });
+      return nah[0];
+    }
+    var gut = kand.filter(function (k) { return k.wert >= 0.85 * max; });
+    gut.sort(function (p, q) { return p.g - q.g; });
+    return gut[0];
+  }
+  // Das Fenster messen. lage: aus blattLage, opt: { fs, fu, tiefe } in mm
+  function fensterMessen(K, lage, opt, fein) {
+    var Hm = lage.H, st = fein ? 1 : 3, weit = 2600;
+    // 1. Durchgang: Bänder so breit wie das Blatt
+    var l = paar(profil(K, Hm, 'l', [[-40, MB.h + 40]], weit, st), null, st, opt.fs);
+    var r = paar(profil(K, Hm, 'r', [[-40, MB.h + 40]], weit, st), null, st, opt.fs);
+    var o = paar(profil(K, Hm, 'o', [[-40, MB.b + 40]], weit, st), null, st, opt.fs);
+    var u = paar(profil(K, Hm, 'u', [[-40, MB.b + 40]], weit, st), null, st, opt.fu);
+    if (!l || !r || !o || !u) return { ok: false, teile: { l: !!l, r: !!r, o: !!o, u: !!u } };
+    // 2. und 3. Durchgang: innen über die ganze Glasbreite bzw. -höhe, außen über die Holzteile daneben
+    function holz(a, b) { var d = b - a; return [a + 0.25 * d, b - 0.25 * d]; }
+    for (var runde = 0; runde < 2; runde++) {
+      var Ls = -l.s, Lg = -l.g, Rg = MB.b + r.g, Rs = MB.b + r.s, Ts = -o.s, Tg = -o.g, Bg = MB.h + u.g, Bs = MB.h + u.s;
+      var o2 = paar(profil(K, Hm, 'o', [[Lg + 15, Rg - 15]], weit, st), profil(K, Hm, 'o', [holz(Ls, Lg), holz(Rg, Rs)], weit, st, true), st, opt.fs);
+      var u2 = paar(profil(K, Hm, 'u', [[Lg + 15, Rg - 15]], weit, st), profil(K, Hm, 'u', [holz(Ls, Lg), holz(Rg, Rs)], weit, st, true), st, opt.fu);
+      if (o2) o = o2; if (u2) u = u2;
+      Ts = -o.s; Tg = -o.g; Bg = MB.h + u.g; Bs = MB.h + u.s;
+      var l2 = paar(profil(K, Hm, 'l', [[Tg + 15, Bg - 15]], weit, st), profil(K, Hm, 'l', [holz(Ts, Tg), holz(Bg, Bs)], weit, st, true), st, opt.fs);
+      var r2 = paar(profil(K, Hm, 'r', [[Tg + 15, Bg - 15]], weit, st), profil(K, Hm, 'r', [holz(Ts, Tg), holz(Bg, Bs)], weit, st, true), st, opt.fs);
+      if (l2) l = l2; if (r2) r = r2;
+    }
+    var fl = [-l.s, -o.s, MB.b + r.s, MB.h + u.s], gl = [-l.g, -o.g, MB.b + r.g, MB.h + u.g];
+    return { ok: true, fluegel: fl, glas: gl, holz: [l.s - l.g, o.s - o.g, r.s - r.g, u.s - u.g] };
+  }
+
+  // Eine Flügelkante im Bild als Gerade: entlang der vermuteten Kante quer dazu die stärkste Helligkeitsänderung suchen
+  function kanteImBild(g, w, h, Hm, senk, pos, von, bis, such) {
+    var pkt = [];
+    for (var k = 0; k <= 40; k++) {
+      var q = von + (bis - von) * k / 40;
+      var p = senk ? abb(Hm, pos, q) : abb(Hm, q, pos), p2 = senk ? abb(Hm, pos + 1, q) : abb(Hm, q, pos + 1);
+      var nx = p2[0] - p[0], ny = p2[1] - p[1], L = Math.hypot(nx, ny);
+      if (!L) continue;
+      nx /= L; ny /= L;
+      var R = Math.max(3, such * L), werte = [], best = 0, bi = -1;
+      for (var u = -R, j = 0; u <= R; u += 0.5, j++) {
+        var a = bilinear(g, w, h, p[0] + nx * (u - 0.5), p[1] + ny * (u - 0.5)), b = bilinear(g, w, h, p[0] + nx * (u + 0.5), p[1] + ny * (u + 0.5));
+        var v = a < 0 || b < 0 ? 0 : Math.abs(b - a);
+        werte.push(v);
+        if (v > best) { best = v; bi = j; }
+      }
+      var mittel = 0;
+      for (j = 0; j < werte.length; j++) mittel += werte[j] / werte.length;
+      if (bi < 0 || best < 4 || best < 1.8 * mittel) continue;
+      var sw = 0, su = 0;
+      for (j = Math.max(0, bi - 4); j <= Math.min(werte.length - 1, bi + 4); j++) {
+        var gw = werte[j] - best / 2;
+        if (gw > 0) { sw += gw; su += gw * (-R + j * 0.5); }
+      }
+      var uu = su / sw;
+      pkt.push([p[0] + nx * uu, p[1] + ny * uu]);
+    }
+    for (var runde = 0; runde < 3; runde++) {
+      if (pkt.length < 10) return null;
+      var sx = 0, sy = 0;
+      pkt.forEach(function (p) { sx += p[0]; sy += p[1]; });
+      sx /= pkt.length; sy /= pkt.length;
+      var xx = 0, xy = 0, yy = 0;
+      pkt.forEach(function (p) { var a = p[0] - sx, b = p[1] - sy; xx += a * a; xy += a * b; yy += b * b; });
+      var wnk = 0.5 * Math.atan2(2 * xy, xx - yy), dx = Math.cos(wnk), dy = Math.sin(wnk);
+      var rest = pkt.map(function (p) { return Math.abs((p[0] - sx) * dy - (p[1] - sy) * dx); });
+      var grenze = Math.max(1.2, 2.5 * rest.slice().sort(function (a, b) { return a - b; })[Math.floor(rest.length / 2)]);
+      var neu = pkt.filter(function (p, i) { return rest[i] <= grenze; });
+      if (neu.length === pkt.length || runde === 2) return { p: [sx, sy], d: [dx, dy], n: pkt.length };
+      pkt = neu;
+    }
+    return null;
+  }
+  function gerade(L) { return [L.d[1], -L.d[0], -(L.d[1] * L.p[0] - L.d[0] * L.p[1])]; }   // homogene Gerade
+  function kreuz(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+  function einheit(v) { var l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; }
+
+  // Genaue Messung: die vier Flügelkanten als Geraden im Bild. Aus ihren Fluchtpunkten folgt, wie die Fensterebene steht
+  // (das große Fenster sagt das viel genauer als das kleine Blatt), aus dem Blatt nur noch der Maßstab.
+  function fensterGenau(g, w, h, f, marker, lage, roh, opt) {
+    var Hm = lage.H, fl = roh.fluegel, gl = roh.glas, such = 14;
+    var L = kanteImBild(g, w, h, Hm, true, fl[0], gl[1], gl[3], such), R = kanteImBild(g, w, h, Hm, true, fl[2], gl[1], gl[3], such);
+    var O = kanteImBild(g, w, h, Hm, false, fl[1], gl[0], gl[2], such), U = kanteImBild(g, w, h, Hm, false, fl[3], gl[0], gl[2], such);
+    if (!L || !R || !O || !U) return null;
+    var lL = gerade(L), lR = gerade(R), lO = gerade(O), lU = gerade(U);
+    var Ki = [[1 / f, 0, -w / 2 / f], [0, 1 / f, -h / 2 / f], [0, 0, 1]];
+    function strahl(v) { return einheit([Ki[0][0] * v[0] + Ki[0][2] * v[2], Ki[1][1] * v[1] + Ki[1][2] * v[2], v[2]]); }
+    // Fluchtpunkt der waagerechten Kanten = Richtung der Breite, der senkrechten = Richtung der Höhe
+    var d1 = strahl(kreuz(lO, lU)), d2 = strahl(kreuz(lL, lR));
+    // Richtung festlegen: d1 nach rechts, d2 nach unten
+    var pr = abb(Hm, MB.b, MB.h / 2), pl = abb(Hm, 0, MB.h / 2), po = abb(Hm, MB.b / 2, 0), pu = abb(Hm, MB.b / 2, MB.h);
+    var rx = strahl([pr[0] - pl[0], pr[1] - pl[1], 0]), ry = strahl([pu[0] - po[0], pu[1] - po[1], 0]);
+    function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+    if (dot(d1, rx) < 0) d1 = d1.map(function (v) { return -v; });
+    if (dot(d2, ry) < 0) d2 = d2.map(function (v) { return -v; });
+    var m = einheit([d1[0] + d2[0], d1[1] + d2[1], d1[2] + d2[2]]), k = einheit([d1[0] - d2[0], d1[1] - d2[1], d1[2] - d2[2]]);
+    d1 = einheit([m[0] + k[0], m[1] + k[1], m[2] + k[2]]); d2 = einheit([m[0] - k[0], m[1] - k[1], m[2] - k[2]]);
+    var nrm = einheit(kreuz(d1, d2));
+    if (nrm[2] < 0) nrm = nrm.map(function (v) { return -v; });
+    // Bild → Ebene (in Einheiten des Abstands): q = [d1; d2; n] · K⁻¹ · p
+    var Rm = [d1, d2, nrm], Rect = mal3(Rm, Ki);
+    function eben(p) { var q = abb(Rect, p[0], p[1]); return q; }
+    // Maßstab aus den Markern: Ähnlichkeit Blatt (mm) → Ebene
+    var von = [], nach = [];
+    marker.forEach(function (mk) { var e = markerEcken(mk.id); for (var i = 0; i < 4; i++) { von.push(e[i]); nach.push(eben(mk.ecken[i])); } });
+    var Sim = aehnlich(von, nach);
+    if (!Sim) return null;
+    var D = 1 / Math.hypot(Sim[0][0], Sim[1][0]);   // Abstand der Glasebene in mm
+    function punkt(a, b) { var c = kreuz(a, b); return [c[0] / c[2], c[1] / c[2]]; }
+    var ecken = [punkt(lO, lL), punkt(lO, lR), punkt(lU, lR), punkt(lU, lL)];   // oben links, oben rechts, unten rechts, unten links
+    var e = ecken.map(function (p) { var q = eben(p); return [q[0] * D, q[1] * D]; });
+    var k2 = (D - opt.tiefe) / D;
+    var breite = (Math.hypot(e[1][0] - e[0][0], e[1][1] - e[0][1]) + Math.hypot(e[2][0] - e[3][0], e[2][1] - e[3][1])) / 2 * k2;
+    var hoehe = (Math.hypot(e[3][0] - e[0][0], e[3][1] - e[0][1]) + Math.hypot(e[2][0] - e[1][0], e[2][1] - e[1][1])) / 2 * k2;
+    // Neue Abbildung Blatt (mm) → Bild für die Anzeige und die nächste Runde: Bild = Rect⁻¹ · Sim
+    var H1 = mal3(inv3(Rect), Sim);
+    var neig = Math.acos(Math.min(1, nrm[2])) * 180 / Math.PI;
+    // Der Ursprung der Ebene ist der Fußpunkt der Kamera. Fenstermitte davon aus: + heißt, das Fenster liegt rechts bzw. unterhalb
+    var versatz = [(e[0][0] + e[1][0] + e[2][0] + e[3][0]) / 4 * k2, (e[0][1] + e[1][1] + e[2][1] + e[3][1]) / 4 * k2];
+    return { breite: breite, hoehe: hoehe, ecken: ecken, abstand: D, neigung: neig, normale: nrm, versatz: versatz, H: H1, punkte: [L.n, R.n, O.n, U.n] };
+  }
+
+  // Alles zusammen: Marker → Lage → Kanten grob → Geraden genau (zwei Runden)
+  function messen(g, w, h, f, opt, fein) {
+    var marker = findeMarker(g, w, h);
+    var lage = blattLage(marker, w, h, f);
+    if (!lage) return { marker: marker.length, ok: false, grund: 'blatt' };
+    var K = kantenKarten(g, w, h), roh = null, genau = null;
+    for (var runde = 0; runde < 2; runde++) {
+      roh = fensterMessen(K, lage, opt, fein);
+      if (!roh.ok) break;
+      var gn = fensterGenau(g, w, h, f, marker, lage, roh, opt);
+      if (!gn) break;
+      genau = gn;
+      lage = { H: gn.H, z: gn.abstand, fuss: abb(inv3(gn.H), w / 2, h / 2), anzahl: lage.anzahl, neigung: gn.neigung };
+    }
+    var erg = { marker: marker.length, lage: lage, ok: !!genau, grund: genau ? '' : 'fenster', roh: roh };
+    // Stimmig? Das Holz neben dem Glas ist links, rechts und oben ungefähr gleich breit, unten etwas breiter
+    if (roh && roh.ok) {
+      var hz = roh.holz, lr = (hz[0] + hz[2]) / 2;
+      erg.sicher = Math.abs(hz[0] - hz[2]) < 20 && hz[1] > lr - 20 && hz[1] < lr + 40 && hz[3] > lr - 15 && hz[3] < lr + 45;
+    }
+    if (genau) {
+      erg.breite = genau.breite; erg.hoehe = genau.hoehe; erg.ecken = genau.ecken; erg.abstand = genau.abstand; erg.neigung = genau.neigung;
+      erg.normale = genau.normale; erg.versatz = genau.versatz;
+      if (erg.breite < 250 || erg.hoehe < 350 || erg.breite > 2600 || erg.hoehe > 2800) { erg.ok = false; erg.grund = 'fenster'; }
+    }
+    return erg;
+  }
+  /*MASS-ENDE*/
+    return { messen: messen, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
+  }
+  var MASS = massModul();
+  var arbeiter = null, auftragNr = 0, auftraege = {};
+  function massSelbst(d) {
+    var t0 = performance.now(), erg;
+    try { erg = MASS.messen(d.g, d.w, d.h, d.f, d.opt, false); } catch (e) { erg = { ok: false, marker: 0, grund: 'fehler' }; }
+    return { erg: erg, ms: Math.round(performance.now() - t0) };
+  }
+  function massRechnen(g, w, h, f, opt) {
+    var d = { g: g, w: w, h: h, f: f, opt: opt };
+    if (arbeiter === null) {
+      try {
+        var code = 'var M = (' + massModul.toString() + ')();\n' +
+          'onmessage = function (e) { var d = e.data, t0 = Date.now(), erg; try { erg = M.messen(new Uint8Array(d.g), d.w, d.h, d.f, d.opt, false); }' +
+          ' catch (x) { erg = { ok: false, marker: 0, grund: "fehler" }; } postMessage({ id: d.id, erg: erg, ms: Date.now() - t0 }); };';
+        arbeiter = new Worker(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })));
+        arbeiter.onmessage = function (e) { var ja = auftraege[e.data.id]; delete auftraege[e.data.id]; if (ja) ja(e.data); };
+        arbeiter.onerror = function (e) {
+          if (e && e.preventDefault) e.preventDefault();
+          arbeiter = false;
+          Object.keys(auftraege).forEach(function (id) { var ja = auftraege[id]; delete auftraege[id]; ja({ erg: null, ms: 0 }); });
+        };
+      } catch (e) { arbeiter = false; }
+    }
+    if (!arbeiter) return Promise.resolve(massSelbst(d));
+    var id = ++auftragNr;
+    return new Promise(function (ja) {
+      auftraege[id] = ja;
+      try { arbeiter.postMessage({ id: id, g: g.buffer, w: w, h: h, f: f, opt: opt }, [g.buffer]); }
+      catch (e) { delete auftraege[id]; arbeiter = false; ja(massSelbst(d)); }
+    });
+  }
+  function grauVon(ctx, w, h) {
+    var d = ctx.getImageData(0, 0, w, h).data, g = new Uint8Array(w * h);
+    for (var i = 0, j = 0; i < g.length; i++, j += 4) g[i] = (77 * d[j] + 150 * d[j + 1] + 29 * d[j + 2]) >> 8;
+    return g;
+  }
+  function blattModus() { return P.mass === 'blatt'; }
+  function blattSchritt(s) { return blattModus() && !!s && s.id === 'innen'; }
+  // fs, fu: sichtbares Flügelholz in mm, tiefe: Außenkante Flügel bis Glas (in der gezeichneten Übung liegt alles in einer Ebene)
+  function massOpt(uebung) { var T = typ(); return { fs: T.s * 10, fu: T.u * 10, tiefe: uebung ? 0 : T.tiefe }; }
+  function komma(x, n) { return x.toFixed(n).replace('.', ','); }
 
   /* ---------- Zustand ---------- */
   var fotos = {};          // id -> { url, art } oder { skip: true }
@@ -1116,7 +1745,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     offen: false, i: 0, basis: 'uebung', modus: 'uebung', stream: null, raf: 0, box: null, loch: null, s0: 1,
     cam: { x: 40, y: 50, s: 3 }, zeiger: new Map(), anim: null, bild: null, formen: [],
     passtSeit: 0, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
-    letzteAnalyse: 0, treffer: null, lage: null, zuNah: -1e9, statusText: '', statusArt: '', karte: true, zurueck: null
+    letzteAnalyse: 0, treffer: null, lage: null, zuNah: -1e9, statusText: '', statusArt: '', karte: true, zurueck: null,
+    mass: null, massGen: 0, massLaeuft: false, massZeit: 0, messung: null, fotoMessung: null, fotoCv: null
   };
 
   /* ---------- Liste in der Anfrage ---------- */
@@ -1151,6 +1781,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('aendern').textContent = an ? 'Schließen' : 'Ändern';
   }
   function olFeld() { $('feld-olh').hidden = !$('ol-ja').checked; }
+  function massHinweis() { var b = $('mass-blatt').checked; $('hinweis-blatt').hidden = !b; $('hinweis-hand').hidden = b; }
+  $('mass-blatt').addEventListener('change', massHinweis);
+  $('mass-hand').addEventListener('change', massHinweis);
   $('aendern').addEventListener('click', function () { formZeigen($('form').hidden); });
   $('ol-ja').addEventListener('change', olFeld);
   $('ol-nein').addEventListener('change', olFeld);
@@ -1167,9 +1800,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('fehler').textContent = fehler;
     $('fehler').hidden = !fehler;
     if (fehler) return;
-    P = { typ: t, nU: nU, ol: ol, fb: b, fh: h, ofh: ol ? olH : P.ofh };
+    var gem = P.gemessen && b === P.fb && h === P.fh && nU === P.nU;
+    P = { typ: t, nU: nU, ol: ol, fb: b, fh: h, ofh: ol ? olH : P.ofh, mass: $('mass-hand').checked ? 'hand' : 'blatt', gemessen: gem };
     zeigeWerte = $('f-werte').checked;
-    try { localStorage.setItem(MERK, JSON.stringify({ typ: P.typ, nU: P.nU, ol: P.ol, fb: P.fb, fh: P.fh, ofh: P.ofh, werte: zeigeWerte })); } catch (e) {}
+    merken();
     G = geometrie(P);
     if (fotos.innen) fotos.innen.karte = null;
     skizze();
@@ -1326,8 +1960,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var s = SCHRITTE[i];
     $('k-nr').textContent = nrText(i) + (s.pflicht ? '' : ' · freiwillig');
     $('k-titel').textContent = s.titel;
-    $('k-tipp').textContent = s.tipp;
-    tippZeigen(true, 6000);
+    var blatt = blattSchritt(s);
+    $('k-tipp').textContent = blatt ? 'Kleb das Maßblatt innen mittig auf ' + (P.nU === 2 ? 'die linke Scheibe' : 'die Scheibe') +
+      '. Gardine zur Seite, Jalousie hoch. Dann stell dich ca. 3 m mittig vors Fenster.' : s.tipp;
+    $('k-nachhilfe').textContent = blatt ? 'Klappt es nicht? Selbst auf den Auslöser tippen, gemessen wird trotzdem.'
+      : 'Klappt es nicht? Fenster in die Linien und selbst auf den Auslöser tippen.';
+    tippZeigen(true, blatt ? 9000 : 6000);
     $('k-skip').hidden = s.pflicht;
     $('k-ort').hidden = true;
     miniZeigen();
@@ -1335,8 +1973,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
+    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0;
+    if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
     if (k.modus === 'foto') fotoStart();
+    else if (blatt) k.cam = blattCam(1.8);   // Übung: zu nah anfangen, damit man das Zurückgehen sieht
     else { var st = startVon(s); k.cam = { x: st.x, y: st.y, s: k.s0 * st.f }; }
   }
 
@@ -1358,6 +1999,167 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     else if (Math.abs(dx) > tolL || Math.abs(dy) > tolL) art = 'schieben';
     else art = 'passt';
     return { art: art, erkannt: { x: tx - tw / 2, y: ty - th / 2, w: tw, h: th } };
+  }
+
+  /* ---------- Maßblatt im Livebild ----------
+     Etwa dreimal pro Sekunde geht ein Standbild (lange Seite 1280 px) an die Messung. Das Ergebnis sagt:
+     Blatt da? Wie weit weg? Fenster ganz im Bild? Mittig davor? Und wie groß ist der Flügel. */
+  var mcv = document.createElement('canvas'), mctx = mcv.getContext('2d', { willReadFrequently: true });
+  // Übung: Kamera so, dass das gezeichnete Fenster wirkt wie aus „meter“ Abstand (gleiche Brennweite wie im Livebild)
+  function blattCam(meter) {
+    var fr = freiFlaeche(), s = 6.93 * Math.max(W, H) / (meter * 1000);
+    return { x: G.B / 2 - (fr.x + fr.w / 2 - W / 2) / s, y: G.H / 2 - (fr.y + fr.h / 2 - H / 2) / s, s: s };
+  }
+  // Der Teil des Bildschirms, den Kopf und Fuß nicht verdecken
+  function freiFlaeche() {
+    var oben = $('k-kopf').offsetHeight, unten = H - $('k-fuss').offsetHeight + 8;
+    return { x: W * 0.03, y: oben, w: W * 0.94, h: Math.max(100, unten - oben) };
+  }
+  // Standbild zum Messen. f: Brennweite in Pixeln, angenommen Hauptkamera mit 24 mm Kleinbild (0,693 × lange Seite)
+  function liveBild(t) {
+    var lang = TOL.blattPixel, w, h, f, q;
+    if (k.modus === 'kamera') {
+      var v = $('video');
+      if (!v.videoWidth) return null;
+      var a = ausschnitt(v);
+      q = Math.min(1, lang / Math.max(a.sw, a.sh));
+      w = Math.round(a.sw * q); h = Math.round(a.sh * q);
+      if (mcv.width !== w || mcv.height !== h) { mcv.width = w; mcv.height = h; }
+      mctx.drawImage(v, a.sx, a.sy, a.sw, a.sh, 0, 0, w, h);
+      f = 0.693 * Math.max(v.videoWidth, v.videoHeight) * q;
+    } else if (k.modus === 'uebung') {
+      q = lang / Math.max(W, H);
+      w = Math.round(W * q); h = Math.round(H * q);
+      if (mcv.width !== w || mcv.height !== h) { mcv.width = w; mcv.height = h; }
+      zeichneSzene(mctx, W, H, mitWackeln(t), 'innen', q);
+      f = 0.693 * Math.max(w, h);
+    } else return null;
+    var sx = W / w, sy = H / h;
+    return { g: grauVon(mctx, w, h), w: w, h: h, f: f, schirm: function (p) { return [p[0] * sx, p[1] * sy]; } };
+  }
+  function massLive(t) {
+    var takt = arbeiter === false ? 600 : TOL.blattTakt;   // ohne Hintergrund-Thread seltener, sonst ruckelt es
+    if (k.massLaeuft || k.gemacht || performance.now() - k.massZeit < takt) return;
+    var b = liveBild(t);
+    if (!b) return;
+    k.massLaeuft = true;
+    var gen = k.massGen;
+    massRechnen(b.g, b.w, b.h, b.f, massOpt(k.modus === 'uebung')).then(function (r) {
+      if (gen !== k.massGen) return;
+      k.massLaeuft = false;
+      k.massZeit = performance.now();
+      if (!k.offen) return;
+      var e = (r && r.erg) || { ok: false, marker: 0 }, alt = k.mass;
+      e.ms = r ? r.ms : 0; e.schirm = b.schirm; e.zeit = performance.now(); e.bw = b.w; e.bh = b.h;
+      e.stabil = !!(e.ok && alt && alt.ok && Math.abs(e.breite - alt.breite) < TOL.stabil * e.breite && Math.abs(e.hoehe - alt.hoehe) < TOL.stabil * e.hoehe);
+      k.mass = e;
+    });
+  }
+  function blattMessung() { return k.modus === 'foto' ? k.fotoMessung : k.mass; }
+  function meterText(d) {
+    var r = Math.round(d * 2) / 2;
+    if (d < 0.4) return 'ein kleines Stück';
+    if (r <= 0.5) return 'einen halben Meter';
+    return 'ca. ' + String(r).replace('.', ',') + ' m';
+  }
+  function deutenBlatt(jetzt) {
+    if (k.modus === 'kamera' && k.lage) {
+      if (k.lage.roll > TOL.neigungSeite) return { art: 'gerade' };
+      if (k.lage.pitch > TOL.neigungKipp) return { art: 'senkrecht' };
+    }
+    var e = blattMessung();
+    if (k.modus === 'foto') {
+      if (!e) return { art: 'fotoMessen' };
+      if (!e.lage) return { art: 'fotoOhneBlatt' };
+      if (!e.ok) return { art: 'fotoOhneFenster' };
+      return { art: 'passt', ecken: e.ecken.map(e.schirm) };
+    }
+    if (!e || jetzt - e.zeit > 2500 || !e.lage) return { art: e && e.marker ? 'blattTeil' : 'blattSuchen' };
+    var war = k.letzteArt === 'passt', z = (e.ok ? e.abstand : e.lage.z) / 1000;
+    var zMin = TOL.abstandMin - (war ? 0.15 : 0), zMax = TOL.abstandMax + (war ? 0.15 : 0);
+    if (z < zMin) return { art: 'zurueckM', m: z };
+    if (!e.ok) return { art: z > zMax ? 'naeherM' : 'fensterGanz', m: z };
+    var ecken = e.ecken.map(e.schirm), fr = freiFlaeche();
+    var xs = ecken.map(function (p) { return p[0]; }), ys = ecken.map(function (p) { return p[1]; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    if (x1 - x0 > fr.w || y1 - y0 > fr.h) return { art: 'zurueckGanz', ecken: ecken, m: z };
+    var dx = x0 < fr.x ? -1 : x1 > fr.x + fr.w ? 1 : 0, dy = y0 < fr.y ? -1 : y1 > fr.y + fr.h ? 1 : 0;
+    if (dx || dy) return { art: dx ? (dx < 0 ? 'links' : 'rechts') : (dy < 0 ? 'oben' : 'unten'), ecken: ecken };
+    if (z > zMax) return { art: 'naeherM', m: z, ecken: ecken };
+    var v = e.versatz ? e.versatz[0] : 0;
+    if (Math.abs(v) > TOL.versatz + (war ? 100 : 0)) return { art: v > 0 ? 'mitteRechts' : 'mitteLinks', ecken: ecken };
+    if (!e.stabil && !war) return { art: 'halten', ecken: ecken };
+    return { art: 'passt', ecken: ecken };
+  }
+  function blattText(z) {
+    switch (z.art) {
+      case 'blattSuchen': return performance.now() - k.schrittStart > 6000 ? 'Maßblatt nicht zu sehen? Geh etwas näher ran.' : 'Maßblatt ins Bild';
+      case 'blattTeil': return 'Das ganze Maßblatt ins Bild';
+      case 'zurueckM': return 'Geh ' + meterText(TOL.abstand - z.m) + ' zurück';
+      case 'naeherM': return 'Geh ' + meterText(z.m - TOL.abstand) + ' näher ran';
+      case 'zurueckGanz': return 'Geh etwas zurück, das ganze Fenster muss ins Bild';
+      case 'fensterGanz': return 'Das ganze Fenster ins Bild';
+      case 'halten': return 'Halt still, ich messe …';
+      case 'fotoMessen': return 'Foto wird gemessen …';
+      case 'fotoOhneBlatt': return 'Kein Maßblatt erkannt. Selbst auslösen oder anderes Foto.';
+      case 'fotoOhneFenster': return 'Fensterkanten nicht erkannt. Selbst auslösen oder anderes Foto.';
+      case 'passt': return k.modus === 'foto' ? 'Gemessen. Einen Moment …' : 'Passt. Halt still …';
+    }
+    return null;
+  }
+  function zug(c, pk, zu) {
+    c.beginPath();
+    pk.forEach(function (p, i) { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); });
+    if (zu) c.closePath();
+  }
+  function eckWinkel(c, pk, laenge) {
+    for (var i = 0; i < 4; i++) {
+      var p = pk[i], a = pk[(i + 3) % 4], b = pk[(i + 1) % 4];
+      var la = Math.hypot(a[0] - p[0], a[1] - p[1]) || 1, lb = Math.hypot(b[0] - p[0], b[1] - p[1]) || 1;
+      var ea = Math.min(laenge, la * 0.2), eb = Math.min(laenge, lb * 0.2);
+      c.beginPath();
+      c.moveTo(p[0] + (a[0] - p[0]) / la * ea, p[1] + (a[1] - p[1]) / la * ea);
+      c.lineTo(p[0], p[1]);
+      c.lineTo(p[0] + (b[0] - p[0]) / lb * eb, p[1] + (b[1] - p[1]) / lb * eb);
+      c.stroke();
+    }
+  }
+  // Statt fester Linien: das erkannte Fenster (Flügel durchgezogen, Glaskante gestrichelt) und das erkannte Maßblatt
+  function zeichneBlatt(z) {
+    var c = hctx, ok = z.art === 'passt', farbe = ok ? '#80c99d' : '#f2f0ea', e = blattMessung(), fr = freiFlaeche();
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.clearRect(0, 0, W, H);
+    var frisch = !!e && (k.modus === 'foto' || performance.now() - e.zeit < 2500);
+    var fenster = frisch && e.ok ? (z.ecken || e.ecken.map(e.schirm)) : null;
+    c.lineCap = 'square'; c.lineJoin = 'miter'; c.globalAlpha = 1;
+    if (fenster) {
+      c.fillStyle = 'rgba(6, 12, 9, 0.38)';
+      c.beginPath(); c.rect(0, 0, W, H);
+      fenster.forEach(function (p, i) { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); });
+      c.closePath(); c.fill('evenodd');
+    }
+    c.shadowColor = 'rgba(0,0,0,0.45)'; c.shadowBlur = 3;
+    c.strokeStyle = farbe;
+    if (fenster) {
+      if (e.roh && e.roh.glas && e.lage) {
+        var gl = e.roh.glas;
+        var pg = [[gl[0], gl[1]], [gl[2], gl[1]], [gl[2], gl[3]], [gl[0], gl[3]]].map(function (q) { return e.schirm(MASS.abb(e.lage.H, q[0], q[1])); });
+        c.lineWidth = 1.5; c.setLineDash([7, 5]); zug(c, pg, true); c.stroke(); c.setLineDash([]);
+      }
+      c.lineWidth = 2.5; zug(c, fenster, true); c.stroke();
+      c.lineWidth = 4; eckWinkel(c, fenster, 28);
+    } else {
+      // Noch kein Fenster erkannt: Ecken der freien Fläche wie beim Ausweis-Scan
+      c.globalAlpha = 0.85; c.lineWidth = 4;
+      eckWinkel(c, [[fr.x, fr.y], [fr.x + fr.w, fr.y], [fr.x + fr.w, fr.y + fr.h], [fr.x, fr.y + fr.h]], 30);
+      c.globalAlpha = 1;
+    }
+    if (frisch && e.lage) {
+      var mb = MASS.MB;
+      var pb = [[0, 0], [mb.b, 0], [mb.b, mb.h], [0, mb.h]].map(function (q) { return e.schirm(MASS.abb(e.lage.H, q[0], q[1])); });
+      c.globalAlpha = 0.85; c.lineWidth = 1.5; zug(c, pb, true); c.stroke(); c.globalAlpha = 1;
+    }
+    c.shadowBlur = 0;
   }
 
   /* ---------- Kamera und Foto: Lage aus der Suche ---------- */
@@ -1455,11 +2257,21 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var zeigeWerte = true;
   function prozent(x) { return Math.round(x * 100) + ' %'; }
   function messwerte(z, s) {
-    var el = $('k-mess'), an = zeigeWerte && k.modus !== 'uebung' && s.auto;
+    var blatt = blattSchritt(s), el = $('k-mess'), an = !!(zeigeWerte && s.auto && (blatt || k.modus !== 'uebung'));
     if (el.hidden === an) el.hidden = !an;
     if (!an) return;
     var tr = k.treffer, zeilen = [];
-    if (tr) {
+    if (blatt) {
+      var e = blattMessung();
+      if (!e) zeilen.push('Maßblatt: noch nicht ausgewertet');
+      else {
+        zeilen.push('Maßblatt: ' + e.marker + ' von 4 Markern' + (e.lage ? ' · Abstand ' + komma((e.ok ? e.abstand : e.lage.z) / 1000, 2) + ' m' : '') +
+          ' · ' + (e.ms || 0) + ' ms' + (arbeiter === false ? ' (ohne Worker)' : ''));
+        if (e.ok) zeilen.push('Flügel ' + komma(e.breite / 10, 1) + ' × ' + komma(e.hoehe / 10, 1) + ' cm · seitlich ' + (e.versatz[0] >= 0 ? '+' : '') +
+          Math.round(e.versatz[0] / 10) + ' cm · schräg ' + Math.round(e.neigung) + '°' + (k.modus === 'foto' ? '' : e.stabil ? ' · ruhig' : ' · wackelt'));
+        else if (e.lage) zeilen.push('Fensterkanten nicht gefunden');
+      }
+    } else if (tr) {
       var t = tr.teile || {};
       zeilen.push('Erkannt ' + prozent(tr.wert) + ' (Glas ' + prozent(t.glas || 0) + ', Flügel ' + prozent(t.fluegel || 0) + ') · nötig ' + prozent(TOL.passt));
       var r = tr.rel;
@@ -1478,7 +2290,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     el.classList.toggle('pille--warn', art === 'gerade' || art === 'senkrecht');
   }
   function statusText(z, s) {
-    var t = TEXTE[k.modus] || {};
+    if (blattSchritt(s)) { var bt = blattText(z); if (bt) return bt; }
+    var t = TEXTE[blattSchritt(s) && k.modus === 'uebung' ? 'kamera' : k.modus] || {};
     if (z.art === 'schieben') return s.ding + (s.id === 'ecklager' || s.id === 'schere' ? ' in den Kasten' : ' in die Linien');
     if (z.art === 'suchen') return t.suchen || (s.ding + ' in die Linien');
     if (z.art === 'manuell' && s.id !== 'innen' && s.id !== 'aussen') return k.modus === 'foto' ? 'Schieb die Stelle in den Kasten, dann auslösen.' : 'Liegt es im Kasten? Dann auslösen.';
@@ -1492,7 +2305,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var s = SCHRITTE[k.i], z;
     if (k.anim) animieren(t);
     if (k.modus !== 'kamera') zeichneSzene(sctx, W, H, mitWackeln(t), k.modus === 'foto' ? 'foto' : s.szene, DPR);
-    if (k.modus === 'uebung') {
+    if (blattSchritt(s)) {
+      if (k.modus !== 'foto') massLive(t);
+      z = deutenBlatt(t);
+    } else if (k.modus === 'uebung') {
       z = lageUebung(mitWackeln(t));
     } else if (s.auto) {
       if (t - k.letzteAnalyse > 280) {
@@ -1525,6 +2341,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
 
   function zeichneHilfe(z, s) {
+    if (blattSchritt(s)) { zeichneBlatt(z); return; }
     var c = hctx, b = k.box, lo = k.loch;
     var ok = z.art === 'passt';
     var farbe = ok ? '#80c99d' : '#f2f0ea';
@@ -1656,6 +2473,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   // Punkt am Fenster (cm) -> Pixel im Foto der Totalen
   function aufKarte(kt, x, y) {
+    if (kt.hm) return MASS.abb(kt.hm, x, y);   // aus dem Maßblatt: genaue Abbildung Fenster (cm) → Foto
     var p = verzerrt(kt.bb.x + x / kt.B * kt.bb.w, kt.bb.y + y / kt.H * kt.bb.h, kt.bb, kt.v);
     return [p[0] * kt.sk, p[1] * kt.sk];
   }
@@ -1668,6 +2486,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var px = (x1 - x0) * rand, py = (y1 - y0) * rand;
     x0 = Math.max(0, x0 - px); y0 = Math.max(0, y0 - py); x1 = Math.min(bw, x1 + px); y1 = Math.min(bh, y1 + py);
     return { x: x0, y: y0, w: Math.max(1, x1 - x0), h: Math.max(1, y1 - y0) };
+  }
+  // Aus den gemessenen Flügelecken: Abbildung vom Fenster (cm, wie G) ins Foto. Bei 2 Flügeln ist es der linke.
+  function karteAusMessung(m, gr) {
+    var f = G.fluegel[0];
+    var hm = MASS.homographie([[f[0], f[1]], [f[0] + f[2], f[1]], [f[0] + f[2], f[1] + f[3]], [f[0], f[1] + f[3]]], m.ecken);
+    return hm ? { hm: hm, w: gr.w, h: gr.h, B: G.B, H: G.H } : null;
   }
   function totale() {
     var f = fotos.innen, s = SCHRITTE[k.i];
@@ -1740,31 +2564,100 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     cv.getContext('2d').drawImage(v, a.sx, a.sy, a.sw, a.sh, 0, 0, cv.width, cv.height);
     return cv;
   }
+  function kopie(q) {
+    var cv = document.createElement('canvas');
+    cv.width = q.width; cv.height = q.height;
+    cv.getContext('2d').drawImage(q, 0, 0);
+    return cv;
+  }
+  // Das fertige Foto in voller Auflösung messen (Graubild wird sofort gezogen, also vor dem Verpixeln)
+  function fotoMessen(cv, modus) {
+    var w = cv.width, h = cv.height, g;
+    try { g = grauVon(cv.getContext('2d'), w, h); } catch (e) { return Promise.resolve(null); }
+    var v = $('video'), f = modus === 'kamera' && v.videoWidth ? 0.693 * Math.max(v.videoWidth, v.videoHeight) : 0.693 * Math.max(w, h);
+    var arbeit = massRechnen(g, w, h, f, massOpt(modus === 'uebung')).then(function (r) { return r && r.erg; });
+    var zeit = new Promise(function (ja) { setTimeout(function () { ja(null); }, 8000); });
+    return Promise.race([arbeit, zeit]);
+  }
+  // Livemessung auf die Pixel des Fotos umrechnen (wenn das große Foto selbst nicht klappt)
+  function umrechnen(e, f) {
+    var n = {};
+    for (var key in e) n[key] = e[key];
+    n.ecken = e.ecken.map(function (p) { return [p[0] * f, p[1] * f]; });
+    if (e.lage) n.lage = { H: MASS.mal3([[f, 0, 0], [0, f, 0], [0, 0, 1]], e.lage.H), z: e.lage.z };
+    n.ausLive = true;
+    return n;
+  }
+  // Vorschau fürs Prüfen: das Foto mit dem gemessenen Umriss. Gespeichert wird das Foto ohne Umriss.
+  function mitUmriss(cv, m) {
+    var c2 = kopie(cv), c = c2.getContext('2d'), lw = Math.max(2, Math.round(cv.width / 260));
+    c.lineJoin = 'miter'; c.strokeStyle = '#80c99d';
+    if (m.roh && m.roh.glas && m.lage) {
+      var gl = m.roh.glas;
+      c.lineWidth = Math.max(1, lw * 0.6); c.setLineDash([lw * 3.5, lw * 2.5]);
+      zug(c, [[gl[0], gl[1]], [gl[2], gl[1]], [gl[2], gl[3]], [gl[0], gl[3]]].map(function (q) { return MASS.abb(m.lage.H, q[0], q[1]); }), true);
+      c.stroke(); c.setLineDash([]);
+    }
+    c.lineWidth = lw; zug(c, m.ecken, true); c.stroke();
+    return c2.toDataURL('image/jpeg', 0.85);
+  }
   function ausloesen() {
     if (k.gemacht || k.pruefen) return;
     k.gemacht = true;
     karteWeg();
-    var cv = null, modus = k.modus;
-    try { cv = modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { cv = null; }
-    var lage = cv ? kartenLage() : null;
+    var s = SCHRITTE[k.i], cv = null, modus = k.modus, blatt = blattSchritt(s);
+    try {
+      if (blatt && modus === 'foto' && k.fotoCv) cv = kopie(k.fotoCv);   // Galerie: das Original, nicht der Ausschnitt
+      else cv = modus === 'kamera' ? fotoKamera() : fotoSzene();
+    } catch (e) { cv = null; }
+    var lage = cv && !blatt ? kartenLage() : null;
     k.aufnahme = lage ? { sk: cv.width / W, w: cv.width, h: cv.height, bb: lage.bb, v: lage.v, B: G.B, H: G.H } : null;
+    k.aufnahmeGroesse = cv ? { w: cv.width, h: cv.height } : null;
+    // Beim ganzen Fenster innen wird immer gemessen: mit Maßblatt als Maß, sonst als Gegenprobe, falls ein Blatt klebt
+    var messung = Promise.resolve(null);
+    if (cv && s.id === 'innen') messung = blatt && modus === 'foto' ? Promise.resolve(k.fotoMessung) : fotoMessen(cv, modus);
+    var live = blatt && modus !== 'foto' && k.mass && k.mass.ok && performance.now() - k.mass.zeit < 1500 ? k.mass : null;
     var bl = $('blitz');
     bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
     var pruefung = cv && modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0);
-    if (modus !== 'uebung') setStatus('Foto wird geprüft …', '');
+    if (s.id === 'innen' && cv && (blatt || modus !== 'uebung')) setStatus('Foto wird gemessen …', '');
+    else if (modus !== 'uebung') setStatus('Foto wird geprüft …', '');
     var pause = new Promise(function (ja) { setTimeout(ja, RUHIG ? 0 : 280); });
-    Promise.all([pruefung, pause]).then(function (e) {
-      var url = null;
+    Promise.all([pruefung, pause, messung]).then(function (e) {
+      var url = null, vorschau = null, m = e[2] && e[2].ok ? e[2] : null;
+      if (!m && live && cv) m = umrechnen(live, cv.width / live.bw);
       try { url = cv ? cv.toDataURL('image/jpeg', 0.9) : null; } catch (x) { url = null; }
-      pruefen(url, e[0]);
+      try { if (m && url) vorschau = mitUmriss(cv, m); } catch (x) { vorschau = null; }
+      pruefen(url, e[0], m, vorschau);
     });
   }
-  function pruefen(url, gesichter) {
+  function massZeigen(m) {
+    var pm = $('p-mass'), txt = '', warn = false;
+    if (SCHRITTE[k.i].id === 'innen') {
+      if (m) {
+        var b = Math.round(m.breite / 10), h = Math.round(m.hoehe / 10);
+        if (blattModus()) txt = P.nU === 2 ? 'Gemessen: linker Flügel ca. ' + b + ' × ' + h + ' cm, beide zusammen ca. ' + (2 * b) + ' cm breit'
+          : 'Gemessen: Flügel ca. ' + b + ' × ' + h + ' cm';
+        else {
+          var bp = P.nU === 2 ? Math.round(P.fb / 2) : P.fb, ab = Math.max(Math.abs(b - bp) / bp, Math.abs(h - P.fh) / P.fh);
+          warn = ab > TOL.gegenprobe;
+          txt = warn ? 'Das Maßblatt misst ca. ' + b + ' × ' + h + ' cm, eingetippt ist ' + bp + ' × ' + P.fh + ' cm. Bitte nochmal nachmessen.'
+            : 'Maßblatt passt zu deinem Maß: ca. ' + b + ' × ' + h + ' cm';
+        }
+      } else if (blattModus()) { warn = true; txt = 'Maß nicht erkannt. Nochmal versuchen oder unter „Ändern“ selbst eintragen.'; }
+    }
+    pm.textContent = txt;
+    pm.hidden = !txt;
+    pm.classList.toggle('k-pruefen__mass--warn', warn);
+  }
+  function pruefen(url, gesichter, messung, vorschau) {
     if (!k.offen) return;
     k.pruefen = true;
     k.url = url;
+    k.messung = messung || null;
+    massZeigen(k.messung);
     $('p-nr').textContent = nrText(k.i) + ' · ' + SCHRITTE[k.i].titel;
-    $('p-bild').src = url || '';
+    $('p-bild').src = vorschau || url || '';
     $('p-marke').hidden = k.modus === 'kamera';
     $('p-marke').textContent = k.modus === 'foto' ? 'Aus der Galerie' : 'Übungsfoto';
     var gm = $('p-gesicht');
@@ -1782,7 +2675,18 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return -1;
   }
   function weiter() {
-    fotos[SCHRITTE[k.i].id] = { url: k.url, art: k.modus, karte: SCHRITTE[k.i].id === 'innen' ? k.aufnahme : null };
+    var s = SCHRITTE[k.i], m = s.id === 'innen' ? k.messung : null;
+    // Gemessenes Maß übernehmen: Linien, Skizze und die nächsten Fotos richten sich danach
+    if (m && blattModus()) {
+      var b = Math.round(m.breite / 10) * (P.nU === 2 ? 2 : 1), h = Math.round(m.hoehe / 10);
+      if (b >= 30 && b <= 240 && h >= 40 && h <= 250) {
+        P.fb = b; P.fh = h; P.gemessen = true;
+        merken(); G = geometrie(P); skizze(); formFuellen();
+      }
+    }
+    var karte = s.id === 'innen' ? (m && k.aufnahmeGroesse ? karteAusMessung(m, k.aufnahmeGroesse) : k.aufnahme) : null;
+    fotos[s.id] = { url: k.url, art: k.modus, karte: karte,
+      mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand), ecken: m.ecken } : null };
     k.pruefen = false;
     $('k-pruefen').hidden = true;
     var n = naechster(k.i);
@@ -1831,15 +2735,35 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       modusSetzen('foto');
       fotoStart();
       k.passtSeit = 0; k.passtZaehler = 0; k.treffer = null; k.deutung = null; k.gemacht = false; k.sperre = false;
+      if (blattSchritt(SCHRITTE[k.i])) fotoBlattMessen(img);
     };
     img.onerror = function () { setStatus('Das Foto ließ sich nicht öffnen.', ''); };
     img.src = URL.createObjectURL(datei);
   });
 
+  // Foto aus der Galerie mit Maßblatt: einmal das Original messen (lange Seite höchstens 2560 px)
+  function fotoBlattMessen(img) {
+    var q = Math.min(1, 2560 / Math.max(img.naturalWidth, img.naturalHeight));
+    var cv = document.createElement('canvas');
+    cv.width = Math.round(img.naturalWidth * q); cv.height = Math.round(img.naturalHeight * q);
+    var c = cv.getContext('2d', { willReadFrequently: true });
+    c.drawImage(img, 0, 0, cv.width, cv.height);
+    k.fotoCv = cv; k.fotoMessung = null;
+    var gen = ++k.massGen, g;
+    try { g = grauVon(c, cv.width, cv.height); } catch (e) { k.fotoMessung = { ok: false, marker: 0, zeit: performance.now() }; return; }
+    massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), massOpt(false)).then(function (r) {
+      if (gen !== k.massGen) return;
+      var e = (r && r.erg) || { ok: false, marker: 0 };
+      e.ms = r ? r.ms : 0; e.zeit = performance.now(); e.bw = cv.width; e.bh = cv.height;
+      e.schirm = function (p) { var cm = k.cam; return [(p[0] / q - cm.x) * cm.s + W / 2, (p[1] / q - cm.y) * cm.s + H / 2]; };
+      k.fotoMessung = e;
+    });
+  }
+
   /* ---------- Übung und Foto: Bewegen und Zoomen ---------- */
   function begrenzen(s) {
     if (k.modus === 'foto') return Math.max(k.fotoS * 0.25, Math.min(k.fotoS * 8, s));
-    return Math.max(k.s0 * 0.35, Math.min(Math.max(k.s0 * 10, 40), s));
+    return Math.max(k.s0 * (blattSchritt(SCHRITTE[k.i]) ? 0.25 : 0.35), Math.min(Math.max(k.s0 * 10, 40), s));
   }
   function zoomBei(px, py, f) {
     var wx = k.cam.x + (px - W / 2) / k.cam.s, wy = k.cam.y + (py - H / 2) / k.cam.s;
@@ -1859,7 +2783,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     karteWeg();
     var s = SCHRITTE[k.i], z = zielVon(s), b = k.box;
     var sz = b.w / z[2];
-    var nach = { x: z[0] + z[2] / 2 - (b.x + b.w / 2 - W / 2) / sz, y: z[1] + z[3] / 2 - (b.y + b.h / 2 - H / 2) / sz, s: sz };
+    var nach = blattSchritt(s) ? blattCam(TOL.abstand)
+      : { x: z[0] + z[2] / 2 - (b.x + b.w / 2 - W / 2) / sz, y: z[1] + z[3] / 2 - (b.y + b.h / 2 - H / 2) / sz, s: sz };
     if (RUHIG) { k.cam = nach; return; }
     k.anim = { von: { x: k.cam.x, y: k.cam.y, s: k.cam.s }, nach: nach, dauer: 1300, t0: 0 };
   }
@@ -1932,12 +2857,19 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var gw = JSON.parse(localStorage.getItem(MERK) || 'null');
     if (gw && gw.werte === false) zeigeWerte = false;
   } catch (e) {}
-  $('typ-' + P.typ).checked = true;
-  $(P.nU === 2 ? 'flu-2' : 'flu-1').checked = true;
-  $(P.ol ? 'ol-ja' : 'ol-nein').checked = true;
-  $('f-b').value = P.fb; $('f-h').value = P.fh; $('f-olh').value = P.ofh;
-  $('f-werte').checked = zeigeWerte;
-  olFeld();
+  function formFuellen() {
+    $('typ-' + P.typ).checked = true;
+    $(P.nU === 2 ? 'flu-2' : 'flu-1').checked = true;
+    $(P.ol ? 'ol-ja' : 'ol-nein').checked = true;
+    $(P.mass === 'hand' ? 'mass-hand' : 'mass-blatt').checked = true;
+    $('f-b').value = P.fb; $('f-h').value = P.fh; $('f-olh').value = P.ofh;
+    $('f-werte').checked = zeigeWerte;
+    olFeld();
+    massHinweis();
+  }
+  formFuellen();
+  // Nur für Tests: mit ?test in der Adresse ist der Zustand von außen lesbar
+  if (/[?&]test\b/.test(location.search)) window.__lotse = { k: k, MASS: MASS, P: function () { return P; }, rechnen: massRechnen, fotoMessen: fotoMessen };
 
   skizze();
   liste();

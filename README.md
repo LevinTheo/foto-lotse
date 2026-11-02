@@ -10,6 +10,10 @@ Live: https://levintheo.github.io/foto-lotse/ (sobald GitHub Pages eingeschaltet
 - Gesichter auf den Fotos werden nach dem Auslösen automatisch verpixelt, direkt auf dem Handy
   (Gesichtserkennung face-api von Vladimir Mandic, MIT-Lizenz, siehe vendor/LICENSE-face-api.txt).
 - Flügel, Oberlicht und Maße lassen sich über „Ändern“ einstellen. Gemessen wird am Flügel (der Rahmen ist oft eingeputzt), der Rahmen wird daraus geschätzt. Später kommen die Maße aus der Anfrage auf holtcraft.de.
+- Maßblatt (neu): Klebt das Holtcraft-Maßblatt (A4, vier ArUco-Marker 4×4, Nummern 0–3, je 80 mm) innen auf der Scheibe,
+  misst der Lotse beim ersten Foto den Flügel selbst. Er führt auf ca. 3 m Abstand, mittig vors Fenster und das ganze Fenster ins Bild,
+  zeigt das erkannte Fenster als Umriss und löst aus, wenn alles passt. Die Rechnung läuft auf dem Handy in einem Hintergrund-Thread.
+  Mit „Selbst eingeben“ prüft das Maßblatt die Eingabe nur nach.
 - Ohne Kamera (zum Beispiel am Computer ohne Freigabe) gibt es einen Übungsmodus mit gezeichnetem Fenster.
 
 Schrift: Space Grotesk, Copyright 2020 The Space Grotesk Project Authors, lizenziert unter der

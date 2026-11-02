@@ -142,6 +142,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .feld__eingabe:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
 .feld input { width: 100%; min-width: 0; min-height: 48px; border: 0; background: transparent; padding: 0 12px; font-size: 17px; font-variant-numeric: tabular-nums; outline: none; }
 .feld__einheit { padding: 0 12px; color: var(--ink-muted); }
+.schalter { display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 44px; cursor: pointer; }
+.schalter input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
 .form__hinweis { margin: 0; font-size: 14px; color: var(--ink-muted); }
 .form__fehler { margin: 0; color: var(--danger); font-size: 14px; font-weight: 600; }
 .form__knoepfe { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -341,6 +343,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   font-size: 16px;
   text-align: center;
 }
+.k-mess { margin: 0; padding: 4px 8px; background: var(--cam-panel); color: var(--cam-muted); font-size: 11px; line-height: 1.45; white-space: pre-line; text-align: center; font-variant-numeric: tabular-nums; }
+.k-nachhilfe { margin: 0; max-width: 32ch; font-size: 14px; line-height: 1.35; text-align: center; color: var(--cam-ink); }
 .pille--ok { background: var(--cam-ok); border-color: var(--cam-ok); color: #0f1b16; }
 .pille--warn { border-color: var(--primary); }
 .k-leiste { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
@@ -469,6 +473,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       <label class="feld" for="f-h"><span class="feld__name">Höhe Flügel</span><span class="feld__eingabe"><input id="f-h" type="number" inputmode="numeric" min="40" max="250" value="92"><span class="feld__einheit">cm</span></span></label>
       <label class="feld" for="f-olh" id="feld-olh" hidden><span class="feld__name">Höhe Oberlicht-Flügel</span><span class="feld__eingabe"><input id="f-olh" type="number" inputmode="numeric" min="20" max="110" value="32"><span class="feld__einheit">cm</span></span></label>
     </div>
+    <label class="schalter" for="f-werte"><input type="checkbox" id="f-werte" checked> Messwerte in der Kamera zeigen (zum Testen)</label>
     <p class="form__fehler" id="fehler" role="alert" hidden></p>
     <div class="form__knoepfe">
       <button class="knopf knopf--rand knopf--klein" type="submit">Übernehmen</button>
@@ -537,6 +542,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     </div>
 
     <div class="k-fuss" id="k-fuss">
+      <p class="k-mess" id="k-mess" hidden></p>
+      <p class="k-nachhilfe" id="k-nachhilfe" hidden>Klappt es nicht? Fenster in die Linien und selbst auf den Auslöser tippen.</p>
       <p class="pille" id="k-status" aria-live="polite">Kamera startet …</p>
       <div class="k-leiste">
         <div class="k-links">
@@ -674,7 +681,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      auto: das Foto macht sich von selbst, wenn die Linien passen. */
   var SCHRITTE = [
     { id: 'innen', titel: 'Das ganze Fenster von innen', pflicht: true, szene: 'innen', rand: 0.08, auto: true,
-      tipp: 'Stell dich mittig vor das Fenster. Das ganze Fenster in die Linien, mit etwas Wand drumherum.', ding: 'Fenster' },
+      tipp: 'Gardine zur Seite, Jalousie ganz hoch. Stell dich mittig davor und bring das ganze Fenster in die Linien.', ding: 'Fenster' },
     { id: 'griff', titel: 'Der Griff', pflicht: true, szene: 'innen', rand: 0.06,
       tipp: 'Geh nah an den Griff. Griff und Kante vom Flügel in die Linien.', ding: 'Griff', wo: 'der Griff' },
     { id: 'ecklager', titel: 'Das Ecklager unten', pflicht: true, szene: 'innen', rand: 0.06,
@@ -958,29 +965,42 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var u = (x - bb.x) / bb.w, w = (y - bb.y) / bb.h, cx = bb.x + bb.w / 2, cy = bb.y + bb.h / 2;
     return [cx + (x - cx) * (1 + v.pitch * (0.5 - w)), cy + (y - cy) * (1 + v.yaw * (0.5 - u))];
   }
-  // Wie viel der Linien liegt auf einer Kante (0 bis 1)? Jeder Umriss (Rahmen, Glas) für sich, der schwächste zählt.
-  // Was außerhalb des Bildes liegt, zählt nicht mit. Von jedem Umriss muss aber mindestens ein Drittel im Bild sein.
-  function umrissWert(K, gruppen, grob) {
-    var w = K.w, h = K.h, mx = grob ? K.gx3 : K.fx, my = grob ? K.gy3 : K.fy, schritt = grob ? 3 : 1.5, schwach = Infinity;
+  // Wie viel der Linien liegt auf einer Kante (0 bis 1)?
+  // Je Umriss (Flügel, Glas) wird jede Strecke einzeln bewertet. Das schlechteste Viertel der Strecken zählt nicht mit:
+  // So darf oben eine Jalousie hängen, an der Seite eine Gardine oder unten eine Pflanze stehen.
+  // Das Glas zählt mehr als der Flügel, weil die Kante zur Scheibe bei Tageslicht viel deutlicher ist.
+  // Was außerhalb des Bildes liegt, zählt nicht. Von jedem Umriss muss aber gut ein Drittel im Bild sein.
+  var GEWICHT = { glas: 0.65, fluegel: 0.35 }, SCHLECHT = 0.5;   // SCHLECHT: so viel zählt das schlechteste Viertel noch (verdeckte Ränder)
+  function umrissWert(K, gruppen, grob, detail) {
+    var w = K.w, h = K.h, mx = grob ? K.gx3 : K.fx, my = grob ? K.gy3 : K.fy, schritt = grob ? 3 : 1.5;
+    var summeW = 0, summeG = 0;
     for (var gi = 0; gi < gruppen.length; gi++) {
-      var segs = gruppen[gi], summe = 0, n = 0, soll = 0;
+      var segs = gruppen[gi], soll = 0, drin = 0, teile = [];
       for (var si = 0; si < segs.length; si++) {
         var q = segs[si], dx = q[2] - q[0], dy = q[3] - q[1], len = Math.sqrt(dx * dx + dy * dy);
         if (len < 1) continue;
-        var map = Math.abs(dx) < Math.abs(dy) ? mx : my, schritte = Math.max(1, Math.floor(len / schritt));
+        var map = Math.abs(dx) < Math.abs(dy) ? mx : my, schritte = Math.max(1, Math.floor(len / schritt)), su = 0, n = 0;
         for (var t = 0; t <= schritte; t++) {
           soll++;
           var x = Math.round(q[0] + dx * t / schritte), y = Math.round(q[1] + dy * t / schritte);
           if (x < 1 || y < 1 || x > w - 2 || y > h - 2) continue;
-          summe += map[y * w + x];
+          su += map[y * w + x];
           n++;
         }
+        if (n) { teile.push([su / n, su, n]); drin += n; }
       }
-      if (!soll || n < soll * 0.35) return 0;
-      var mittel = summe / n;
-      if (mittel < schwach) schwach = mittel;
+      if (!soll || drin < soll * 0.35) return 0;
+      teile.sort(function (a, b) { return a[0] - b[0]; });
+      var weg = Math.floor(teile.length / 4), su2 = 0, n2 = 0;
+      for (var ti = 0; ti < teile.length; ti++) {
+        var gw = ti < weg ? SCHLECHT : 1;
+        su2 += teile[ti][1] * gw; n2 += teile[ti][2] * gw;
+      }
+      var wert = n2 ? su2 / n2 : 0, gew = GEWICHT[segs.name] || 1;
+      if (detail) detail[segs.name || ('u' + gi)] = wert;
+      summeW += wert * gew; summeG += gew;
     }
-    return schwach === Infinity ? 0 : schwach;
+    return summeG ? summeW / summeG : 0;
   }
   // b: Linien-Box im kleinen Bild. gruppenFuer(box, verzerrung) liefert die Umrisse für eine verschobene, skalierte und verzerrte Box.
   function suchen(K, gruppenFuer, b) {
@@ -1039,7 +1059,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      groesse: Fenster darf so viel größer oder kleiner sein (0,12 = 12 %), lage: so weit neben der Mitte (Anteil der Linien-Box),
      schraeg / kipp: so viel schräge Sicht ist noch in Ordnung, gefunden / passt: Anteil der Linien, der auf Kanten liegen muss,
      halten: so lange (ms) muss es passen, bis das Foto ausgelöst wird. */
-  var TOL = { groesse: 0.12, lage: 0.09, schraeg: 0.16, kipp: 0.15, gefunden: 0.5, passt: 0.62, halten: 800 };
+  var TOL = { groesse: 0.15, lage: 0.09, schraeg: 0.16, kipp: 0.15, gefunden: 0.4, passt: 0.55, halten: 800,
+    fastHalten: 1500,      // so lange „Fast“ ruhig gehalten zählt auch als passt
+    neigungSeite: 10, neigungKipp: 20,   // Grad, ab dann kommt „Handy gerade halten“ bzw. „senkrecht halten“
+    nachhilfe: 8000 };     // nach so vielen ms ohne Grün kommt der Hinweis, selbst auszulösen
 
   /* ---------- Zustand ---------- */
   var fotos = {};          // id -> { url, art } oder { skip: true }
@@ -1104,6 +1127,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('fehler').hidden = !fehler;
     if (fehler) return;
     P = { typ: t, nU: nU, ol: ol, fb: b, fh: h, ofh: ol ? olH : P.ofh };
+    zeigeWerte = $('f-werte').checked;
     G = geometrie(P);
     if (fotos.innen) fotos.innen.karte = null;
     skizze();
@@ -1257,6 +1281,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     chips();
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
+    k.fastSeit = 0; k.schrittStart = performance.now();
     messen();
     if (k.modus === 'foto') fotoStart();
     else { var st = startVon(s); k.cam = { x: st.x, y: st.y, s: k.s0 * st.f }; }
@@ -1296,7 +1321,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       }
       var x1 = bb.x + (r[0] - z[0]) * m, y1 = bb.y + (r[1] - z[1]) * m, x2 = x1 + r[2] * m, y2 = y1 + r[3] * m;
       var a = verzerrt(x1, y1, bb, v), b = verzerrt(x2, y1, bb, v), c = verzerrt(x2, y2, bb, v), d = verzerrt(x1, y2, bb, v);
-      if (!gr[f.gr]) { gr[f.gr] = []; liste.push(gr[f.gr]); }
+      if (!gr[f.gr]) { gr[f.gr] = []; gr[f.gr].name = f.gr; liste.push(gr[f.gr]); }
       gr[f.gr].push([a[0], a[1], b[0], b[1]], [b[0], b[1], c[0], c[1]], [c[0], c[1], d[0], d[1]], [d[0], d[1], a[0], a[1]]);
     }
     return liste;
@@ -1319,7 +1344,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     for (var i = 0, j = 0; i < grau.length; i++, j += 4) grau[i] = (0.299 * d[j] + 0.587 * d[j + 1] + 0.114 * d[j + 2]) / 255;
     var fx = aw / W, fy = ah / H;
     var b = { x: k.box.x * fx, y: k.box.y * fy, w: k.box.w * fx, h: k.box.h * fy };
-    var tr = suchen(kantenBild(grau, aw, ah), gruppenFuer, b);
+    var K = kantenBild(grau, aw, ah), tr = suchen(K, gruppenFuer, b);
+    tr.teile = {};
+    umrissWert(K, gruppenFuer(tr.box, tr.v || null, tr.gf), false, tr.teile);
     var v = tr.v || { yaw: 0, pitch: 0 };
     tr.rel = { f: tr.f, dx: tr.ox / b.w, dy: tr.oy / b.h, yaw: v.yaw, pitch: v.pitch };
     // Ecken des Rahmens, wie er aus dem erkannten Fenster folgt, zurück in Bildschirm-Pixel
@@ -1335,8 +1362,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function deuten(tr, jetzt) {
     if (k.modus === 'kamera' && k.lage) {
-      if (k.lage.roll > 8) return { art: 'gerade' };
-      if (k.lage.pitch > 15) return { art: 'senkrecht' };
+      if (k.lage.roll > TOL.neigungSeite) return { art: 'gerade' };
+      if (k.lage.pitch > TOL.neigungKipp) return { art: 'senkrecht' };
     }
     if (!tr || tr.wert < TOL.gefunden) {
       // Eben noch zu nah und jetzt gar nicht mehr zu sehen: dann ist man meist noch näher dran
@@ -1372,6 +1399,23 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     },
     uebung: { naeher: 'Geh näher ran', zurueck: 'Geh etwas zurück', passt: 'Passt. Halt still …' }
   };
+  var zeigeWerte = true;
+  function prozent(x) { return Math.round(x * 100) + ' %'; }
+  function messwerte(z, s) {
+    var el = $('k-mess'), an = zeigeWerte && k.modus !== 'uebung' && s.auto;
+    if (el.hidden === an) el.hidden = !an;
+    if (!an) return;
+    var tr = k.treffer, zeilen = [];
+    if (tr) {
+      var t = tr.teile || {};
+      zeilen.push('Erkannt ' + prozent(tr.wert) + ' (Glas ' + prozent(t.glas || 0) + ', Flügel ' + prozent(t.fluegel || 0) + ') · nötig ' + prozent(TOL.passt));
+      var r = tr.rel;
+      zeilen.push('Größe ' + prozent(r.f) + ' · seitlich ' + (r.dx >= 0 ? '+' : '') + prozent(r.dx) + ' · Höhe ' + (r.dy >= 0 ? '+' : '') + prozent(r.dy) + ' · schräg ' + Math.round(r.yaw * 100));
+    } else zeilen.push('Noch kein Bild ausgewertet');
+    if (k.modus === 'kamera') zeilen.push(k.lage ? 'Neigung seitlich ' + Math.round(k.lage.roll) + '°, gekippt ' + Math.round(k.lage.pitch) + '°' : 'Neigung: kein Sensor');
+    var text = zeilen.join('\n');
+    if (el.textContent !== text) el.textContent = text;
+  }
   function setStatus(text, art) {
     if (text === k.statusText && art === k.statusArt) return;
     k.statusText = text; k.statusArt = art;
@@ -1406,9 +1450,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         k.deutung = neu;
       }
       z = k.deutung || { art: 'suchen' };
-      if (k.modus === 'kamera' && k.lage && (k.lage.roll > 8 || k.lage.pitch > 15)) z = deuten(null, t);
+      if (k.modus === 'kamera' && k.lage && (k.lage.roll > TOL.neigungSeite || k.lage.pitch > TOL.neigungKipp)) z = deuten(null, t);
+      // Lange genug „Fast“ und ruhig gehalten: dann passt es auch
+      if (z.art === 'fast') {
+        if (!k.fastSeit) k.fastSeit = t;
+        if (t - k.fastSeit >= TOL.fastHalten) z = { art: 'passt', erkannt: z.erkannt, ecken: z.ecken };
+      } else if (z.art !== 'passt') k.fastSeit = 0;
     } else z = { art: 'manuell' };
     setStatus(statusText(z, s), z.art);
+    messwerte(z, s);
+    var nh = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && t - k.schrittStart > TOL.nachhilfe;
+    if ($('k-nachhilfe').hidden === nh) $('k-nachhilfe').hidden = !nh;
     if (z.art !== 'passt') k.sperre = false;
     var darf = z.art === 'passt' && !k.sperre && !k.gemacht;
     if (darf) { if (!k.passtSeit) k.passtSeit = t; } else k.passtSeit = 0;

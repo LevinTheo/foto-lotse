@@ -431,7 +431,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   inset: 0;
   background: var(--cam-bg);
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-auto-rows: auto;
   gap: 14px;
   padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
@@ -449,6 +450,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .k-pruefen__mass { margin: 4px 0 0; padding: 8px 12px; background: var(--cam-panel); border-left: 4px solid var(--cam-ok); font-size: 15px; line-height: 1.35; font-weight: 600; }
 .k-pruefen__mass--warn { border-left-color: var(--primary); }
 .k-pruefen__knoepfe { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+.k-pruefen__knoepfe--gleich { grid-template-columns: 1fr 1fr; }
+.k-pruefen__werte { margin: 2px 0 0; font-size: 12px; line-height: 1.4; color: var(--cam-muted); white-space: pre-line; font-variant-numeric: tabular-nums; }
+.k-pruefen__griff { display: grid; gap: 10px; }
+.k-pruefen__griff p { margin: 0; font-size: 17px; font-weight: 600; }
+/* Gutes Foto: kurz zeigen, Balken läuft ab, dann geht es von selbst weiter */
+.k-pruefen__lauf { height: 4px; background: var(--cam-panel); overflow: hidden; }
+.k-pruefen__lauf span { display: block; height: 100%; width: 100%; background: var(--cam-ok); transform-origin: left; transform: scaleX(0); }
+.k-pruefen__lauf.an span { animation: lauf var(--dauer, 1500ms) linear forwards; }
+@keyframes lauf { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 @media (prefers-reduced-motion: reduce) {
   .k-tipp { transition: none; }
@@ -466,7 +476,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   <div class="kopf">
     <p class="dach">Anfrage · Fenster 1 von 1 · Fotos</p>
     <h1>Fotos von deinem Fenster</h1>
-    <p class="lead">Wir führen dich Foto für Foto. Halt das Handy so, dass das Fenster in den weißen Linien liegt. Die Hinweise unten sagen dir, ob du näher ran oder zurück musst. Passt es, werden die Linien grün und das Foto macht sich von selbst.</p>
+    <p class="lead">Tipp auf „Analyse starten“. Der Lotse führt dich Foto für Foto ums Fenster: erst das ganze Fenster, dann Griff, Bänder oben und unten und zum Schluss gekippt. Du musst nur hinstellen, wo er dich hinschickt, und auslösen. Beim ganzen Fenster löst er sogar selbst aus.</p>
   </div>
 
   <div class="stueck">
@@ -538,13 +548,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 
   <button class="knopf knopf--haupt" id="start" type="button">
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-    <span id="start-text">Kamera öffnen</span>
+    <span id="start-text">Analyse starten</span>
   </button>
 
   <section class="hinweis">
     <h3>Zum Testen</h3>
-    <p>Neu: Beim ersten Foto misst der Lotse den Flügel selbst. Dafür klebt das Maßblatt (A4, in 100 % gedruckt) innen auf der Scheibe und du stehst ca. 3 m vor dem Fenster. Statt fester Linien zeigt die Kamera dann das erkannte Fenster, grün, wenn Abstand und Lage passen. Ohne Maßblatt unter „Ändern“ auf „Selbst eingeben“ stellen.</p>
-    <p>Mit „Ändern“ stellst du Fenstertyp, Flügel, Oberlicht und Maße deines Fensters ein, dann passen die Linien dazu. Beim Kastenfenster fallen Ecklager und Scherenlager weg, weil es nicht kippt. Gibt es keine Kamera, zum Beispiel in der Vorschau in claude.ai, übst du mit einem gezeichneten Fenster. Über „Galerie“ kannst du auch ein vorhandenes Foto nehmen und es unter die Linien schieben. Gesichter auf den Fotos werden automatisch verpixelt. Die Fotos bleiben auf deinem Handy, die Seite schickt nichts weg.</p>
+    <p>Neu: Ein Knopf, ein roter Faden. Nach „Analyse starten“ geht es ohne Zwischenklicks durch alle Fotos. Gute Fotos sind kurz zu sehen, dann kommt von selbst das nächste.</p>
+    <p>Neu: Schärfe. Jedes Foto wird gleich nach dem Auslösen an den Kanten geprüft. Ist es verwackelt oder falsch scharfgestellt, macht der Lotse es selbst nochmal (bis zu dreimal). Der Wert steht unter den Messwerten.</p>
+    <p>Neu: Griff. Auf dem ersten Foto (mit Maßblatt) sucht der Lotse den Griff am Flügel. Die Bänder sind dann auf der anderen Seite, und Griff-, Scheren- und Ecklager-Foto werden auf die richtige Seite gelegt. Ist er sich nicht sicher, fragt er einmal: links oder rechts? Bei 2 Flügeln sucht er noch nicht.</p>
+    <p>Das Maßblatt (A4, in 100 % gedruckt) klebt innen auf der Scheibe, du stehst ca. 3 m vor dem Fenster. Ohne Maßblatt unter „Ändern“ auf „Selbst eingeben“ stellen. Beim Kastenfenster gibt es statt Ecklager und Schere das obere und untere Band, gekippt wird nicht.</p>
+    <p>Ohne Kamera (zum Beispiel in der Vorschau in claude.ai) übst du mit einem gezeichneten Fenster. Über „Galerie“ kannst du auch ein vorhandenes Foto nehmen. Gesichter werden automatisch verpixelt. Die Fotos bleiben auf deinem Handy, die Seite schickt nichts weg.</p>
   </section>
 </main>
 
@@ -626,9 +639,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     <div class="k-pruefen" id="k-pruefen" hidden>
       <div class="k-pruefen__kopf">
         <p class="k-nr" id="p-nr"></p>
-        <h2 class="k-titel">Gut geworden?</h2>
-        <p class="k-pruefen__frage">Ist es scharf und ist alles drauf, was in den Linien war?</p>
+        <h2 class="k-titel" id="p-titel">Gut geworden?</h2>
+        <p class="k-pruefen__frage" id="p-frage">Ist es scharf und ist alles drauf, was in den Linien war?</p>
         <p class="k-pruefen__mass" id="p-mass" role="status" hidden></p>
+        <p class="k-pruefen__werte" id="p-werte" hidden></p>
       </div>
       <div class="k-pruefen__bild">
         <img id="p-bild" alt="Dein Foto">
@@ -637,7 +651,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           <span class="k-pruefen__marke k-pruefen__marke--ok" id="p-gesicht" hidden></span>
         </div>
       </div>
-      <div class="k-pruefen__knoepfe">
+      <div class="k-pruefen__griff" id="p-griff" hidden>
+        <p>Auf welcher Seite ist der Griff?</p>
+        <div class="k-pruefen__knoepfe k-pruefen__knoepfe--gleich">
+          <button class="kbtn kbtn--haupt" id="p-griff-l" type="button">Links</button>
+          <button class="kbtn kbtn--haupt" id="p-griff-r" type="button">Rechts</button>
+        </div>
+      </div>
+      <div class="k-pruefen__lauf" id="p-lauf" hidden><span></span></div>
+      <div class="k-pruefen__knoepfe" id="p-knoepfe">
         <button class="kbtn kbtn--zweit" id="p-nochmal" type="button">Nochmal</button>
         <button class="kbtn kbtn--haupt" id="p-weiter" type="button">Passt, weiter</button>
       </div>
@@ -660,6 +682,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     griff: '<path d="M14 4v40M34 4v40"/><rect x="20.5" y="11" width="7" height="11"/><path d="M24 18v19" stroke-width="3.5"/>',
     ecklager: '<path d="M12 5v31h31"/><path d="M17 5v26h26"/><rect x="8" y="31" width="9" height="11"/>',
     schere: '<path d="M12 43V12h31"/><path d="M17 43V17h26"/><rect x="8" y="6" width="9" height="11"/>',
+    kipp: '<path d="M10 43h28"/><path d="M14 43V11h20v32"/><path d="M14 43l6-28h20l-6 28" stroke-dasharray="3 2.5"/>',
     aussen: '<path d="M5 43V9h38v34"/><rect x="16" y="17" width="16" height="19"/><rect x="19" y="20" width="10" height="11"/><path d="M14 38h20"/>'
   };
   function pikto(k, g) {
@@ -673,15 +696,23 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   // fb: Breite über alle Flügel, fh: Höhe der unteren Flügel, ofh: Höhe des Oberlicht-Flügels.
   // Startwerte: Levins Testfenster. Die letzte Eingabe merkt sich die Seite auf diesem Handy.
   // mass: 'blatt' = Flügel mit dem Maßblatt messen (Standard), 'hand' = selbst eingeben. gemessen: Maß kommt vom Maßblatt.
-  var P = { typ: 'holz', nU: 1, ol: false, fb: 81, fh: 124, ofh: 32, mass: 'blatt', gemessen: false }, MERK = 'foto-lotse-fenster';
+  // band: auf welcher Seite die Bänder sitzen (1 Flügel). Der Griff ist gegenüber. griffY: Höhe des Griffs als Anteil der Flügelhöhe.
+  // Beides erkennt der Lotse auf dem ersten Foto (griffQuelle: 'erkannt', 'gefragt' oder 'annahme').
+  var P = { typ: 'holz', nU: 1, ol: false, fb: 81, fh: 124, ofh: 32, mass: 'blatt', gemessen: false, band: 'links', griffY: 0.5, griffQuelle: 'annahme' }, MERK = 'foto-lotse-fenster';
   try {
     var gemerkt = JSON.parse(localStorage.getItem(MERK) || 'null');
     if (gemerkt && gemerkt.fb && gemerkt.fh) P = { typ: gemerkt.typ || 'holz', nU: gemerkt.nU === 2 ? 2 : 1, ol: !!gemerkt.ol, fb: +gemerkt.fb, fh: +gemerkt.fh, ofh: +gemerkt.ofh || 32,
-      mass: gemerkt.mass === 'hand' ? 'hand' : 'blatt', gemessen: !!gemerkt.gemessen };
+      mass: gemerkt.mass === 'hand' ? 'hand' : 'blatt', gemessen: !!gemerkt.gemessen, band: 'links', griffY: 0.5, griffQuelle: 'annahme' };
   } catch (e) {}
   function merken() {
     try { localStorage.setItem(MERK, JSON.stringify({ typ: P.typ, nU: P.nU, ol: P.ol, fb: P.fb, fh: P.fh, ofh: P.ofh, mass: P.mass, gemessen: P.gemessen, werte: zeigeWerte })); } catch (e) {}
   }
+  // Bänder rechts (nur 1 Flügel): dann wird alles, was an den Bändern hängt, gespiegelt
+  function gespiegelt() { return P.nU === 1 && P.band === 'rechts'; }
+  function mx(x) { return gespiegelt() ? G.B - x : x; }
+  function mr(r) { return gespiegelt() ? [G.B - r[0] - r[2], r[1], r[2], r[3]] : r; }
+  function bandSeite() { return P.nU === 2 ? 'außen' : P.band; }
+  function griffSeite() { return P.nU === 2 ? 'in der Mitte' : P.band === 'links' ? 'rechts' : 'links'; }
   // Sichtbares Flügelholz je Fenstertyp in cm, von der Flügelkante bis zum Glas: s = seitlich und oben, u = unten.
   // Ausgangswerte von Levin; die Erkennung justiert den Abstand zum Glas selbst um bis zu ein Drittel nach.
   // tiefe: mm von der Außenkante Flügel zurück bis zum Glas (für das Maßblatt). Holz: ca. 40 mm aus dem Test an Levins Fenster,
@@ -712,15 +743,18 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       g.olLeiste = [4 + fs - 2, 4 + fs - 2, B - 8 - 2 * (fs - 2), olH - 8 - 2 * (fs - 2)];
       g.olGlas = [4 + fs, 4 + fs, B - 8 - 2 * fs, olH - 8 - 2 * fs];
     }
-    var hx = p.nU === 2 ? 4 + bw + fs / 2 : B - 4 - fs / 2, hy = top + fh / 2;
+    var re = p.nU === 1 && p.band === 'rechts';   // Bänder rechts, Griff links
+    var gy = Math.max(0.2, Math.min(0.85, p.griffY || 0.5));
+    var hx = p.nU === 2 ? 4 + bw + fs / 2 : re ? 4 + fs / 2 : B - 4 - fs / 2, hy = top + fh * gy;
     g.hx = hx; g.hy = hy;
     g.rosette = [hx - 1.6, hy - 3.8, 3.2, 7.6];
     g.hebel = [hx - 1, hy + 0.6, 2, 13.4];
-    g.eck = [1.6, H - 10.5, 4.4, 8];
-    g.scher = [1.6, top - 1.5, 4.4, 7];
+    g.eck = re ? [B - 6, H - 10.5, 4.4, 8] : [1.6, H - 10.5, 4.4, 8];
+    g.scher = re ? [B - 6, top - 1.5, 4.4, 7] : [1.6, top - 1.5, 4.4, 7];
     var xm = 4 + bw;
     // Senkrechte Kanten neben dem Griff: [x, fein, Glaskante]
     g.griffLinien = p.nU === 2 ? [[xm - fs, 0, 1], [xm - fs + 2, 1, 0], [xm, 0, 0], [xm + fs - 2, 1, 0], [xm + fs, 0, 1]]
+      : re ? [[4 + fs, 0, 1], [4 + fs - 2, 1, 0], [4, 0, 0], [0, 1, 0]]
       : [[B - 4 - fs, 0, 1], [B - 4 - fs + 2, 1, 0], [B - 4, 0, 0], [B, 1, 0]];
     // Von außen: Flügelflächen hinter dem Blendrahmen, Glas, Wetterschenkel unten am Flügel
     var a = { flaechen: [], glaeser: [], wetter: [] };
@@ -745,14 +779,37 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       tipp: 'Gardine zur Seite, Jalousie ganz hoch. Stell dich mittig davor, das Fenster soll den Bildschirm fast füllen.', ding: 'Fenster' },
     { id: 'griff', titel: 'Der Griff', pflicht: true, szene: 'innen', rand: 0.06,
       tipp: 'Geh nah an den Griff. Griff und Kante vom Flügel in die Linien.', ding: 'Griff', wo: 'der Griff' },
-    { id: 'ecklager', titel: 'Das Ecklager unten', pflicht: true, szene: 'innen', rand: 0.06,
-      tipp: 'Die untere Ecke links an den Scharnieren. Die Abdeckung vom Ecklager in den Kasten.', ding: 'Abdeckung', wo: 'das Ecklager' },
     { id: 'schere', titel: 'Das Scherenlager oben', pflicht: true, szene: 'innen', rand: 0.06,
-      tipp: 'Die obere Ecke links an den Scharnieren. Die Abdeckung vom Scherenlager in den Kasten.', ding: 'Abdeckung', wo: 'das Scherenlager' },
+      tipp: '', ding: 'Abdeckung', wo: 'das Scherenlager' },
+    { id: 'ecklager', titel: 'Das Ecklager unten', pflicht: true, szene: 'innen', rand: 0.06,
+      tipp: '', ding: 'Abdeckung', wo: 'das Ecklager' },
+    { id: 'kipp', titel: 'Jetzt das Fenster kippen', pflicht: true, szene: 'innen', rand: 0.035,
+      tipp: 'Griff nach oben drehen und den Flügel oben zu dir kippen. Dann wieder mittig davor stellen, das ganze Fenster ins Bild.', ding: 'Fenster' },
     { id: 'aussen', titel: 'Das ganze Fenster von außen', pflicht: false, szene: 'aussen', rand: 0.035, auto: true,
       tipp: 'Nur wenn du gefahrlos rankommst, zum Beispiel im Erdgeschoss. Das ganze Fenster in die Linien.', ding: 'Fenster' }
   ];
-  function aktiv(s) { return typ().kippt || (s.id !== 'ecklager' && s.id !== 'schere'); }
+  // Titel und Tipps hängen davon ab, wo die Bänder sitzen und ob das Fenster kippt (Kastenfenster: Bänder statt Ecklager und Schere)
+  function texteSetzen() {
+    var kippt = typ().kippt, bs = bandSeite(), gs = griffSeite();
+    SCHRITTE.forEach(function (s) {
+      switch (s.id) {
+        case 'griff':
+          s.tipp = 'Der Griff ist ' + gs + ' am Flügel. Geh nah ran, Griff und Kante vom Flügel in die Linien.';
+          break;
+        case 'schere':
+          s.titel = kippt ? 'Das Scherenlager oben' : 'Das obere Band';
+          s.wo = kippt ? 'das Scherenlager' : 'das obere Band';
+          s.tipp = 'Die obere Ecke ' + bs + ', an den Bändern. ' + (kippt ? 'Die Abdeckung vom Scherenlager' : 'Das Band') + ' in den Kasten.';
+          break;
+        case 'ecklager':
+          s.titel = kippt ? 'Das Ecklager unten' : 'Das untere Band';
+          s.wo = kippt ? 'das Ecklager' : 'das untere Band';
+          s.tipp = 'Die untere Ecke ' + bs + ', an den Bändern. ' + (kippt ? 'Die Abdeckung vom Ecklager' : 'Das Band') + ' in den Kasten.';
+          break;
+      }
+    });
+  }
+  function aktiv(s) { return s.id !== 'kipp' || typ().kippt; }
   function pflichtZahl() { return SCHRITTE.filter(function (s) { return s.pflicht && aktiv(s); }).length; }
   function nrText(i) {
     var akt = SCHRITTE.filter(aktiv);
@@ -762,8 +819,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function zielVon(s) {
     switch (s.id) {
       case 'griff': return [G.hx - 8, G.hy - 9, 16, 26];
-      case 'ecklager': return [-3, G.H - 17, 18, 22];
-      case 'schere': return [-3, G.top - 9, 18, 20];
+      case 'ecklager': return mr([-3, G.H - 17, 18, 22]);
+      case 'schere': return mr([-3, G.top - 9, 18, 20]);
     }
     return [0, 0, G.B, G.H];
   }
@@ -771,9 +828,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function startVon(s) {
     switch (s.id) {
       case 'innen': return { x: G.B * 0.39, y: G.H * 0.64, f: 0.64 };
-      case 'griff': return { x: G.B * 0.55, y: G.H * 0.52, f: 1 };
-      case 'ecklager': return { x: Math.min(26, G.B * 0.33), y: G.H - 28, f: 1.5 };
-      case 'schere': return { x: Math.min(28, G.B * 0.35), y: G.top + 26, f: 1.5 };
+      case 'griff': return { x: mx(G.B * 0.55), y: G.H * 0.52, f: 1 };
+      case 'ecklager': return { x: mx(Math.min(26, G.B * 0.33)), y: G.H - 28, f: 1.5 };
+      case 'schere': return { x: mx(Math.min(28, G.B * 0.35)), y: G.top + 26, f: 1.5 };
+      case 'kipp': return { x: G.B * 0.45, y: G.H * 0.55, f: 0.8 };
     }
     return { x: G.B * 0.68, y: G.H * 0.38, f: 0.72 };
   }
@@ -782,6 +840,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   // basis: der Flügel zu einer Glaskante, damit die Erkennung den Abstand zum Glas nachjustieren kann
   function R(r, o) { o = o || {}; return { t: 'r', r: r, rund: o.rund || 0, klein: !!o.klein, fein: !!o.fein, strich: !!o.strich, gr: o.gr || null, basis: o.basis || null }; }
   function L(x1, y1, x2, y2, fein, glas) { return { t: 'l', a: [x1, y1, x2, y2], fein: !!fein, glas: !!glas }; }
+  function Lm(x1, y1, x2, y2, fein, glas) { return L(mx(x1), y1, mx(x2), y2, fein, glas); }   // auf der Seite der Bänder
   function formen(s) {
     var g = G, out = [], H = g.H, t = g.top;
     switch (s.id) {
@@ -796,12 +855,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         out.push(R(g.rosette, { rund: 0.8 }), R(g.hebel, { rund: 1 }));
         break;
       case 'ecklager':
-        out.push(L(0, H - 40, 0, H), L(-20, H, 40, H), L(4, H - 40, 4, H - 4, true), L(4, H - 4, 40, H - 4, true),
-          L(4 + g.fs, H - 40, 4 + g.fs, H - 4 - g.fu, false, true), L(4 + g.fs, H - 4 - g.fu, 40, H - 4 - g.fu, false, true), R(g.eck, { rund: 0.6 }));
+        out.push(Lm(0, H - 40, 0, H), Lm(-20, H, 40, H), Lm(4, H - 40, 4, H - 4, true), Lm(4, H - 4, 40, H - 4, true),
+          Lm(4 + g.fs, H - 40, 4 + g.fs, H - 4 - g.fu, false, true), Lm(4 + g.fs, H - 4 - g.fu, 40, H - 4 - g.fu, false, true), R(g.eck, { rund: 0.6 }));
         break;
       case 'schere':
-        out.push(L(0, g.ol ? t - 20 : 0, 0, t + 30), L(0, t - 4, 40, t - 4), L(4, t, 4, t + 30, true), L(4, t, 40, t, true),
-          L(4 + g.fs, t + g.fs, 4 + g.fs, t + 30, false, true), L(4 + g.fs, t + g.fs, 40, t + g.fs, false, true), R(g.scher, { rund: 0.6 }));
+        out.push(Lm(0, g.ol ? t - 20 : 0, 0, t + 30), Lm(0, t - 4, 40, t - 4), Lm(4, t, 4, t + 30, true), Lm(4, t, 40, t, true),
+          Lm(4 + g.fs, t + g.fs, 4 + g.fs, t + 30, false, true), Lm(4 + g.fs, t + g.fs, 40, t + g.fs, false, true), R(g.scher, { rund: 0.6 }));
+        break;
+      case 'kipp':
+        // Nur der Umriss als Orientierung: gekippt sieht der Flügel oben anders aus, deshalb löst der Kunde selbst aus
+        out.push(R([0, 0, g.B, g.H], { strich: true }));
+        g.fluegel.forEach(function (f) { out.push(R(f, { fein: true })); });
         break;
       case 'aussen':
         g.aussen.flaechen.forEach(function (f) { out.push(R(f, { gr: 'fluegel' })); });
@@ -822,7 +886,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     g.glaeser.forEach(function (q, i) {
       out += r(q, ' stroke-width="1"');
       var X = x0 + q[0] * s, Y = y0 + q[1] * s, W = q[2] * s, Hh = q[3] * s;
-      var links = !(P.nU === 2 && i === 1);
+      var links = P.nU === 2 ? i === 0 : !gespiegelt();
       var dreh = links ? 'M' + z1(X + W) + ' ' + z1(Y) + 'L' + z1(X) + ' ' + z1(Y + Hh / 2) + 'L' + z1(X + W) + ' ' + z1(Y + Hh)
         : 'M' + z1(X) + ' ' + z1(Y) + 'L' + z1(X + W) + ' ' + z1(Y + Hh / 2) + 'L' + z1(X) + ' ' + z1(Y + Hh);
       var kipp = 'M' + z1(X) + ' ' + z1(Y) + 'L' + z1(X + W / 2) + ' ' + z1(Y + Hh) + 'L' + z1(X + W) + ' ' + z1(Y);
@@ -832,7 +896,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('skizze').innerHTML = '<svg viewBox="0 0 48 60" width="48" height="60" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true">' + out + '</svg>';
     $('stueck-name').textContent = typ().name + ', ' + P.nU + ' Flügel' + (P.ol ? ' mit Oberlicht' : '') + (typ().kippt ? ', Dreh-Kipp' : ', Drehflügel');
     var quelle = P.mass !== 'blatt' ? '' : P.gemessen ? ', gemessen' : ' (Übungswert, wird gemessen)';
-    $('stueck-mass').textContent = 'Flügel ' + P.fb + ' × ' + P.fh + ' cm' + quelle + (P.ol ? ' · Oberlicht-Flügel ' + P.ofh + ' cm hoch' : '') + ' · Scharniere ' + (P.nU === 1 ? 'links' : 'außen');
+    $('stueck-mass').textContent = 'Flügel ' + P.fb + ' × ' + P.fh + ' cm' + quelle + (P.ol ? ' · Oberlicht-Flügel ' + P.ofh + ' cm hoch' : '') + ' · Bänder ' + bandSeite() +
+      (P.nU === 1 ? (P.griffQuelle === 'erkannt' ? ' (erkannt)' : P.griffQuelle === 'gefragt' ? '' : ' (wird erkannt)') : '');
+    texteSetzen();
   }
 
   /* ---------- Übungsfenster zeichnen (in cm) ---------- */
@@ -1150,7 +1216,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     stabil: 0.025,         // zwei Messungen hintereinander dürfen so weit auseinander liegen (2,5 %)
     gegenprobe: 0.08,      // ab so viel Abweichung zur Eingabe kommt „Bitte nachmessen“
     blattPixel: 1280,      // lange Seite des Bildes für die Messung im Livebild
-    blattTakt: 150 };      // ms Pause zwischen zwei Messungen im Livebild
+    blattTakt: 150,        // ms Pause zwischen zwei Messungen im Livebild
+    // Schärfe: Breite des Übergangs an den stärksten Kanten in Pixeln (Bild auf 1600 px lange Seite). Darüber gilt das Foto als unscharf.
+    // Erster Wert aus Versuchen am Rechner, muss mit echten Handyfotos nachgestellt werden (der Wert steht in den Messwerten).
+    schaerfe: 3.6,
+    unscharfVersuche: 3,   // so oft macht der Lotse ein unscharfes Foto selbst nochmal, danach nimmt er es mit Vermerk
+    weiterNach: 1500 };    // ms: so lange ist ein gutes Foto zu sehen, dann geht es von selbst weiter
 
   /* ---------- Maßblatt: Fenster messen ohne Zollstock ----------
      massModul enthält die ganze Rechnung (Marker finden, Lage, Kanten, Maß). Im Livebild läuft sie in einem
@@ -1687,10 +1758,142 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       erg.normale = genau.normale; erg.versatz = genau.versatz;
       if (erg.breite < 250 || erg.hoehe < 350 || erg.breite > 2600 || erg.hoehe > 2800) { erg.ok = false; erg.grund = 'fenster'; }
     }
+    if (erg.ok && opt && opt.griff && roh && roh.ok) {
+      try { erg.griff = griffSuchen(g, w, h, erg, roh); } catch (x) { erg.griff = null; }
+      // Liegen die Flügelkanten nicht stimmig (Holz links und rechts sehr verschieden), liegen auch die Suchstreifen falsch:
+      // dann lieber fragen als raten
+      if (erg.griff && !erg.sicher) { erg.griff.sicher = false; erg.griff.grund = 'messung'; }
+    }
     return erg;
   }
+
+  /* ---------- Schärfe ----------
+     An den kräftigsten Kanten im Bild wird gemessen, wie breit der Übergang von dunkel nach hell ist
+     (10 % bis 90 % des Sprungs, in Pixeln). Scharf: 1 bis 2,5 Pixel. Verwackelt oder falsch scharfgestellt: deutlich mehr.
+     Senkrechte und waagerechte Kanten zählen getrennt, denn Verwackeln macht oft nur eine Richtung weich.
+     Das Bild sollte vorher auf eine feste Größe gebracht werden (lange Seite 1600 px), damit die Werte vergleichbar sind. */
+  function kantenBreite(g, w, h, x, y, ax, ay) {
+    var R = 14, v = [], i;
+    for (i = -R; i <= R; i++) {
+      var xx = x + ax * i, yy = y + ay * i;
+      if (xx < 0 || yy < 0 || xx >= w || yy >= h) return -1;
+      v.push(g[yy * w + xx]);
+    }
+    var m = R, s = v[m + 1] - v[m - 1] >= 0 ? 1 : -1, a = m, b = m;
+    while (b < 2 * R && (v[b + 1] - v[b]) * s > 0) b++;
+    while (a > 0 && (v[a] - v[a - 1]) * s > 0) a--;
+    var lo = v[a], hi = v[b], d = (hi - lo) * s;
+    if (d < 28 || a === 0 || b === 2 * R) return -1;
+    function stelle(anteil) {
+      var ziel = lo + (hi - lo) * anteil;
+      for (var j = a; j < b; j++) {
+        if ((v[j] - ziel) * s <= 0 && (v[j + 1] - ziel) * s >= 0) {
+          var t = v[j + 1] === v[j] ? 0 : (ziel - v[j]) / (v[j + 1] - v[j]);
+          return j + t;
+        }
+      }
+      return -1;
+    }
+    var p1 = stelle(0.1), p9 = stelle(0.9);
+    return p1 < 0 || p9 < 0 ? -1 : Math.abs(p9 - p1);
+  }
+  function schaerfe(g, w, h) {
+    var x, y, i, n = 0, mags = new Float32Array(Math.ceil(w / 2) * Math.ceil(h / 2)), max = 0;
+    for (y = 2; y < h - 2; y += 2) for (x = 2; x < w - 2; x += 2) {
+      i = y * w + x;
+      var gx = g[i + 1] - g[i - 1], gy = g[i + w] - g[i - w], mg = Math.abs(gx) + Math.abs(gy);
+      mags[n++] = mg; if (mg > max) max = mg;
+    }
+    // Schwelle: die stärksten 1,5 % der Kanten
+    var hist = new Uint32Array(256), sk = max > 0 ? 255 / max : 0, summe = 0, schwelle = max;
+    for (i = 0; i < n; i++) hist[Math.round(mags[i] * sk)]++;
+    for (i = 255; i >= 0; i--) { summe += hist[i]; if (summe >= n * 0.015) { schwelle = i / sk; break; } }
+    schwelle = Math.max(schwelle, 30);
+    var senk = [], waag = [], schritt = Math.max(2, Math.round(Math.sqrt(n * 0.015 / 3000)) * 2);
+    for (y = 14; y < h - 14; y += schritt) for (x = 14; x < w - 14; x += schritt) {
+      i = y * w + x;
+      var dx = g[i + 1] - g[i - 1], dy = g[i + w] - g[i - w], adx = Math.abs(dx), ady = Math.abs(dy);
+      if (adx + ady < schwelle) continue;
+      // nur die Mitte der Kante (stärker als die Nachbarn quer zur Kante)
+      if (adx >= 2 * ady) {
+        if (Math.abs(g[i + 2] - g[i]) > adx || Math.abs(g[i] - g[i - 2]) > adx) continue;
+        var bx = kantenBreite(g, w, h, x, y, 1, 0); if (bx > 0) senk.push(bx);
+      } else if (ady >= 2 * adx) {
+        if (Math.abs(g[i + 2 * w] - g[i]) > ady || Math.abs(g[i] - g[i - 2 * w]) > ady) continue;
+        var by = kantenBreite(g, w, h, x, y, 0, 1); if (by > 0) waag.push(by);
+      }
+    }
+    function median(a) { if (a.length < 12) return -1; a.sort(function (p, q) { return p - q; }); return a[Math.floor(a.length / 2)]; }
+    var ms = median(senk), mw = median(waag);
+    var breite = ms < 0 && mw < 0 ? -1 : Math.max(ms, mw);
+    return { breite: breite, senk: ms, waag: mw, n: senk.length + waag.length };
+  }
+
+  /* ---------- Griff suchen ----------
+     Auf dem ganzen Fenster (mit Maßblatt gemessen) wird links und rechts das Flügelholz neben dem Glas abgetastet.
+     Gezählt wird nicht die Farbe, sondern wie sehr ein Stück vom Rest desselben Holzes abweicht und wie viele Kanten es hat.
+     So ist es egal, ob der Flügel weiß, braun oder grau ist: Der Griff (Rosette, Hebel, Schatten) ist die größte Störung
+     im mittleren Bereich. Die Bänder liegen dann auf der anderen Seite. */
+  function griffSuchen(g, w, h, erg, roh) {
+    var B = erg.breite, Hh = erg.hoehe;
+    var Hf = homographie([[0, 0], [B, 0], [B, Hh], [0, Hh]], erg.ecken);
+    if (!Hf) return null;
+    var hz = roh.holz;   // sichtbares Holz neben dem Glas in mm: links, oben, rechts, unten
+    function streifen(seite) {
+      var holz = Math.max(35, Math.min(140, seite === 'l' ? hz[0] : hz[2])), spalten = [], zeilen = [], r, c;
+      for (c = 0; c < 9; c++) {
+        var t = 0.1 + 0.8 * c / 8;
+        spalten.push(seite === 'l' ? t * holz : B - t * holz);
+      }
+      var y0 = 0.06 * Hh, y1 = 0.94 * Hh, sy = 4;
+      for (var y = y0; y <= y1; y += sy) zeilen.push(y);
+      var V = [];
+      for (r = 0; r < zeilen.length; r++) {
+        var z = [];
+        for (c = 0; c < spalten.length; c++) {
+          var p = abb(Hf, spalten[c], zeilen[r]), v = bilinear(g, w, h, p[0], p[1]);
+          if (v < 0) return null;
+          z.push(v);
+        }
+        V.push(z);
+      }
+      var cm = [];
+      for (c = 0; c < spalten.length; c++) {
+        var sp = V.map(function (z) { return z[c]; }).sort(function (a, b) { return a - b; });
+        cm.push(sp[Math.floor(sp.length / 2)]);
+      }
+      var A = [];
+      for (r = 0; r < V.length; r++) {
+        var s = 0;
+        for (c = 0; c < spalten.length; c++) {
+          s += Math.abs(V[r][c] - cm[c]);
+          if (r > 0 && r < V.length - 1) s += 0.5 * Math.abs(V[r + 1][c] - V[r - 1][c]);
+          if (c > 0 && c < spalten.length - 1) s += 0.5 * Math.abs(V[r][c + 1] - V[r][c - 1]);
+        }
+        A.push(s / spalten.length);
+      }
+      var basis = A.slice().sort(function (a, b) { return a - b; })[Math.floor(A.length / 2)];
+      // Fenster von 12 cm Höhe zwischen 22 % und 82 % der Flügelhöhe: wo ist die Störung am größten?
+      var fen = Math.round(120 / sy), best = 0, by = 0;
+      for (r = 0; r + fen <= A.length; r++) {
+        var mitte = zeilen[r + Math.floor(fen / 2)];
+        if (mitte < 0.22 * Hh || mitte > 0.82 * Hh) continue;
+        var su = 0;
+        for (var j = r; j < r + fen; j++) su += A[j];
+        su /= fen;
+        if (su > best) { best = su; by = mitte; }
+      }
+      return { wert: best / (basis + 3), y: by / Hh, basis: basis };
+    }
+    var L = streifen('l'), R = streifen('r');
+    if (!L || !R) return null;
+    var gross = L.wert >= R.wert ? L : R, klein = L.wert >= R.wert ? R : L;
+    var verh = gross.wert / Math.max(0.2, klein.wert);
+    return { seite: L.wert >= R.wert ? 'l' : 'r', y: gross.y, links: L.wert, rechts: R.wert, verh: verh,
+      sicher: verh >= 1.35 && gross.wert >= 1.5 };
+  }
   /*MASS-ENDE*/
-    return { messen: messen, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
+    return { messen: messen, schaerfe: schaerfe, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
   }
   var MASS = massModul();
   var arbeiter = null, auftragNr = 0, auftraege = {};
@@ -1746,7 +1949,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     cam: { x: 40, y: 50, s: 3 }, zeiger: new Map(), anim: null, bild: null, formen: [],
     passtSeit: 0, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
     letzteAnalyse: 0, treffer: null, lage: null, zuNah: -1e9, statusText: '', statusArt: '', karte: true, zurueck: null,
-    mass: null, massGen: 0, massLaeuft: false, massZeit: 0, messung: null, fotoMessung: null, fotoCv: null
+    mass: null, massGen: 0, massLaeuft: false, massZeit: 0, messung: null, fotoMessung: null, fotoCv: null,
+    schaerfe: null, unscharfZahl: 0, warteBis: 0, warteText: '', griffErg: null, weiterUhr: 0
   };
 
   /* ---------- Liste in der Anfrage ---------- */
@@ -1767,7 +1971,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var alle = da === pflichtZahl();
     $('fertig').hidden = !alle;
     $('start').hidden = alle;
-    $('start-text').textContent = (da || Object.keys(fotos).length) ? 'Weiter fotografieren' : 'Kamera öffnen';
+    $('start-text').textContent = (da || Object.keys(fotos).length) ? 'Analyse fortsetzen' : 'Analyse starten';
   }
   function ersterOffen() {
     for (var i = 0; i < SCHRITTE.length; i++) if (aktiv(SCHRITTE[i]) && !fotos[SCHRITTE[i].id]) return i;
@@ -1801,7 +2005,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('fehler').hidden = !fehler;
     if (fehler) return;
     var gem = P.gemessen && b === P.fb && h === P.fh && nU === P.nU;
-    P = { typ: t, nU: nU, ol: ol, fb: b, fh: h, ofh: ol ? olH : P.ofh, mass: $('mass-hand').checked ? 'hand' : 'blatt', gemessen: gem };
+    P = { typ: t, nU: nU, ol: ol, fb: b, fh: h, ofh: ol ? olH : P.ofh, mass: $('mass-hand').checked ? 'hand' : 'blatt', gemessen: gem,
+      band: P.band, griffY: P.griffY, griffQuelle: P.griffQuelle };
     zeigeWerte = $('f-werte').checked;
     merken();
     G = geometrie(P);
@@ -1893,6 +2098,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function schliessen() {
     k.offen = false;
+    clearTimeout(k.weiterUhr);
     cancelAnimationFrame(k.raf);
     if (k.stream) { k.stream.getTracks().forEach(function (t) { t.stop(); }); k.stream = null; }
     $('video').srcObject = null;
@@ -1923,7 +2129,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var ah = Math.max(140, unten - oben), aw = W * 0.94;
     var a = z[2] / z[3], r = s.rand;
     var bw = Math.min(aw / (1 + 2 * r), ah / (1 / a + 2 * r));
-    if (s.id !== 'innen' && s.id !== 'aussen') bw *= 0.84;
+    if (s.id !== 'innen' && s.id !== 'aussen' && s.id !== 'kipp') bw *= 0.84;
     var bh = bw / a;
     return { x: (W - bw) / 2, y: oben + (ah - bh) / 2, w: bw, h: bh };
   }
@@ -1973,6 +2179,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
+    k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; clearTimeout(k.weiterUhr);
     k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
@@ -2294,6 +2501,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var t = TEXTE[blattSchritt(s) && k.modus === 'uebung' ? 'kamera' : k.modus] || {};
     if (z.art === 'schieben') return s.ding + (s.id === 'ecklager' || s.id === 'schere' ? ' in den Kasten' : ' in die Linien');
     if (z.art === 'suchen') return t.suchen || (s.ding + ' in die Linien');
+    if (z.art === 'manuell' && s.id === 'kipp') return 'Gekippt? Ganzes Fenster ins Bild, dann auslösen.';
     if (z.art === 'manuell' && s.id !== 'innen' && s.id !== 'aussen') return k.modus === 'foto' ? 'Schieb die Stelle in den Kasten, dann auslösen.' : 'Liegt es im Kasten? Dann auslösen.';
     return t[z.art] || '';
   }
@@ -2326,12 +2534,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         if (t - k.fastSeit >= TOL.fastHalten) z = { art: 'passt', erkannt: z.erkannt, ecken: z.ecken };
       } else if (z.art !== 'passt') k.fastSeit = 0;
     } else z = { art: 'manuell' };
-    setStatus(statusText(z, s), z.art);
+    var warten = performance.now() < (k.warteBis || 0);
+    if (warten) setStatus(k.warteText, 'gerade');
+    else setStatus(statusText(z, s), z.art);
     messwerte(z, s);
     var nh = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && t - k.schrittStart > TOL.nachhilfe;
     if ($('k-nachhilfe').hidden === nh) $('k-nachhilfe').hidden = !nh;
     if (z.art !== 'passt') k.sperre = false;
-    var darf = z.art === 'passt' && !k.sperre && !k.gemacht;
+    var darf = z.art === 'passt' && !k.sperre && !k.gemacht && !warten;
     if (darf) { if (!k.passtSeit) k.passtSeit = t; } else k.passtSeit = 0;
     var p = k.passtSeit ? Math.min(1, (t - k.passtSeit) / TOL.halten) : 0;
     $('k-ausloeser').style.setProperty('--p', p.toFixed(3));
@@ -2575,10 +2785,23 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var w = cv.width, h = cv.height, g;
     try { g = grauVon(cv.getContext('2d'), w, h); } catch (e) { return Promise.resolve(null); }
     var v = $('video'), f = modus === 'kamera' && v.videoWidth ? 0.693 * Math.max(v.videoWidth, v.videoHeight) : 0.693 * Math.max(w, h);
-    var arbeit = massRechnen(g, w, h, f, massOpt(modus === 'uebung')).then(function (r) { return r && r.erg; });
+    var opt = massOpt(modus === 'uebung');
+    opt.griff = P.nU === 1;   // auf dem fertigen Foto auch den Griff suchen
+    var arbeit = massRechnen(g, w, h, f, opt).then(function (r) { return r && r.erg; });
     var zeit = new Promise(function (ja) { setTimeout(function () { ja(null); }, 8000); });
     return Promise.race([arbeit, zeit]);
   }
+  // Schärfe eines Fotos: auf feste Größe (lange Seite 1600 px) bringen und an den Kanten messen
+  function schaerfeVon(cv) {
+    try {
+      var q = Math.min(1, 1600 / Math.max(cv.width, cv.height)), w = Math.max(1, Math.round(cv.width * q)), h = Math.max(1, Math.round(cv.height * q));
+      var c2 = document.createElement('canvas'); c2.width = w; c2.height = h;
+      var c = c2.getContext('2d', { willReadFrequently: true });
+      c.drawImage(cv, 0, 0, w, h);
+      return MASS.schaerfe(grauVon(c, w, h), w, h);
+    } catch (e) { return null; }
+  }
+  function unscharf(sch) { return !!(sch && sch.breite > TOL.schaerfe); }
   // Livemessung auf die Pixel des Fotos umrechnen (wenn das große Foto selbst nicht klappt)
   function umrechnen(e, f) {
     var n = {};
@@ -2610,6 +2833,19 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (blatt && modus === 'foto' && k.fotoCv) cv = kopie(k.fotoCv);   // Galerie: das Original, nicht der Ausschnitt
       else cv = modus === 'kamera' ? fotoKamera() : fotoSzene();
     } catch (e) { cv = null; }
+    // Schärfe gleich prüfen. Mit Kamera: unscharf heißt sofort nochmal, ohne dass der Kunde etwas tippen muss.
+    var sch = cv ? schaerfeVon(cv) : null;
+    k.schaerfe = sch;
+    if (modus === 'kamera' && unscharf(sch) && k.unscharfZahl < TOL.unscharfVersuche) {
+      k.unscharfZahl++;
+      var bl0 = $('blitz');
+      bl0.classList.remove('an'); void bl0.offsetWidth; bl0.classList.add('an');
+      k.gemacht = false; k.passtSeit = 0;
+      k.warteBis = performance.now() + 1600;
+      k.warteText = 'Unscharf geworden. Handy ganz ruhig halten, ' + (s.auto ? 'gleich kommt das nächste Foto.' : 'dann nochmal auslösen.');
+      setStatus(k.warteText, 'gerade');
+      return;
+    }
     var lage = cv && !blatt ? kartenLage() : null;
     k.aufnahme = lage ? { sk: cv.width / W, w: cv.width, h: cv.height, bb: lage.bb, v: lage.v, B: G.B, H: G.H } : null;
     k.aufnahmeGroesse = cv ? { w: cv.width, h: cv.height } : null;
@@ -2664,9 +2900,53 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     gm.hidden = k.modus === 'uebung' || !gesichter;
     gm.classList.toggle('k-pruefen__marke--ok', gesichter > 0);
     gm.textContent = gesichter < 0 ? 'Gesichter nicht geprüft' : gesichter === 1 ? '1 Gesicht verpixelt' : gesichter + ' Gesichter verpixelt';
-    $('p-weiter').textContent = naechster(k.i) < 0 ? 'Passt, fertig' : 'Passt, weiter';
+    var s = SCHRITTE[k.i], sch = k.schaerfe, weich = unscharf(sch);
+    // Griff auf dem ersten Foto: sicher erkannt → übernehmen. Sonst einmal fragen (ein Tipp).
+    var frageGriff = false;
+    k.griffErg = null;
+    if (s.id === 'innen' && P.nU === 1) {
+      var gr = messung && messung.griff;
+      if (gr && gr.sicher) k.griffErg = { band: gr.seite === 'l' ? 'rechts' : 'links', y: gr.y, quelle: 'erkannt' };
+      else frageGriff = true;
+    }
+    // Ohne Maß (Maßblatt-Modus) oder unscharf trotz Wiederholung: der Kunde entscheidet. Sonst geht es von selbst weiter.
+    var warten = (s.id === 'innen' && blattModus() && !messung) || (weich && k.modus !== 'uebung');
+    $('p-titel').textContent = frageGriff ? 'Eine Frage noch' : warten ? 'Gut geworden?' : 'Gespeichert';
+    $('p-frage').textContent = weich ? 'Das Foto ist etwas unscharf. Nochmal, oder so nehmen?' :
+      frageGriff ? 'Den Griff konnte ich auf dem Foto nicht sicher erkennen.' :
+      warten ? 'Ist es scharf und ist alles drauf, was in den Linien war?' : 'Scharf und vollständig. Es geht gleich weiter.';
+    var werte = [];
+    if (zeigeWerte) {
+      if (sch) werte.push('Schärfe: Kanten ' + (sch.breite < 0 ? 'nicht messbar' : komma(sch.breite, 1) + ' px') + ' (senkrecht ' + komma(sch.senk, 1) +
+        ', waagerecht ' + komma(sch.waag, 1) + ', ' + sch.n + ' Stellen) · Grenze ' + komma(TOL.schaerfe, 1) + ' px');
+      if (s.id === 'innen' && messung && messung.griff) {
+        var g2 = messung.griff;
+        werte.push('Griff: ' + (g2.seite === 'l' ? 'links' : 'rechts') + ' auf ' + Math.round(g2.y * 100) + ' % Höhe · Wert links ' + komma(g2.links, 2) +
+          ', rechts ' + komma(g2.rechts, 2) + ' · ' + (g2.sicher ? 'sicher' : 'unsicher'));
+      } else if (s.id === 'innen' && P.nU === 1) werte.push('Griff: nicht gesucht (kein Maß vom Foto)');
+    }
+    $('p-werte').textContent = werte.join('\n');
+    $('p-werte').hidden = !werte.length;
+    $('p-griff').hidden = !frageGriff;
+    $('p-weiter').hidden = frageGriff;
+    $('p-knoepfe').classList.toggle('k-pruefen__knoepfe--gleich', frageGriff);
+    $('p-weiter').textContent = weich ? 'So nehmen' : naechster(k.i) < 0 ? 'Passt, fertig' : 'Passt, weiter';
+    var auto = !warten && !frageGriff;
+    var lauf = $('p-lauf');
+    lauf.hidden = !auto;
+    lauf.classList.remove('an');
     $('k-pruefen').hidden = false;
-    $('p-weiter').focus();
+    clearTimeout(k.weiterUhr);
+    if (auto) {
+      lauf.style.setProperty('--dauer', TOL.weiterNach + 'ms');
+      void lauf.offsetWidth; lauf.classList.add('an');
+      k.weiterUhr = setTimeout(function () { if (k.pruefen) weiter(); }, TOL.weiterNach);
+    }
+    (frageGriff ? $('p-griff-r') : $('p-weiter')).focus();
+  }
+  function griffGewaehlt(seite) {
+    k.griffErg = { band: seite === 'links' ? 'rechts' : 'links', y: 0.5, quelle: 'gefragt' };
+    weiter();
   }
   // Nächstes offenes Foto nach i, sonst ein offenes davor
   function naechster(i) {
@@ -2675,7 +2955,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return -1;
   }
   function weiter() {
+    clearTimeout(k.weiterUhr);
     var s = SCHRITTE[k.i], m = s.id === 'innen' ? k.messung : null;
+    // Seite der Bänder und Höhe des Griffs übernehmen: Griff-, Scheren- und Ecklager-Foto richten sich danach
+    if (k.griffErg) {
+      P.band = k.griffErg.band; P.griffY = k.griffErg.y; P.griffQuelle = k.griffErg.quelle;
+      G = geometrie(P); skizze();
+      k.griffErg = null;
+    }
     // Gemessenes Maß übernehmen: Linien, Skizze und die nächsten Fotos richten sich danach
     if (m && blattModus()) {
       var b = Math.round(m.breite / 10) * (P.nU === 2 ? 2 : 1), h = Math.round(m.hoehe / 10);
@@ -2685,7 +2972,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       }
     }
     var karte = s.id === 'innen' ? (m && k.aufnahmeGroesse ? karteAusMessung(m, k.aufnahmeGroesse) : k.aufnahme) : null;
-    fotos[s.id] = { url: k.url, art: k.modus, karte: karte,
+    fotos[s.id] = { url: k.url, art: k.modus, karte: karte, unscharf: unscharf(k.schaerfe),
+      schaerfe: k.schaerfe ? Math.round(k.schaerfe.breite * 10) / 10 : null,
       mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand), ecken: m.ecken } : null };
     k.pruefen = false;
     $('k-pruefen').hidden = true;
@@ -2696,6 +2984,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('k-ausloeser').focus();
   }
   function nochmal() {
+    clearTimeout(k.weiterUhr);
+    k.griffErg = null;
+    k.unscharfZahl = 0;
     k.pruefen = false;
     k.gemacht = false;
     k.sperre = true;
@@ -2751,7 +3042,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.fotoCv = cv; k.fotoMessung = null;
     var gen = ++k.massGen, g;
     try { g = grauVon(c, cv.width, cv.height); } catch (e) { k.fotoMessung = { ok: false, marker: 0, zeit: performance.now() }; return; }
-    massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), massOpt(false)).then(function (r) {
+    var opt = massOpt(false);
+    opt.griff = P.nU === 1;
+    massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt).then(function (r) {
       if (gen !== k.massGen) return;
       var e = (r && r.erg) || { ok: false, marker: 0 };
       e.ms = r ? r.ms : 0; e.zeit = performance.now(); e.bw = cv.width; e.bh = cv.height;
@@ -2829,7 +3122,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var b = e.target.closest('.foto');
     if (b) { lageSensor(); oeffnen(parseInt(b.getAttribute('data-i'), 10), b); }
   });
-  $('neu').addEventListener('click', function () { fotos = {}; liste(); lageSensor(); oeffnen(0, $('start')); });
+  function vonVorn() {
+    fotos = {};
+    P.band = 'links'; P.griffY = 0.5; P.griffQuelle = 'annahme';
+    G = geometrie(P); skizze(); liste();
+  }
+  $('neu').addEventListener('click', function () { vonVorn(); lageSensor(); oeffnen(0, $('start')); });
   $('k-zu').addEventListener('click', schliessen);
   $('k-ausloeser').addEventListener('click', ausloesen);
   $('k-skip').addEventListener('click', ueberspringen);
@@ -2842,6 +3140,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   $('k-ort-ok').addEventListener('click', function () { $('k-ort').hidden = true; $('k-mini').focus(); });
   $('p-weiter').addEventListener('click', weiter);
   $('p-nochmal').addEventListener('click', nochmal);
+  $('p-griff-l').addEventListener('click', function () { griffGewaehlt('links'); });
+  $('p-griff-r').addEventListener('click', function () { griffGewaehlt('rechts'); });
   document.addEventListener('keydown', function (e) {
     if (!k.offen) return;
     if (e.key === 'Escape') { if (!$('k-ort').hidden) $('k-ort').hidden = true; else if (k.pruefen) nochmal(); else schliessen(); }
@@ -2869,7 +3169,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   formFuellen();
   // Nur für Tests: mit ?test in der Adresse ist der Zustand von außen lesbar
-  if (/[?&]test\b/.test(location.search)) window.__lotse = { k: k, MASS: MASS, P: function () { return P; }, rechnen: massRechnen, fotoMessen: fotoMessen };
+  if (/[?&]test\b/.test(location.search)) window.__lotse = { k: k, MASS: MASS, P: function () { return P; }, G: function () { return G; }, fotos: function () { return fotos; },
+    rechnen: massRechnen, fotoMessen: fotoMessen, schaerfeVon: schaerfeVon, setzeBand: function (b) { P.band = b; G = geometrie(P); skizze(); } };
 
   skizze();
   liste();

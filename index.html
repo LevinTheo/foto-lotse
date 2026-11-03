@@ -192,6 +192,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .knopf--haupt:active { background: var(--primary-pressed); }
 .knopf--rand { background: transparent; border-color: var(--ink); color: var(--ink); min-height: 48px; }
 .knopf--klein { min-height: 48px; font-size: 16px; }
+.knopf--manuell { width: 100%; min-height: 56px; }
 .knopf svg { flex: none; }
 
 .fertig { display: grid; gap: 12px; padding: 16px; background: var(--success-soft); color: var(--ink); }
@@ -497,7 +498,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     <span id="start-text">Analyse starten</span>
   </button>
 
-  <div class="stueck">
+  <button class="knopf knopf--rand knopf--manuell" id="manuell" type="button" aria-expanded="false" aria-controls="form">Manuelles Aufmaß</button>
+
+  <div class="stueck" hidden>
     <span class="stueck__skizze" id="skizze"></span>
     <div class="stueck__text">
       <p class="stueck__name" id="stueck-name"></p>
@@ -552,7 +555,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   </form>
 
 
-  <section class="hinweis">
+  <section class="hinweis" hidden>
     <h3>Zum Testen</h3>
     <p>Neu: Ein Knopf, ein roter Faden. Nach „Analyse starten“ geht es ohne Zwischenklicks durch alle Fotos. Gute Fotos sind kurz zu sehen, dann kommt von selbst das nächste.</p>
     <p>Neu: Schärfe. Jedes Foto wird gleich nach dem Auslösen an den Kanten geprüft. Ist es verwackelt oder falsch scharfgestellt, macht der Lotse es selbst nochmal (bis zu dreimal). Der Wert steht unter den Messwerten.</p>
@@ -1984,12 +1987,20 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('form').hidden = !an;
     $('aendern').setAttribute('aria-expanded', an ? 'true' : 'false');
     $('aendern').textContent = an ? 'Schließen' : 'Ändern';
+    $('manuell').setAttribute('aria-expanded', an ? 'true' : 'false');
   }
   function olFeld() { $('feld-olh').hidden = !$('ol-ja').checked; }
   function massHinweis() { var b = $('mass-blatt').checked; $('hinweis-blatt').hidden = !b; $('hinweis-hand').hidden = b; }
   $('mass-blatt').addEventListener('change', massHinweis);
   $('mass-hand').addEventListener('change', massHinweis);
   $('aendern').addEventListener('click', function () { formZeigen($('form').hidden); });
+  // Platzhalter: Manuelles Aufmaß öffnet vorerst das Formular mit „Selbst eingeben“. Der eigene Lotse dafür kommt später.
+  $('manuell').addEventListener('click', function () {
+    var auf = $('form').hidden;
+    if (auf) { $('mass-hand').checked = true; massHinweis(); }
+    formZeigen(auf);
+    this.setAttribute('aria-expanded', auf ? 'true' : 'false');
+  });
   $('ol-ja').addEventListener('change', olFeld);
   $('ol-nein').addEventListener('change', olFeld);
   $('form').addEventListener('submit', function (e) {

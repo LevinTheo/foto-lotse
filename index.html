@@ -479,6 +479,24 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     <p class="lead">Tipp auf „Analyse starten“. Der Lotse führt dich Foto für Foto ums Fenster: erst das ganze Fenster, dann Griff, Bänder oben und unten und zum Schluss gekippt. Du musst nur hinstellen, wo er dich hinschickt, und auslösen. Beim ganzen Fenster löst er sogar selbst aus.</p>
   </div>
 
+  <section hidden>
+    <div class="liste-kopf">
+      <h2>Deine Fotos</h2>
+      <span id="zaehler">0 von 4 Pflichtfotos</span>
+    </div>
+    <ol class="fotos" id="fotos"></ol>
+  </section>
+
+  <div class="fertig" id="fertig" hidden>
+    <p><strong>Alle Pflichtfotos sind da.</strong> In der echten Anfrage geht es jetzt weiter mit „Was soll gemacht werden?“.</p>
+    <button class="knopf knopf--rand" id="neu" type="button">Nochmal von vorn</button>
+  </div>
+
+  <button class="knopf knopf--haupt" id="start" type="button">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+    <span id="start-text">Analyse starten</span>
+  </button>
+
   <div class="stueck">
     <span class="stueck__skizze" id="skizze"></span>
     <div class="stueck__text">
@@ -533,23 +551,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     </div>
   </form>
 
-  <section>
-    <div class="liste-kopf">
-      <h2>Deine Fotos</h2>
-      <span id="zaehler">0 von 4 Pflichtfotos</span>
-    </div>
-    <ol class="fotos" id="fotos"></ol>
-  </section>
-
-  <div class="fertig" id="fertig" hidden>
-    <p><strong>Alle Pflichtfotos sind da.</strong> In der echten Anfrage geht es jetzt weiter mit „Was soll gemacht werden?“.</p>
-    <button class="knopf knopf--rand" id="neu" type="button">Nochmal von vorn</button>
-  </div>
-
-  <button class="knopf knopf--haupt" id="start" type="button">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-    <span id="start-text">Analyse starten</span>
-  </button>
 
   <section class="hinweis">
     <h3>Zum Testen</h3>

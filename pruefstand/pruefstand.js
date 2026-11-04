@@ -68,7 +68,10 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
         }
         const k = document.createElement('canvas'); k.width = Math.round(cv.width / 3); k.height = Math.round(cv.height / 3);
         k.getContext('2d').drawImage(cv, 0, 0, k.width, k.height);
-        return { v2: e2.ok ? [Math.round(e2.breite), Math.round(e2.hoehe)] : null, sicherM: e.massSicher, marker: e.marker, abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null,
+        const gf = e.geometrie && e.geometrie.fluegel, gg = e.geometrie && e.geometrie.glas;
+        if (gf && gf.eckenBild) { c.strokeStyle = '#ffd400'; c.lineWidth = Math.max(2, cv.width / 600); c.setLineDash([]); c.beginPath(); gf.eckenBild.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); c.closePath(); c.stroke(); }
+        return { geoF: gf ? { w: gf.winkel, d: gf.diagonalenMm, dd: gf.diagonalenDiffMm, b: gf.breiteMm, h: gf.hoeheMm } : null, geoG: gg ? { w: gg.winkel, dd: gg.diagonalenDiffMm } : null, abgl: e.abgeglichen,
+          v2: e2.ok ? [Math.round(e2.breite), Math.round(e2.hoehe)] : null, sicherM: e.massSicher, marker: e.marker, abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null,
           hoehe: e.ok ? Math.round(e.hoehe) : null, stimmig: e.sicher, griff: e.griff ? { seite: e.griff.seite, sicher: e.griff.sicher } : null, ms,
           bild: k.toDataURL('image/jpeg', 0.7) };
       }, { url: 'http://lotse.test/_daten/fenster/' + ordner + '/' + foto, opt });
@@ -78,6 +81,10 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
       const griffEcht = w.griff === 'links' ? 'l' : w.griff === 'rechts' ? 'r' : null;
       zeilen.push({ ordner, name: w.name || '', foto, echt: w.fluegelBreiteMm ? w.fluegelBreiteMm + ' × ' + w.fluegelHoeheMm : '?',
         lotse: r.ok ? r.breite + ' × ' + r.hoehe + (r.sicherM === false ? ' (unsicher)' : '') : 'kein Maß', fb, fh, sicherM: r.sicherM,
+        geo: r.geoF ? r.geoF.w.map((x) => x.toFixed(1)).join('/') + '° · Diag Δ ' + r.geoF.dd + ' mm' : '–',
+        geoGlas: r.geoG ? r.geoG.w.map((x) => x.toFixed(1)).join('/') + '° · Δ ' + r.geoG.dd + ' mm' : '–',
+        fbL: r.geoF && w.fluegelBreiteMm ? (r.geoF.b - w.fluegelBreiteMm) / w.fluegelBreiteMm : null, fhL: r.geoF && w.fluegelHoeheMm ? (r.geoF.h - w.fluegelHoeheMm) / w.fluegelHoeheMm : null,
+        abgl: r.abgl ? r.abgl.map((a) => (a[0] ? 'o' : '') + (a[1] ? 'u' : '')).join(',') : '',
         fb2: r.v2 && w.fluegelBreiteMm ? (r.v2[0] - w.fluegelBreiteMm) / w.fluegelBreiteMm : null, fh2: r.v2 && w.fluegelHoeheMm ? (r.v2[1] - w.fluegelHoeheMm) / w.fluegelHoeheMm : null, marker: r.marker, abstand: r.abstand, stimmig: r.stimmig,
         griff: r.griff ? (r.griff.seite === griffEcht ? 'richtig' : griffEcht ? 'FALSCH' : r.griff.seite) + (r.griff.sicher ? ' (sicher)' : '') : '–', ms: r.ms });
       process.stdout.write('.');
@@ -95,11 +102,12 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
   const mitMass = zeilen.filter((z) => z.echt !== '?').length;
   let md = '# Prüfstand Foto-Lotse\n\n' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + zeilen.length + ' Fotos aus ' +
     new Set(zeilen.map((z) => z.ordner)).size + ' Fenstern · **' + gut + ' von ' + mitMass + '** Fotos mit echtem Maß auf ±2 % genau, **' + gut5 + '** auf ±5 % (alte Suche v2: ' + gut5v2 + ')\n\n' +
+    'Maß aus den Geraden (Ecken): Breite ' + med(zeilen.map((z) => z.fbL)) + ', Höhe ' + med(zeilen.map((z) => z.fhL)) + '\n\n' +
     'Mittlere Abweichung (Median über Fotos mit Maß): v3 Breite ' + med(zeilen.map((z) => z.fb)) + ', Höhe ' + med(zeilen.map((z) => z.fh)) +
     ' · v2 Breite ' + med(zeilen.map((z) => z.fb2)) + ', Höhe ' + med(zeilen.map((z) => z.fh2)) + '. „kein Maß“ zählt beim Median nicht mit.\n\n' +
     'Selbsteinschätzung v3: als sicher gemeldet ' + sicherOk.length + ', davon auf ±5 % ' + sicherGut + ' · als unsicher gemeldet ' + unsicherAlle + ', davon wirklich > 5 % daneben ' + unsicherSchlecht + '\n\n' +
-    '| Fenster | Foto | echt (mm) | Lotse (mm) | Breite | Höhe | Marker | Abstand | stimmig | Griff | ms |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
-  zeilen.forEach((z) => { md += `| ${z.name || z.ordner} | ${z.foto} | ${z.echt} | ${z.lotse} | ${pz(z.fb)} | ${pz(z.fh)} | ${z.marker} | ${z.abstand ? (z.abstand / 1000).toFixed(2) + ' m' : '–'} | ${z.stimmig === undefined ? '–' : z.stimmig ? 'ja' : 'nein'} | ${z.griff} | ${z.ms} |\n`; });
+    '| Fenster | Foto | echt (mm) | Lotse (mm) | Breite | Höhe | Marker | Abstand | stimmig | Griff | Ecken Flügel (OL/OR/UR/UL) | Ecken Glas | abgeglichen | ms |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
+  zeilen.forEach((z) => { md += `| ${z.name || z.ordner} | ${z.foto} | ${z.echt} | ${z.lotse} | ${pz(z.fb)} | ${pz(z.fh)} | ${z.marker} | ${z.abstand ? (z.abstand / 1000).toFixed(2) + ' m' : '–'} | ${z.stimmig === undefined ? '–' : z.stimmig ? 'ja' : 'nein'} | ${z.griff} | ${z.geo} | ${z.geoGlas} | ${z.abgl} | ${z.ms} |\n`; });
   fs.writeFileSync(path.join(AUS, 'ergebnis.md'), md);
   fs.writeFileSync(path.join(AUS, 'ergebnis.json'), JSON.stringify(zeilen, null, 2));
   console.log('\n' + md);

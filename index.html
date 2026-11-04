@@ -538,6 +538,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <label class="feld"><span class="feld__name">Rahmen innen breit</span><span class="feld__eingabe"><input id="entw-rib" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Rahmen innen hoch</span><span class="feld__eingabe"><input id="entw-rih" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Rahmen sichtbar breit</span><span class="feld__eingabe"><input id="entw-rb" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Diagonale Flügel OL→UR</span><span class="feld__eingabe"><input id="entw-d1" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Diagonale Flügel OR→UL</span><span class="feld__eingabe"><input id="entw-d2" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Flügel</span><span class="feld__eingabe"><select id="entw-nu"><option value="">?</option><option value="1">1</option><option value="2">2</option><option value="3">3 oder mehr</option></select></span></label>
       </div>
       <label class="feld"><span class="feld__name">Bauart</span><span class="feld__eingabe"><select id="entw-typ"><option value="">?</option><option value="kasten">Kastenfenster</option><option value="verbund">Verbundfenster</option><option value="holz">Holzfenster</option><option value="kunststoff">Kunststofffenster</option><option value="alu">Alu</option></select></span></label>
@@ -1855,7 +1857,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      4. Hinter der Glaskante, 30 bis 150 mm weiter außen, die Schattenfuge zwischen Flügel und Rahmen. Findet er keine, gilt das
         übliche Flügelholz je Bauart.
      Liegt eine Kante außerhalb des Fotos, gibt es kein Maß (statt zu raten). Läuft nur auf dem fertigen Foto, nicht im Livebild. */
-  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650 };
+  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false };
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
     var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
@@ -1892,7 +1894,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       ex[i] = Math.min(1, Math.max(gx[i - 1], gx[i], gx[i + 1]) / 60);
       ey[i] = Math.min(1, Math.max(gy[i - W], gy[i], gy[i + W]) / 60);
     }
-    return { R: R, G: Gn, B: Bl, Y: Y, M: M, ex: ex, ey: ey };
+    return { R: R, G: Gn, B: Bl, Y: Y, M: M, ex: ex, ey: ey, gx: gx, gy: gy, S: S };
   }
   function v3px(mm, o) { return Math.round((mm - o) / V3.S); }
   function v3mm(p, o) { return o + p * V3.S; }
@@ -1943,7 +1945,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function v3Glaskante(P, start, richtung, grenze, farbe, ref) {
     var C = P.C, V = P.V, lo = richtung < 0 ? grenze : start, hi = richtung < 0 ? start : grenze;
     var kand = v3Spitzen(C, lo, hi, 0.35).sort(function (p, q) { return Math.abs(p - start) - Math.abs(q - start); });
-    var best = null;
+    var best = null, alle = [];
     for (var n = 0; n < kand.length; n++) {
       var i = kand[n], aussen = [], innen = [], bad = false;
       for (var d = Math.round(8 / V3.S); d < Math.round(44 / V3.S); d++) {
@@ -1959,8 +1961,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (!fb) continue;
       if (ref && v3Abstand(fb, ref) > 40) continue;
       var wert = C[i] * (ruhig ? 1 : 0.3);
+      alle.push({ i: i, wert: wert });
       if (!best || wert > best.wert + 0.15) best = { i: i, wert: wert };
     }
+    if (best) best.alle = alle;
     return best;
   }
   function v3Fuge(P, glas, richtung, erwartet) {
@@ -1997,9 +2001,103 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       yt = v3mm(o.i, V3.Y0); yb = v3mm(u.i, V3.Y0);
     }
     Pv = v3Profil(E, true, yt + 40, yb - 40); Ph = v3Profil(E, false, xl + 40, xr - 40);
-    var fL = v3Fuge(Pv, l.i, -1, fs), fR = v3Fuge(Pv, r.i, 1, fs), fO = v3Fuge(Ph, o.i, -1, fs), fU = v3Fuge(Ph, u.i, 1, fs + 10);
+    var fL = v3Fuge(Pv, l.i, -1, fs), fR = v3Fuge(Pv, r.i, 1, fs);
+    // Ecken abgleichen (Levins Idee): Ein Fenster ist rundum gleich aufgebaut. Die Holzbreite von der Glaskante bis zur
+    // Fuge an den Seiten ist die Vorlage; oben und unten gewinnt die Glaskante, deren Holz dazu passt. So fallen
+    // Rollokasten und Fensterbank raus, auch wenn sie dieselbe Farbe haben.
+    var bl = fL ? (l.i - fL.i) * V3.S : null, br = fR ? (fR.i - r.i) * V3.S : null;
+    var ds = bl && br ? (Math.abs(bl - br) <= 25 ? (bl + br) / 2 : (Math.abs(bl - fs) < Math.abs(br - fs) ? bl : br)) : bl || br || fs;
+    function abgleichen(kante, richtung, unten) {
+      function pruefe(c) {
+        var fu = v3Fuge(Ph, c.i, richtung, unten ? ds + 10 : ds), d = fu ? Math.abs(fu.i - c.i) * V3.S : null, pen;
+        if (d === null) pen = 0.6;
+        else if (unten) pen = d < ds - 15 ? (ds - 15 - d) / ds : d > ds + 120 ? (d - ds - 120) / ds : 0;   // unten darf das Holz breiter sein (Türen)
+        else pen = Math.max(0, Math.abs(d - ds) - 15) / ds;
+        return { i: c.i, wert: c.wert, pen: pen, fuge: fu };
+      }
+      // Vorsichtig: Die gefundene Kante bleibt, solange ihr Holz ungefähr zu den Seiten passt
+      var eigen = pruefe(kante);
+      if (eigen.pen <= 0.35) return eigen;
+      var alle = (kante.alle || []), max = 0, best = null;
+      alle.forEach(function (c) { if (c.wert > max) max = c.wert; });
+      alle.forEach(function (c) {
+        if (c.i === kante.i || c.wert < 0.5 * max) return;
+        var q = pruefe(c);
+        if (q.pen > 0.1) return;   // nur eine Kante, deren Holz wirklich passt
+        if (!best || q.wert > best.wert) best = q;
+      });
+      return best || eigen;
+    }
+    var oA = V3.abgleich ? abgleichen(o, -1, false) : { i: o.i, fuge: v3Fuge(Ph, o.i, -1, fs) }, uA = V3.abgleich ? abgleichen(u, 1, true) : { i: u.i, fuge: v3Fuge(Ph, u.i, 1, fs + 10) };
+    var abgeglichen = [oA.i !== o.i, uA.i !== u.i];
+    o = oA; u = uA; yt = v3mm(o.i, V3.Y0); yb = v3mm(u.i, V3.Y0);
+    var fO = o.fuge, fU = u.fuge;
     var F = [fL ? v3mm(fL.i, V3.X0) : xl - fs, fO ? v3mm(fO.i, V3.Y0) : yt - fs, fR ? v3mm(fR.i, V3.X0) : xr + fs, fU ? v3mm(fU.i, V3.Y0) : yb + fs + 10];
-    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref };
+    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref, holzSeite: ds, abgeglichen: abgeglichen };
+  }
+
+  /* ---------- Ecken, Winkel, Diagonalen ----------
+     Jede Kante (Glaskante und Flügelkante) wird als eigene Gerade gesucht, leicht schräg erlaubt: entlang der Kante
+     alle 6 mm die stärkste Hell-Dunkel-Kante in ±10 mm, dann eine Gerade durch die Punkte (Ausreißer raus).
+     Daraus die vier Ecken, die Winkel in den Ecken und die beiden Diagonalen. Ein verzogener Flügel hat ungleiche
+     Diagonalen und Ecken ≠ 90°. Achtung: Die Entzerrung kommt vom kleinen Maßblatt; ist sie leicht schief, sieht auch
+     ein gerades Fenster leicht wie ein Trapez aus. Deshalb sammeln und mit echten Diagonalen vergleichen. */
+  function v3Gerade(E, senkrecht, pos, von, bis) {
+    var S = E.S, W = V3.W, Hh = V3.H, pkt = [], L = bis - von;
+    for (var t = von + 0.12 * L; t <= bis - 0.12 * L; t += 6) {
+      var a = Math.round((pos - 10 - (senkrecht ? V3.X0 : V3.Y0)) / S), b = Math.round((pos + 10 - (senkrecht ? V3.X0 : V3.Y0)) / S);
+      var q = Math.round((t - (senkrecht ? V3.Y0 : V3.X0)) / S), best = -1, bv = 0, su = 0, n = 0;
+      if (q < 1 || q >= (senkrecht ? Hh : W) - 1) continue;
+      for (var k = Math.max(1, a); k <= Math.min((senkrecht ? W : Hh) - 2, b); k++) {
+        var i = senkrecht ? q * W + k : k * W + q;
+        if (!E.M[i]) { best = -2; break; }
+        var v = senkrecht ? E.gx[i] : E.gy[i];
+        su += v; n++;
+        if (v > bv) { bv = v; best = k; }
+      }
+      if (best < 0 || !n || bv < 40 || bv < 1.6 * su / n) continue;
+      var i0 = senkrecht ? q * W + best : best * W + q, st = senkrecht ? 1 : W;
+      var vm = senkrecht ? E.gx[i0 - st] : E.gy[i0 - st], vp = senkrecht ? E.gx[i0 + st] : E.gy[i0 + st];
+      var dn = vm - 2 * bv + vp, off = dn < 0 ? 0.5 * (vm - vp) / dn : 0;
+      var lage = (senkrecht ? V3.X0 : V3.Y0) + (best + Math.max(-0.5, Math.min(0.5, off))) * S;
+      pkt.push([t, lage]);   // [entlang, quer]
+    }
+    for (var runde = 0; runde < 4; runde++) {
+      if (pkt.length < 8) return null;
+      var sx = 0, sy = 0, sxx = 0, sxy = 0, m = pkt.length;
+      pkt.forEach(function (p) { sx += p[0]; sy += p[1]; sxx += p[0] * p[0]; sxy += p[0] * p[1]; });
+      var nen = m * sxx - sx * sx;
+      if (!nen) return null;
+      var steig = (m * sxy - sx * sy) / nen, ab = (sy - steig * sx) / m;
+      var rest = pkt.map(function (p) { return Math.abs(p[1] - (steig * p[0] + ab)); });
+      var med = rest.slice().sort(function (x, y) { return x - y; })[Math.floor(rest.length / 2)];
+      var grenze = Math.max(1.5, 2.5 * med), neu = pkt.filter(function (p, j) { return rest[j] <= grenze; });
+      if (neu.length === pkt.length || runde === 3) return { steig: steig, ab: ab, n: pkt.length, rest: med, senkrecht: senkrecht };
+      pkt = neu;
+    }
+    return null;
+  }
+  // Schnittpunkt einer senkrechten (x = steig·y + ab) und einer waagerechten Geraden (y = steig·x + ab)
+  function v3Schnitt(gs, gw) {
+    var y = (gw.steig * gs.ab + gw.ab) / (1 - gw.steig * gs.steig), x = gs.steig * y + gs.ab;
+    return [x, y];
+  }
+  function v3Ecken(E, R) {
+    // R = [links, oben, rechts, unten] in mm (Glasebene)
+    var L = v3Gerade(E, true, R[0], R[1], R[3]), Rr = v3Gerade(E, true, R[2], R[1], R[3]);
+    var O = v3Gerade(E, false, R[1], R[0], R[2]), U = v3Gerade(E, false, R[3], R[0], R[2]);
+    if (!L || !Rr || !O || !U) return null;
+    var e = [v3Schnitt(L, O), v3Schnitt(Rr, O), v3Schnitt(Rr, U), v3Schnitt(L, U)];   // OL, OR, UR, UL
+    function winkel(a, b, c) {   // Innenwinkel bei b
+      var u = [a[0] - b[0], a[1] - b[1]], v = [c[0] - b[0], c[1] - b[1]];
+      return Math.acos(Math.max(-1, Math.min(1, (u[0] * v[0] + u[1] * v[1]) / Math.hypot(u[0], u[1]) / Math.hypot(v[0], v[1])))) * 180 / Math.PI;
+    }
+    var wi = [winkel(e[3], e[0], e[1]), winkel(e[0], e[1], e[2]), winkel(e[1], e[2], e[3]), winkel(e[2], e[3], e[0])];
+    var gr = function (g) { return Math.atan(g.steig) * 180 / Math.PI; };
+    return { ecken: e, winkel: wi, diagonalen: [Math.hypot(e[2][0] - e[0][0], e[2][1] - e[0][1]), Math.hypot(e[3][0] - e[1][0], e[3][1] - e[1][1])],
+      neigung: [gr(L), gr(O), gr(Rr), gr(U)], punkte: [L.n, O.n, Rr.n, U.n], streuung: [L.rest, O.rest, Rr.rest, U.rest],
+      breite: (Math.hypot(e[1][0] - e[0][0], e[1][1] - e[0][1]) + Math.hypot(e[2][0] - e[3][0], e[2][1] - e[3][1])) / 2,
+      hoehe: (Math.hypot(e[3][0] - e[0][0], e[3][1] - e[0][1]) + Math.hypot(e[2][0] - e[1][0], e[2][1] - e[1][1])) / 2 };
   }
   function v3Mehrheit(laeufe) {
     if (!laeufe.length) return null;
@@ -2023,10 +2121,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var Hm = lage.Hvoll || lage.H;
     // Dreimal suchen (2, 2,5 und 3 mm je Pixel); je Seite zählt die Kante, auf die sich die meisten Durchgänge einigen.
     // So kippt das Maß nicht, nur weil ein Handy das Bild minimal anders verkleinert (Wackeltest 4. Nov. 2026).
-    var laeufe = [];
+    var laeufe = [], E2 = null;
     (opt.raster || [2, 2.5, 3]).forEach(function (S) {
       v3Raster(S);
-      var zz = v3Finden(v3Entzerren(rgb, g, w, h, Hm), opt.fs || 65);
+      var E = v3Entzerren(rgb, g, w, h, Hm), zz = v3Finden(E, opt.fs || 65);
+      if (S === 2) E2 = E;
       if (zz) laeufe.push(zz);
     });
     v3Raster(2);
@@ -2038,6 +2137,20 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     erg.fugen = z.fugen; erg.einig = z.einig;
     // Sicher nur, wenn sich an jeder Seite mindestens zwei der drei Durchgänge einig sind
     erg.massSicher = laeufe.length >= 2 && z.einig.every(function (k) { return k >= 2; });
+    erg.abgeglichen = laeufe.map(function (q) { return q.abgeglichen; });
+    // Ecken, Winkel, Diagonalen (Flügel und Glas), in mm am Flügel (Tiefe herausgerechnet)
+    if (E2) {
+      var geo = function (R) {
+        var q = v3Ecken(E2, R);
+        if (!q) return null;
+        return { winkel: q.winkel.map(function (x) { return Math.round(x * 100) / 100; }), diagonalenMm: q.diagonalen.map(function (x) { return Math.round(x * k2); }),
+          diagonalenDiffMm: Math.round((q.diagonalen[0] - q.diagonalen[1]) * k2), neigungGrad: q.neigung.map(function (x) { return Math.round(x * 100) / 100; }),
+          breiteMm: Math.round(q.breite * k2), hoeheMm: Math.round(q.hoehe * k2), punkte: q.punkte, streuungMm: q.streuung.map(function (x) { return Math.round(x * 10) / 10; }),
+          eckenMm: q.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }), eckenBild: q.ecken.map(function (p) { return abb(Hm, p[0], p[1]); }) };
+      };
+      try { erg.geometrie = { fluegel: geo(F), glas: geo(Gl) }; } catch (x) { erg.geometrie = null; }
+      E2 = null;
+    }
     erg.breite = (F[2] - F[0]) * k2; erg.hoehe = (F[3] - F[1]) * k2;
     erg.ecken = [[F[0], F[1]], [F[2], F[1]], [F[2], F[3]], [F[0], F[3]]].map(function (p) { return abb(Hm, p[0], p[1]); });
     erg.abstand = D; erg.neigung = lage.neigung;
@@ -3235,6 +3348,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         werte.push('Griff: ' + (g2.seite === 'l' ? 'links' : 'rechts') + ' auf ' + Math.round(g2.y * 100) + ' % Höhe · Wert links ' + komma(g2.links, 2) +
           ', rechts ' + komma(g2.rechts, 2) + ' · ' + (g2.sicher ? 'sicher' : 'unsicher'));
       } else if (s.id === 'innen' && P.nU === 1) werte.push('Griff: nicht gesucht (kein Maß vom Foto)');
+      var gF = s.id === 'innen' && messung && messung.geometrie && messung.geometrie.fluegel;
+      if (gF) werte.push('Ecken Flügel (OL/OR/UR/UL): ' + gF.winkel.map(function (x) { return komma(x, 1); }).join(' / ') + '° · Diagonalen ' + gF.diagonalenMm.join(' / ') + ' mm (Δ ' + gF.diagonalenDiffMm + ' mm)');
+      if (s.id === 'innen' && messung && messung.massSicher === false) werte.push('Maß unsicher: Durchgänge einig je Seite (L/O/R/U) ' + (messung.einig || []).join('/') + ' von 3');
     }
     $('p-werte').textContent = werte.join('\n');
     $('p-werte').hidden = !werte.length;
@@ -3527,7 +3643,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     entwZeile('Fenster wird abgeschlossen …').then(function (li) {
       ghPut(ordner + '/fenster.json', textB64(JSON.stringify(meta, null, 2)), 'Fenster fertig ' + ordner).then(function () {
         ENTW.ordner = null; ENTW.nr = 0; entwFertigGewarnt = false;
-        ['entw-name', 'entw-b', 'entw-h', 'entw-rib', 'entw-rih', 'entw-rb', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
+        ['entw-name', 'entw-b', 'entw-h', 'entw-rib', 'entw-rih', 'entw-rb', 'entw-d1', 'entw-d2', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
         $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = ''; $('entw-hinter').value = ''; $('entw-licht').value = '';
         Array.prototype.forEach.call(document.querySelectorAll('#entw-dran input'), function (c) { c.checked = false; });
         $('entw-liste').innerHTML = '';
@@ -3566,6 +3682,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return { name: $('entw-name').value.trim(), fluegelBreiteMm: +$('entw-b').value || null, fluegelHoeheMm: +$('entw-h').value || null,
       rahmenInnenBreiteMm: +$('entw-rib').value || null, rahmenInnenHoeheMm: +$('entw-rih').value || null, rahmenSichtbarMm: +$('entw-rb').value || null,
       fluegelAnzahl: +$('entw-nu').value || null,
+      diagonalenMm: (+$('entw-d1').value || +$('entw-d2').value) ? [+$('entw-d1').value || null, +$('entw-d2').value || null] : null,
       amFenster: Array.prototype.filter.call(document.querySelectorAll('#entw-dran input'), function (c) { return c.checked; }).map(function (c) { return c.value; }),
       hintergrund: $('entw-hinter').value || null, licht: $('entw-licht').value || null,
       bauart: $('entw-typ').value || null, griff: $('entw-griff').value || null, notiz: $('entw-notiz').value.trim() };
@@ -3598,7 +3715,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (TYPEN[bauart]) { opt.fs = TYPEN[bauart].s * 10; opt.fu = TYPEN[bauart].u * 10; opt.tiefe = TYPEN[bauart].tiefe; }
     return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt, rgbVon(c, cv.width, cv.height)).then(function (r) {
       var e = (r && r.erg) || {};
-      return { version: e.version || 'v2', massSicher: e.massSicher === undefined ? null : e.massSicher, einig: e.einig || null, cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
+      return { geometrie: e.geometrie || null, einigLaeufe: e.einig || null, abgeglichen: e.abgeglichen || null, version: e.version || 'v2', massSicher: e.massSicher === undefined ? null : e.massSicher, einig: e.einig || null, cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
         ok: !!e.ok, grund: e.grund || '', fluegelMm: e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null, holzMm: e.roh && e.roh.holz ? e.roh.holz.map(Math.round) : null,
         stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }) : null,
         griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ };
@@ -3633,6 +3750,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var alt = li.querySelector('.entw__vorschau'); if (alt) { if (!url) { var ai = alt.querySelector('img'); url = ai ? ai.src : null; } alt.remove(); }
     var d = document.createElement('div'); d.className = 'entw__vorschau';
     if (url) { var im = document.createElement('img'); im.src = url; im.alt = 'Was der Lotse erkannt hat'; d.appendChild(im); }
+    var gf = sieht && sieht.geometrie && sieht.geometrie.fluegel;
+    if (gf) text += ' · Ecken ' + gf.winkel.map(function (x) { return x.toFixed(1).replace('.', ','); }).join(' / ') + '° · Diagonalen ' + gf.diagonalenMm.join(' / ') + ' mm (Δ ' + gf.diagonalenDiffMm + ')';
     var t = document.createElement('span'); t.textContent = text; d.appendChild(t);
     li.appendChild(d);
   }
@@ -3646,7 +3765,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (!k.url) return;
     clearTimeout(k.weiterUhr);
     var m = k.messung, extra = { schritt: SCHRITTE[k.i].id, modus: k.modus, schaerfe: k.schaerfe ? k.schaerfe.breite : null,
-      gemessen: m ? { version: m.version || 'v2', breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand || 0) } : null };
+      gemessen: m ? { version: m.version || 'v2', breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand || 0),
+        massSicher: m.massSicher === undefined ? null : m.massSicher, geometrie: m.geometrie || null } : null };
     var url = k.url;
     schliessen();
     $('entw-feld').hidden = false; $('entw').setAttribute('aria-expanded', 'true');
@@ -3706,7 +3826,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var meta = { zeit: new Date().toISOString(), quelle: 'durchlauf', schritt: schrittId, modus: k.modus, fenster: entwFenster(),
       einstellung: { typ: P.typ, nU: P.nU, ol: P.ol, band: P.band, griffY: P.griffY, griffQuelle: P.griffQuelle },
       schaerfe: k.schaerfe, messung: messung ? { breite: Math.round(messung.breite), hoehe: Math.round(messung.hoehe), abstand: Math.round(messung.abstand || 0),
-        ecken: messung.ecken, griff: messung.griff || null, stimmig: messung.sicher === undefined ? null : !!messung.sicher } : null,
+        ecken: messung.ecken, griff: messung.griff || null, stimmig: messung.sicher === undefined ? null : !!messung.sicher,
+        massSicher: messung.massSicher === undefined ? null : messung.massSicher, geometrie: messung.geometrie || null, version: messung.version || 'v2' } : null,
       geraet: { ua: navigator.userAgent } };
     entwZeile(name + ': lädt hoch …').then(function (li) {
       ghPut(ordner + '/' + name + '.jpg', url.split(',')[1], 'Durchlauf ' + ordner + '/' + name)

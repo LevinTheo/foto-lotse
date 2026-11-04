@@ -111,7 +111,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
-| 4. Nov. 2026 | v3 (dieser) | 14 aus 3 Fenstern | 0 von 14 (±5 %: 2, v2: 0) | **v3**: Median Breite 2,5 %, Höhe 7,1 % (v2: 30,3 % / 44,1 %). 4 Nahfotos ohne ganzes Fenster: jetzt „kein Maß“ statt falscher Zahl. Griff 8 von 10 richtig. Höhe noch zu groß: unten Türschwelle, oben Rollokasten (gleiche Farbe wie Rahmen). Rechenzeit ca. 1,3 s am Rechner |
+| 4. Nov. 2026 | `53d7150` (v3) | 14 aus 3 Fenstern | 0 von 14 (±5 %: 2, v2: 0) | **v3**: Median Breite 2,5 %, Höhe 7,1 % (v2: 30,3 % / 44,1 %). 4 Nahfotos ohne ganzes Fenster: jetzt „kein Maß“ statt falscher Zahl. Griff 8 von 10 richtig. Höhe noch zu groß: unten Türschwelle, oben Rollokasten (gleiche Farbe wie Rahmen). Rechenzeit ca. 1,3 s am Rechner |
 | 4. Nov. 2026 | `e2b8264` | 14 aus 3 Fenstern | 0 von 14 | Neues Fenster „Kinderzimmer“ (Holz, Flügel 1218 × 1320, Ziergitter außen, Markise, Gegenlicht): bestes Foto aus 3,1 m −11,7 % / +0,2 %, sonst −12 bis −68 %. Griff 4 von 5 falsch |
 | 4. Nov. 2026 | `27efb0f` | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
 
@@ -130,7 +130,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
-| 4. Nov. 2026 | v3 (dieser) | **v3: Fenstermaß von der Holzseite her** (Levins Idee „von außen nach innen“): Entzerren auf die Glasebene, Glaskante = durchgehende Linie vor ruhigem Holzstreifen, Rahmenfarbe rundum gleich, Schattenfuge; nur auf dem fertigen Foto. Prüfstand vergleicht v2 und v3. Versionsanzeige „Foto-Lotse v3“ oben auf der Seite | Kantensuche hing sich an den Hintergrund | Prüfstand: Median Breite 2,5 % / Höhe 7,1 % statt 30 % / 44 %; Übungsfenster 80 × 122 statt 81 × 124 |
+| 4. Nov. 2026 | `53d7150` (v3) | **v3: Fenstermaß von der Holzseite her** (Levins Idee „von außen nach innen“): Entzerren auf die Glasebene, Glaskante = durchgehende Linie vor ruhigem Holzstreifen, Rahmenfarbe rundum gleich, Schattenfuge; nur auf dem fertigen Foto. Prüfstand vergleicht v2 und v3. Versionsanzeige „Foto-Lotse v3“ oben auf der Seite | Kantensuche hing sich an den Hintergrund | Prüfstand: Median Breite 2,5 % / Höhe 7,1 % statt 30 % / 44 %; Übungsfenster 80 × 122 statt 81 × 124 |
 | 4. Nov. 2026 | `19f9d53` | Lernfotos: Vorschaubild mit erkanntem Flügel (grün) und Vergleich zum echten Maß in Prozent direkt in der Liste | Levin sieht sofort am Handy, ob der Lotse das Fenster erkannt hat; kein Ankreuzen nötig, der Prüfstand rechnet ohnehin selbst | Getestet mit 2 Balkontür-Fotos (−23 %/−44 % und −37 %/−44 %) |
 | 4. Nov. 2026 | `6e6a8a4` | Lernfotos: Felder „Am oder vor dem Fenster“ (Markise, Rollladen, Rollo, Jalousie, Insektenschutz, Gitter, Gardine) und „Hintergrund“ | Erklärt im Prüfstand, warum die Kantensuche danebenliegt (Markise an der Balkontür); wichtig fürs Angebot | – |
 | 4. Nov. 2026 | `27efb0f` | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |

@@ -468,6 +468,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .k-pruefen__mass--warn { border-left-color: var(--primary); }
 .k-pruefen__knoepfe { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
 .k-pruefen__knoepfe--gleich { grid-template-columns: 1fr 1fr; }
+.p-lernfoto { min-height: 40px; font-size: 14px; border-style: dashed; opacity: 0.85; }
 .k-pruefen__werte { margin: 2px 0 0; font-size: 12px; line-height: 1.4; color: var(--cam-muted); white-space: pre-line; font-variant-numeric: tabular-nums; }
 .k-pruefen__griff { display: grid; gap: 10px; }
 .k-pruefen__griff p { margin: 0; font-size: 17px; font-weight: 600; }
@@ -551,6 +552,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <label><input type="checkbox" value="gitter"> Gitter</label>
         <label><input type="checkbox" value="gardine"> Gardine / Vorhang</label>
       </div>
+      <label class="feld"><span class="feld__name">Licht</span><span class="feld__eingabe"><select id="entw-licht"><option value="">?</option><option value="hell-bewoelkt">hell, bewölkt (gleichmäßig)</option><option value="gegenlicht">Sonne draußen, Gegenlicht</option><option value="sonne-im-raum">Sonne scheint rein (Flecken, Schatten)</option><option value="daemmrig">dämmrig / dunkel</option><option value="kunstlicht">Abend, Lampe an</option></select></span></label>
       <label class="feld"><span class="feld__name">Hintergrund hinter der Scheibe</span><span class="feld__eingabe"><select id="entw-hinter"><option value="">?</option><option value="ruhig">ruhig (Wand, Himmel)</option><option value="gemischt">gemischt</option><option value="unruhig">unruhig (Balkon, Bäume, viele Linien)</option></select></span></label>
       <label class="feld"><span class="feld__name">Notiz</span><span class="feld__eingabe"><input id="entw-notiz" type="text" placeholder="Licht, Abstand, Besonderes"></span></label>
     </fieldset>
@@ -733,6 +735,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <button class="kbtn kbtn--zweit" id="p-nochmal" type="button">Nochmal</button>
         <button class="kbtn kbtn--haupt" id="p-weiter" type="button">Passt, weiter</button>
       </div>
+      <button class="kbtn kbtn--zweit p-lernfoto" id="p-lernfoto" type="button" hidden>In Lernfotos übernehmen (Entwickler)</button>
     </div>
   </div>
 </div>
@@ -3203,6 +3206,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('p-werte').textContent = werte.join('\n');
     $('p-werte').hidden = !werte.length;
     $('p-griff').hidden = !frageGriff;
+    $('p-lernfoto').hidden = !(ENTW.token && k.url);
     $('p-griff-l').className = 'kbtn ' + (k.griffVorschlag === 'rechts' ? 'kbtn--zweit' : 'kbtn--haupt');
     $('p-griff-r').className = 'kbtn ' + (k.griffVorschlag === 'links' ? 'kbtn--zweit' : 'kbtn--haupt');
     $('p-weiter').hidden = frageGriff;
@@ -3491,7 +3495,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       ghPut(ordner + '/fenster.json', textB64(JSON.stringify(meta, null, 2)), 'Fenster fertig ' + ordner).then(function () {
         ENTW.ordner = null; ENTW.nr = 0; entwFertigGewarnt = false;
         ['entw-name', 'entw-b', 'entw-h', 'entw-rib', 'entw-rih', 'entw-rb', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
-        $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = ''; $('entw-hinter').value = '';
+        $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = ''; $('entw-hinter').value = ''; $('entw-licht').value = '';
         Array.prototype.forEach.call(document.querySelectorAll('#entw-dran input'), function (c) { c.checked = false; });
         $('entw-liste').innerHTML = '';
         $('entw-ordner').textContent = 'Gespeichert ✓ (' + meta.fotos + ' Fotos in ' + ordner + '). Nächstes Fenster: erst Name und Maß, dann Fotos.';
@@ -3530,7 +3534,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       rahmenInnenBreiteMm: +$('entw-rib').value || null, rahmenInnenHoeheMm: +$('entw-rih').value || null, rahmenSichtbarMm: +$('entw-rb').value || null,
       fluegelAnzahl: +$('entw-nu').value || null,
       amFenster: Array.prototype.filter.call(document.querySelectorAll('#entw-dran input'), function (c) { return c.checked; }).map(function (c) { return c.value; }),
-      hintergrund: $('entw-hinter').value || null,
+      hintergrund: $('entw-hinter').value || null, licht: $('entw-licht').value || null,
       bauart: $('entw-typ').value || null, griff: $('entw-griff').value || null, notiz: $('entw-notiz').value.trim() };
   }
   function b64VonBlob(blob) {
@@ -3592,18 +3596,42 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         text += ', echt ' + w.fluegelBreiteMm + ' × ' + w.fluegelHoeheMm + ' · ' + p(pb) + ' / ' + p(ph) + (Math.abs(pb) <= 2 && Math.abs(ph) <= 2 ? ' ✓' : '');
       }
     }
+    li._sieht = sieht;
+    var alt = li.querySelector('.entw__vorschau'); if (alt) { if (!url) { var ai = alt.querySelector('img'); url = ai ? ai.src : null; } alt.remove(); }
     var d = document.createElement('div'); d.className = 'entw__vorschau';
     if (url) { var im = document.createElement('img'); im.src = url; im.alt = 'Was der Lotse erkannt hat'; d.appendChild(im); }
     var t = document.createElement('span'); t.textContent = text; d.appendChild(t);
     li.appendChild(d);
   }
+  ['entw-b', 'entw-h'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('#entw-liste li'), function (li) { if (li._sieht !== undefined) entwVorschau(li, null, li._sieht); });
+    });
+  });
+  // Aus der Analyse: das gerade gemachte Foto als erstes Lernfoto eines neuen Fensters übernehmen
+  function inLernfotos() {
+    if (!k.url) return;
+    clearTimeout(k.weiterUhr);
+    var m = k.messung, extra = { schritt: SCHRITTE[k.i].id, modus: k.modus, schaerfe: k.schaerfe ? k.schaerfe.breite : null,
+      gemessen: m ? { version: m.version || 'v2', breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand || 0) } : null };
+    var url = k.url;
+    schliessen();
+    $('entw-feld').hidden = false; $('entw').setAttribute('aria-expanded', 'true');
+    ENTW.ordner = null; ENTW.nr = 0; $('entw-liste').innerHTML = '';
+    $('entw-ordner').textContent = 'Foto aus der Analyse übernommen. Jetzt Name und Maß eintragen, dann die weiteren Fotos (links, rechts, nah).';
+    $('entw-feld').scrollIntoView({ behavior: RUHIG ? 'auto' : 'smooth', block: 'start' });
+    fetch(url).then(function (r) { return r.blob(); }).then(function (bl) {
+      entwDatei(new File([bl], 'analyse-' + extra.schritt + '.jpg', { type: 'image/jpeg' }), 'analyse', extra);
+    });
+  }
+  $('p-lernfoto').addEventListener('click', inLernfotos);
   function entwBereit() {
     if (ENTW.token && ENTW.repo) return true;
     entwZeile('Erst den Zugang einrichten (oben).').then(function (li) { li.classList.add('fehler'); });
     $('entw-zugang').open = true;
     return false;
   }
-  function entwDatei(datei, quelle) {
+  function entwDatei(datei, quelle, extra) {
     if (!entwBereit()) return Promise.resolve();
     var ordner = entwOrdner(), nr = ++ENTW.nr, name = 'foto-' + zwei(nr), endung = 'jpg', klein = null, vorschau = null;
     var li;
@@ -3621,7 +3649,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (sieht && sieht.cv) { klein = sieht.cv; delete sieht.cv; }
       vorschau = klein ? entwVorschauBild(klein, sieht) : null;
       li.textContent = name + ': lädt hoch …' + (sieht ? ' (Lotse: ' + sieht.marker + ' Marker' + (sieht.fluegelMm ? ', ' + sieht.fluegelMm.join(' × ') + ' mm' : '') + ')' : '');
-      var meta = { zeit: new Date().toISOString(), quelle: quelle, datei: { name: datei.name, typ: datei.type, bytes: datei.size },
+      var meta = { zeit: new Date().toISOString(), quelle: quelle, analyse: extra || null, datei: { name: datei.name, typ: datei.type, bytes: datei.size },
         fenster: entwFenster(), lotse: sieht, geraet: { ua: navigator.userAgent, bildschirm: screen.width + 'x' + screen.height + '@' + (window.devicePixelRatio || 1) },
         version: 'foto-lotse ' + (document.lastModified || '') };
       // Verkleinert hochladen: so groß, wie der Lotse rechnet (lange Seite 2576 px). Spart gut die Hälfte Platz, für die Messung geht nichts verloren.

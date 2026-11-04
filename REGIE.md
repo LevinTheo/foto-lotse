@@ -130,6 +130,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | (dieser) | Livebild: Fensterumriss erst zeigen, wenn das Maß 3-mal hintereinander gleich war (`TOL.zeigenAb`) oder alles passt; gestrichelte Glaskante nur noch beim Galeriefoto | Springende, verzerrte Rahmen waren anstrengend für die Augen | Übungsdurchlauf läuft; auf dem Handy testen |
 | 4. Nov. 2026 | `53d7150` (v3) | **v3: Fenstermaß von der Holzseite her** (Levins Idee „von außen nach innen“): Entzerren auf die Glasebene, Glaskante = durchgehende Linie vor ruhigem Holzstreifen, Rahmenfarbe rundum gleich, Schattenfuge; nur auf dem fertigen Foto. Prüfstand vergleicht v2 und v3. Versionsanzeige „Foto-Lotse v3“ oben auf der Seite | Kantensuche hing sich an den Hintergrund | Prüfstand: Median Breite 2,5 % / Höhe 7,1 % statt 30 % / 44 %; Übungsfenster 80 × 122 statt 81 × 124 |
 | 4. Nov. 2026 | `19f9d53` | Lernfotos: Vorschaubild mit erkanntem Flügel (grün) und Vergleich zum echten Maß in Prozent direkt in der Liste | Levin sieht sofort am Handy, ob der Lotse das Fenster erkannt hat; kein Ankreuzen nötig, der Prüfstand rechnet ohnehin selbst | Getestet mit 2 Balkontür-Fotos (−23 %/−44 % und −37 %/−44 %) |
 | 4. Nov. 2026 | `6e6a8a4` | Lernfotos: Felder „Am oder vor dem Fenster“ (Markise, Rollladen, Rollo, Jalousie, Insektenschutz, Gitter, Gardine) und „Hintergrund“ | Erklärt im Prüfstand, warum die Kantensuche danebenliegt (Markise an der Balkontür); wichtig fürs Angebot | – |

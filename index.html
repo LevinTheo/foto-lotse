@@ -1287,6 +1287,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     gegenprobe: 0.08,      // ab so viel Abweichung zur Eingabe kommt „Bitte nachmessen“
     blattPixel: 1280,      // lange Seite des Bildes für die Messung im Livebild
     blattTakt: 150,        // ms Pause zwischen zwei Messungen im Livebild
+    zeigenAb: 2,           // Livebild: Umriss erst zeigen, wenn so oft hintereinander dasselbe Maß kam (sonst flackert er)
     // Schärfe: Breite des Übergangs an den stärksten Kanten in Pixeln (Bild auf 1600 px lange Seite). Darüber gilt das Foto als unscharf.
     // Erster Wert aus Versuchen am Rechner, muss mit echten Handyfotos nachgestellt werden (der Wert steht in den Messwerten).
     schaerfe: 3.6,
@@ -2444,7 +2445,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; clearTimeout(k.weiterUhr);
-    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0;
+    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.stabilZahl = 0;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
     if (k.modus === 'foto') fotoStart();
@@ -2523,6 +2524,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       var e = (r && r.erg) || { ok: false, marker: 0 }, alt = k.mass;
       e.ms = r ? r.ms : 0; e.schirm = b.schirm; e.zeit = performance.now(); e.bw = b.w; e.bh = b.h;
       e.stabil = !!(e.ok && alt && alt.ok && Math.abs(e.breite - alt.breite) < TOL.stabil * e.breite && Math.abs(e.hoehe - alt.hoehe) < TOL.stabil * e.hoehe);
+      k.stabilZahl = e.stabil ? (k.stabilZahl || 0) + 1 : 0;   // wie oft hintereinander dasselbe Maß
       k.mass = e;
     });
   }
@@ -2601,7 +2603,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     c.setTransform(DPR, 0, 0, DPR, 0, 0);
     c.clearRect(0, 0, W, H);
     var frisch = !!e && (k.modus === 'foto' || performance.now() - e.zeit < 2500);
-    var fenster = frisch && e.ok ? (z.ecken || e.ecken.map(e.schirm)) : null;
+    // Im Livebild den Umriss nur zeigen, wenn das Fenster sicher gefunden ist (mehrmals hintereinander dasselbe Maß
+    // oder alles passt). Vorher springende Rahmen sind anstrengend für die Augen (Levin, 4. Nov. 2026).
+    var sicher = k.modus === 'foto' || ok || (e && e.stabil && (k.stabilZahl || 0) >= TOL.zeigenAb);
+    var fenster = frisch && e.ok && sicher ? (z.ecken || e.ecken.map(e.schirm)) : null;
     c.lineCap = 'square'; c.lineJoin = 'miter'; c.globalAlpha = 1;
     if (fenster) {
       c.fillStyle = 'rgba(6, 12, 9, 0.38)';
@@ -2612,7 +2617,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     c.shadowColor = 'rgba(0,0,0,0.45)'; c.shadowBlur = 3;
     c.strokeStyle = farbe;
     if (fenster) {
-      if (e.roh && e.roh.glas && e.lage) {
+      if (k.modus === 'foto' && e.roh && e.roh.glas && e.lage) {
         var gl = e.roh.glas;
         var pg = [[gl[0], gl[1]], [gl[2], gl[1]], [gl[2], gl[3]], [gl[0], gl[3]]].map(function (q) { return e.schirm(MASS.abb(e.lage.H, q[0], q[1])); });
         c.lineWidth = 1.5; c.setLineDash([7, 5]); zug(c, pg, true); c.stroke(); c.setLineDash([]);

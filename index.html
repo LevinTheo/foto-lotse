@@ -3446,7 +3446,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         if (blattModus()) txt = P.nU === 2 ? 'Gemessen: linker Flügel ca. ' + b + ' × ' + h + ' cm, beide zusammen ca. ' + (2 * b) + ' cm breit'
           : 'Gemessen: Flügel ca. ' + b + ' × ' + h + ' cm';
         if (blattModus() && m.massSicher === false) { warn = true; txt += '. Unsicher: am besten nochmal frontal aus 2 bis 3 m.'; }
-        else {
+        else if (!blattModus()) {
+          // Gegenprobe nur, wenn der Kunde selbst ein Maß eingetippt hat. Im Maßblatt-Modus gibt es nichts zu vergleichen:
+          // P.fb/P.fh sind dann nur Startwerte oder das zuletzt gemessene Fenster (Fehler 4. Nov. 2026: „eingetippt ist 81 × 124 cm“).
           var bp = P.nU === 2 ? Math.round(P.fb / 2) : P.fb, ab = Math.max(Math.abs(b - bp) / bp, Math.abs(h - P.fh) / P.fh);
           warn = ab > TOL.gegenprobe;
           txt = warn ? 'Das Maßblatt misst ca. ' + b + ' × ' + h + ' cm, eingetippt ist ' + bp + ' × ' + P.fh + ' cm. Bitte nochmal nachmessen.'

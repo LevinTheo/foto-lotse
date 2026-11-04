@@ -40,7 +40,9 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
   for (const ordner of ordnerListe) {
     const w = wahrheit(ordner);
     if (w.ignorieren) continue;
-    const opt = Object.assign({ griff: true, nU: w.fluegelAnzahl || 1 }, TYPEN[w.bauart] || TYPEN.holz);
+    // Griff wie in der App nur bei 1 Flügel suchen (bei 2 Flügeln sitzt er in der Mitte, links/rechts wäre Zufall)
+    const nU = w.fluegelAnzahl || 1;
+    const opt = Object.assign({ griff: nU === 1, nU }, TYPEN[w.bauart] || TYPEN.holz);
     const fotos = fs.readdirSync(path.join(DATEN, 'fenster', ordner)).filter((f) => /^(foto|lauf)-.*\.jpg$/.test(f)).sort();
     for (const foto of fotos) {
       const r = await page.evaluate(async ({ url, opt }) => {
@@ -101,12 +103,16 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
   const gut5v2 = zeilen.filter((z) => z.fb2 !== null && Math.abs(z.fb2) <= 0.05 && Math.abs(z.fh2) <= 0.05).length;
   const med = (a) => { a = a.filter((x) => x !== null).map(Math.abs).sort((p, q) => p - q); return a.length ? (a[Math.floor((a.length - 1) / 2)] * 100).toFixed(1) + ' %' : '–'; };
   const mitMass = zeilen.filter((z) => z.echt !== '?').length;
+  const gr = zeilen.filter((z) => z.griff.startsWith('richtig') || z.griff.startsWith('FALSCH'));
+  const grRichtig = gr.filter((z) => z.griff.startsWith('richtig')).length, grSicher = gr.filter((z) => z.griff.includes('sicher'));
+  const grSicherRichtig = grSicher.filter((z) => z.griff.startsWith('richtig')).length;
   let md = '# Prüfstand Foto-Lotse\n\n' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + zeilen.length + ' Fotos aus ' +
     new Set(zeilen.map((z) => z.ordner)).size + ' Fenstern · **' + gut + ' von ' + mitMass + '** Fotos mit echtem Maß auf ±2 % genau, **' + gut5 + '** auf ±5 % (alte Suche v2: ' + gut5v2 + ')\n\n' +
     'Maß aus den Geraden (Ecken): Breite ' + med(zeilen.map((z) => z.fbL)) + ', Höhe ' + med(zeilen.map((z) => z.fhL)) + '\n\n' +
     'Mittlere Abweichung (Median über Fotos mit Maß): v3 Breite ' + med(zeilen.map((z) => z.fb)) + ', Höhe ' + med(zeilen.map((z) => z.fh)) +
     ' · v2 Breite ' + med(zeilen.map((z) => z.fb2)) + ', Höhe ' + med(zeilen.map((z) => z.fh2)) + '. „kein Maß“ zählt beim Median nicht mit.\n\n' +
     'Selbsteinschätzung v3: als sicher gemeldet ' + sicherOk.length + ', davon auf ±5 % ' + sicherGut + ' · als unsicher gemeldet ' + unsicherAlle + ', davon wirklich > 5 % daneben ' + unsicherSchlecht + '\n\n' +
+    'Griff (nur 1 Flügel, mit bekannter Seite): richtig ' + grRichtig + ' von ' + gr.length + ' · als sicher gemeldet ' + grSicher.length + ', davon richtig ' + grSicherRichtig + '\n\n' +
     '| Fenster | Foto | echt (mm) | Lotse (mm) | Breite | Höhe | Marker | Abstand | stimmig | Griff | Ecken Flügel (OL/OR/UR/UL) | Ecken Glas | Spiegelprobe oben/unten | gespiegelt | ms |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
   zeilen.forEach((z) => { md += `| ${z.name || z.ordner} | ${z.foto} | ${z.echt} | ${z.lotse} | ${pz(z.fb)} | ${pz(z.fh)} | ${z.marker} | ${z.abstand ? (z.abstand / 1000).toFixed(2) + ' m' : '–'} | ${z.stimmig === undefined ? '–' : z.stimmig ? 'ja' : 'nein'} | ${z.griff} | ${z.geo} | ${z.geoGlas} | ${z.spiegel} | ${z.gesp} | ${z.ms} |\n`; });
   fs.writeFileSync(path.join(AUS, 'ergebnis.md'), md);

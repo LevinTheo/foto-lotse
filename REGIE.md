@@ -1,6 +1,6 @@
 # Foto-Lotse – Regiebericht
 
-Stand: 4. Nov. 2026 · Levin (Holtcraft) · **Version v3.3**
+Stand: 4. Nov. 2026 abends · Levin (Holtcraft) · **Version v3.3** (geprüft, Messzeug repariert)
 
 ## Versionen
 
@@ -42,8 +42,8 @@ Die Maße der Profile (IV 68, 78, 92) und der Aufbau von Kastenfenstern sind wei
 | `vendor/face-api.js` + `vendor/model/` | Gesichtserkennung zum Verpixeln (MIT-Lizenz) |
 | `fonts/` | Schrift Space Grotesk (SIL OFL 1.1) |
 | `pruefstand/pruefstand.js` | Prüfstand: Lotse über alle Lernfotos, Vergleich mit echten Maßen |
-| `pruefstand/wackel.js` | Wackeltest: jedes Lernfoto in 5 Varianten, Streuung der Maße |
-| `pruefstand/nachtrag.json` | Nachgetragene echte Maße und „ignorieren“ je Lernfoto-Ordner |
+| `pruefstand/wackel.js` | Wackeltest: jedes Lernfoto in 5 Varianten (Weichzeichnen selbst gerechnet), Streuung der Maße |
+| `pruefstand/nachtrag.json` | Nachgetragene echte Maße, Flügelanzahl, Bauart und „ignorieren“ je Lernfoto-Ordner (gewinnt gegen `fenster.json`) |
 
 Live: https://levintheo.github.io/foto-lotse/ (GitHub Pages, Branch `main`).
 
@@ -126,15 +126,19 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 | 4. Nov. 2026 | Ecken abgleichen eingeschaltet (verworfen, Schalter `V3.abgleich`) | 6 von 29 | 8,5 % | 8,0 % | 14 von 141 |
 | 4. Nov. 2026 | v3.2 (Abgleich aus, Ecken/Winkel neu) | 7 von 29 | 6,2 % | 7,2 % | 19 von 141 (±5 %: 48) |
 | 4. Nov. 2026 | v3.3: Spiegeln links ↔ rechts, nur wenn alle 3 Durchgänge einig | 5 von 29 | 6,2 % | 7,1 % | 20 von 141 (**±5 %: 56**) |
+| 4. Nov. 2026 | v3.3, **Wackeltest repariert** (Variante „weich“ wirkt jetzt, KiZi v2 als 2 Flügel) – neue Basis | 4 von 29 | 8,5 % | 7,2 % | 17 von 141 (±5 %: 55) |
 
 v3.3: Weniger „stabil“, weil Fotos, die vorher stur falsch lagen, jetzt richtig, aber mit ein paar mm Streuung liegen (Balkontür Foto 2: vorher 830–832 mm in allen Varianten, jetzt 783–792, echt 788).
 
+Bis zum 4. Nov. abends war die 5. Variante („leicht weich“, `c.filter = 'blur(0.7px)'`) wirkungslos: Headless-Chromium nimmt den Canvas-Filter an, wendet ihn aber nicht an, die Spalte war in jeder Zeile identisch mit dem Original. Alle Zeilen oben haben also nur 4 echte Varianten, das Original doppelt gezählt. Seit der Reparatur rechnet `wackel.js` das Weichzeichnen selbst ([1 2 1]-Kern, waagerecht und senkrecht). Die neuen Zahlen sind die Basis für alles Weitere; die Erkennung hat sich dabei nicht geändert.
+
 ## Prüfstand
 
-`node pruefstand/pruefstand.js <Pfad zu foto-lotse-daten> [Ausgabe]` lässt den aktuellen Lotsen über alle Lernfotos laufen und vergleicht mit den echten Maßen (`fenster.json`, sonst `pruefstand/nachtrag.json`). Ausgabe: `ergebnis.md` (Tabelle: Abweichung Breite/Höhe, Marker, Abstand, Griff richtig/falsch) und pro Foto ein Bild mit dem, was der Lotse erkannt hat. Nach jeder Änderung an der Erkennung laufen lassen und das Ergebnis hier eintragen. Fotos bleiben lokal, ins öffentliche Repo kommt nur der Code.
+`node pruefstand/pruefstand.js <Pfad zu foto-lotse-daten> [Ausgabe]` lässt den aktuellen Lotsen über alle Lernfotos laufen und vergleicht mit den echten Maßen (`fenster.json`, Nachtrag gewinnt). Bauart und Flügelanzahl kommen aus der Wahrheit – die App selbst läuft beim Kunden immer mit Holz und 1 Flügel (siehe Prüfung, Punkt 2). Griff wird wie in der App nur bei 1 Flügel gesucht. Ausgabe: `ergebnis.md` (Kopfzeile mit ±2 %, ±5 %, Medianen, Selbsteinschätzung, Griff-Trefferquote; Tabelle je Foto) und `ergebnis.json`, dazu pro Foto ein Bild mit dem, was der Lotse erkannt hat (Bilder sind auf ⅓ verkleinert; für Kantenfragen die Ecken im Original ansehen). Nach jeder Änderung an der Erkennung laufen lassen und das Ergebnis hier eintragen. Fotos bleiben lokal, ins öffentliche Repo kommt nur der Code.
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | Prüfung (siehe unten) | 30 aus 8 Fenstern | **5 von 30** (±5 %: **10**) | Unabhängige Nachprüfung, Erkennung unverändert v3.3. „KiZi v2“ (1505) ist zweiflügelig (fenster.json sagt 1, Nachtrag korrigiert): ohne Spiegeln dort fällt Foto 3 von −4,6 auf −7,3 %, ±5 % damit 10 statt 11. Griff nur noch bei 1 Flügel gezählt: **richtig 12 von 18, als sicher gemeldet 7, davon 6 richtig**. Median Breite 4,2 %, Höhe 4,3 %; sicher 21, davon 10 auf ±5 %; unsicher 8, alle > 5 % daneben. Mit Kundeneinstellung (immer Holz, 1 Flügel, so läuft die App wirklich): ±5 % 13 von 30 – nicht schlechter, aber andere Fotos |
 | 4. Nov. 2026 | `a422dd5` | Wackeltest als `pruefstand/wackel.js` ins Repo (Daten- und Lotse-Pfad als Argument); geparkte Ideen gesammelt unter Offene Punkte → Geparkt (Tür-Lotse, Preis, Ablage über Tim, Datenbank) | Ein neuer Chat soll den Lotsen unabhängig prüfen können und dafür alles im Repo finden | Wackeltest aus dem Repo: gleiche Zahlen wie v3.3 (stabil 5/29, ±2 % 20/141, ±5 % 56/141) |
 | 4. Nov. 2026 | v3.3 `e4e5abf` | 30 aus 8 Fenstern | **5 von 30** (±5 %: **11**) | Median Breite 4,2 %, Höhe 4,3 %. Spiegeln greift bei 4 Fotos: Balkontür 2 Breite +5,6 → +1,0 %, Balkontür 5 −19,3 → −16,1 %, KiZi v2 Foto 3 −7,3 → −4,6 %, KiZi abends 1 unverändert gut. Kein Foto schlechter. Erster Versuch ohne Einigkeits-Bedingung: 4 von 30, weil KiZi v2 Foto 4 von −0,7 auf −9,4 % kippte (Durchgänge uneinig „rrl“). Selbsteinschätzung: sicher 21, davon 10 auf ±5 %; unsicher 8, davon 7 wirklich > 5 % daneben. Spiegelprobe trennt gute und schlechte Fotos nicht (siehe Offene Punkte) |
 | 4. Nov. 2026 | v3.2 `9478d76` | 30 aus 8 Fenstern | **5 von 30** (±5 %: 10) | Median Breite 4,4 %, Höhe 4,3 %. Neu: Ecken, Winkel, Diagonalen. Frontale Analysefotos: Eckwinkel 88,5–91,3°, Diagonalen-Δ −2 bis +22 mm. Dasselbe KiZi-Fenster dreimal: Flügel-Δ 16 / 19 / 2 mm → Messrauschen derzeit ca. ±1° und ±20 mm, ein hängender Flügel (wenige mm) ist damit noch nicht erkennbar. Übungsfenster (exakt rechtwinklig): 89,5/89,5/90,5/90,5° |
@@ -146,15 +150,41 @@ v3.3: Weniger „stabil“, weil Fotos, die vorher stur falsch lagen, jetzt rich
 
 ## Lernfotos (Bestand)
 
-Liegen im privaten Repo `LevinTheo/foto-lotse-daten`, bleiben dort dauerhaft. Ordner ohne `fenster.json` (vor dem Knopf „Fenster fertig“) hier zuordnen:
+Liegen im privaten Repo `LevinTheo/foto-lotse-daten`, bleiben dort dauerhaft. Wahrheit für den Prüfstand: `fenster.json` im Ordner, Abweichungen und Ergänzungen in `pruefstand/nachtrag.json` (gewinnt). „Rahmen innen“ ist in der Praxis das Glas-Lichtmaß (WZ: Lotse-Glas 674 × 1097 zu 673 × 1107). Alle 9 Ordner (Stand 4. Nov. abends):
 
-| Ordner | Fenster | Echtes Maß Flügel | Fotos | Lotse (Stand 4. Nov.) |
+| Ordner | Fenster | Echtes Maß Flügel | Fotos | Lotse v3.3 (Prüfstand) |
 | --- | --- | --- | --- | --- |
+| `fenster/2026-11-04_1217_fenster` | Balkontür Küche, Kunststoff, 1 Flügel, Griff rechts (alles im Nachtrag) | 788 × 2023 mm, kein Lichtmaß | 5: frontal ca. 2 m, schräg links, oben nah, unten nah, schräg rechts | frontal +3,0 / +4,4 % (unten sitzt die Kante am Boden statt an der Schwelle); nah: kein oder falsches Maß |
+| `fenster/2026-11-04_1231_fenster` | „Terrasse zuhause V2“ = dieselbe Balkontür, hohes Licht | 788 × 2023 mm | 4 | frontal 2,4 m +3,4 / +11,5 % (unsicher), sonst 2 von 3 ganz daneben |
+| `fenster/2026-11-04_1331_fenster` | KiZi Holz (Mittag): Holz, 1 Flügel, Griff rechts, Rollo innen, **Ziergitter außen**, Markise, Gegenlicht | 1218 × 1320 mm (Lichtmaß 1068 × 1166, Rahmen sichtbar 76) | 5: aus 1,3–3,1 m, frontal und schräg | Breite bei 3 von 5 auf ±0,2 %, Höhe +7 bis +10 % (Glaskante oben am Rollo bzw. Rollokasten) |
+| `fenster/2026-11-04_1425_fenster` | Fenster WZ: Kunststoff, **2 Flügel** (Nachtrag; fenster.json sagt 1), gemessen der linke, Gegenlicht | 810 × 1246 mm (Lichtmaß 673 × 1107) | 4 | frontal 2,8 m +0,5 / −0,2 %, bestes Foto im Bestand |
+| `fenster/2026-11-04_1505_fenster` | Fenster KiZi v2: Kunststoff, **2 Flügel** (Nachtrag 4. Nov. abends; fenster.json sagt 1, die Fotos zeigen zwei Flügel mit Griffen mittig), Gardine, Sonne im Raum, **alle 4 Fotos schräg (23–49°) oder nah** | 810 × 1246 mm (Lichtmaß 672 × 1108) | 4 | −0,7 / 0,0 % bis −0,5 / −35,7 %; Foto 1 aus 49° zeigt, wie die Perspektive vom kleinen Blatt kippt |
 | `fenster/2026-11-04_1603_fenster` | unbekannt, 1 Foto ohne Maß | – | 1 | wird nicht ausgewertet (`ignorieren` im Nachtrag); im Repo lassen, Claude hat dort nur Lesezugriff |
-| `fenster/2026-11-04_1647_fenster` | Schlafzimmer, Kunststoff (nachgetragen), 2 Flügel (nachgetragen, gemessen der linke), dämmrig, Licht an | 810 × 1246 mm | 3 | Analyse am Handy 834 × 1243 |
-| `fenster/2026-11-04_1425_fenster` | Wohnzimmer, Kunststoff, 2 Flügel (nachgetragen, gemessen der linke), Gegenlicht | 810 × 1246 mm | 4 | Analyse 814 × 1246 |
-| `fenster/2026-11-04_1331_fenster` | Kinderzimmer, Holz, 1 Flügel, Griff rechts, Rollo innen, **Ziergitter außen** (nicht angehakt), Markise, Gegenlicht | 1218 × 1320 mm (Rahmen innen 1068 × 1166, Rahmen sichtbar 76) | 5: aus 1,3–3,1 m, frontal und schräg | Schlimmster Fall bisher: Gitter + Markise + Sonne; selbst Levin sieht die Flügelkante nur unten an den Ecken |
-| `fenster/2026-11-04_1217_fenster` | Balkontür Küche, Kunststoff, Griff rechts | 788 × 2023 mm | 5: frontal ca. 1,9 m, schräg von links, oben nah, unten nah, schräg von rechts | Marker immer 4/4, Schärfe 1,6 px; Maß immer falsch (397–523 × 772–1829 mm), unten nah gar keins |
+| `fenster/2026-11-04_1647_fenster` | Fenster SZ Dunkel: Kunststoff (Nachtrag), **2 Flügel** (Nachtrag), gemessen der linke, dämmrig, Licht an | 810 × 1246 mm (Lichtmaß 674 × 1108) | 3 | Höhe immer auf ±1 %, Breite −5 / +13 / −4 % – rechte Fuge am Stulp falsch (Holz rechts 43 / 36 / 54 mm statt 70) |
+| `fenster/2026-11-04_1650_fenster` | KiZi Fenster abends = dasselbe Holzfenster wie 1331, nachgemessen 1220 × 1318, Gitter, dämmrig | 1220 × 1318 mm (Lichtmaß 1068 × 1167) | 4 | frontal 2,4 m −2,6 / +2,8 %, die drei nahen/schrägen 10–22 % daneben |
+| `fenster/2026-11-04_1734_fenster` | KiZi Fenster v3 = dasselbe Holzfenster (Maß im Nachtrag) | 1220 × 1318 mm | 1 | frontal 2,6 m −1,7 / +2,0 % |
+
+Lücken im Bestand: 0 Kastenfenster, 0 Verbundfenster, 0 dunkles Holz, kein Lichtmaß für die Balkontür. Die `TYPEN`-Werte für Kasten und Verbund sind laut Code geschätzt und an keinem Foto geprüft.
+
+## Prüfung 4. Nov. 2026 (unabhängiger Chat „Foto Lotse Check“)
+
+Ein zweiter Chat hat Code, REGIE und Tests ohne Vorwissen geprüft. Prüfstand und Wackeltest reproduzierten die REGIE-Zahlen exakt; der Übungsmodus läuft mit Playwright (iPhone-Viewport) durch alle 6 Fotos ohne Fehler. Umgesetzt sind daraus die Punkte 1, 3, 4 und 8 (siehe Änderungsprotokoll). Der Rest steht als Befund hier, damit der nächste Chat ihn aufgreifen kann; „gemessen“ heißt mit Prüfstand, Wackeltest oder Playwright belegt, „Vermutung“ heißt noch nicht.
+
+1. **Erledigt – Gegenprobe-Text.** `massZeigen` zeigte im Maßblatt-Modus immer „Das Maßblatt misst … eingetippt ist 81 × 124 cm. Bitte nochmal nachmessen.“ (gemessen mit Galerie-Foto KiZi Mittag 1 auf frischem Handy). Der Kunde hat nie etwas eingetippt; `P.fb/P.fh` sind Startwerte oder das zuletzt gemessene Fenster.
+2. **Kundenablauf kennt keine Flügelanzahl** (gemessen): `P.nU` kommt nur aus dem versteckten Formular, „Analyse starten“ läuft immer mit 1 Flügel und Bauart Holz. Folgen bei 2 Flügeln: Griff-Frage links/rechts (Griff ist mittig), Spiegeln läuft, Tipp sagt „auf die Scheibe“ statt „auf die linke Scheibe“. Prüfstand mit Kundeneinstellung: ±5 % 13 statt 10 – nicht schlechter, aber andere Fotos kippen (SZ 2: +13 → +19 %, WZ 4: +6,8 → 0,0 %). Vorschlag: eine Frage „1 oder 2 Flügel?“ vor dem Start; Prüfstand zusätzlich mit Kundeneinstellung laufen lassen.
+3. **Erledigt – KiZi v2 ist zweiflügelig.** Der v3.3-Gewinn „±5 %: 11 statt 10“ beruhte auf Spiegeln an diesem Fenster; mit richtigem Label 10 statt 10 (Median Breite 4,2 % bleibt). Auch die Bedingung „alle 3 Durchgänge einig“ wurde an KiZi v2 Foto 4 eingestellt, wo gar nicht gespiegelt werden dürfte. Mit richtigem Label ergibt Einstimmigkeit wie Mehrheit 10 von 30 (KiZi Mittag 3 etwas schlechter, KiZi abends 3 besser) – die Bedingung ist weder belegt noch schädlich.
+4. **Erledigt – Wackeltest-Variante „weich“ war tot** (siehe Wackeltest).
+5. **Höhe ist das Genauigkeitsproblem, nicht Streuung** (gemessen): 9 frontale Fotos ≥ 2 m: Breite median 2,6 % daneben, Höhe median 2,8 %, aber bei 4 von 9 um 7–11,5 % zu groß (Rollo/Rollokasten oben, Boden/Fensterbank unten). Lotse-Glas gegen Lichtmaß: Breite meist ±2 %, Höhe +12 bis +14 %. Wackeltest: WZ 1 streut 1 mm, Balkontür 1 3–4 mm – die Kante ist falsch, nicht wackelig. Vermutung: oben/unten das **Ende der senkrechten Flügelkanten** nutzen (`v3Gerade` entlang der Seitenfuge, wo die Kantenantwort abreißt, ist die Ecke); Rollo und Fensterbank verdecken die Glaskante, aber nicht das Ende der Seitenfuge. 3–6 h, Ergebnis offen.
+6. **Livebild hängt an v2** (gemessen): v2 liefert bei 29 von 30 Fotos „ein Maß“, auf den 9 frontalen Fotos bei 8 um 10–138 % falsch. Der grüne Umriss im Livebild ist also meist falsch, und „ganzes Fenster im Bild“/„mittig“/„stabil“ prüfen falsche Ecken. Vorschlag: auslösen nur am Blatt (Abstand, Blatt mittig, ruhig), Umriss weglassen oder nur bei `sicher`; dann v3 mit einem Raster bei 1280 px live probieren (am Handy brauchte v3 laut Lernfoto-JSON 281 ms bei 2560 px).
+7. **Entwickler-Dinge, die der Kunde sieht** (Screenshots): `zeigeWerte = true` (Schärfe, Griff, Winkel im Prüfdialog), Knopf „Entwickler: Lernfotos“ für alle sichtbar, Text „unter ‚Ändern‘ selbst eintragen“ verweist auf einen versteckten Knopf, Griff-Dialog fragt dreimal dasselbe. Vorschlag: Werte nur mit `?test` oder Token, Entwickler-Knopf nur mit Token oder `?entw`, Text auf „Manuelles Aufmaß“. 30 min.
+8. **Erledigt – Prüfstand zählte den Griff auch bei 2 Flügeln** (die App sucht nur bei 1). Bereinigt: 12 von 18 richtig, sicher 7, davon 6 richtig.
+9. **Grenzwerte außerhalb von TOL/V3** (gelesen): in `v3Glaskante`/`v3Fuge`/`v3Finden`/`messenV3` 0,35 und 0,25 (Kantenanteil), ruhig „< 12 oder Verhältnis 2“, Farbabstand 40/50, „+0,15 besser“-Regel, Faktor 0,3, Zonen 8–44 und 30–150 mm, 25 mm Seitenabgleich, stimmig 20/40/15/45, Griff 1,35/1,5, Umschalten Ähnlichkeit/Homographie bei 10° in `blattLage`. v3 ignoriert `opt.fu` (unten fest `fs + 10`, bei Kunststoff 80 statt 70). `TYPEN` liegt dreimal (index.html, pruefstand.js, wackel.js), nur der Prüfstand kennt „alu“. Vorschlag: nach `V3` mit Namen, `fu` durchreichen; Prüfstand vorher/nachher muss identisch bleiben. 1–2 h.
+10. **Toter Code** (gelesen): `v3Eckabgleich`/`v3EckRunde`/`v3Kantenbild` (~90 Zeilen, nur mit `opt.eckabgleich`), `abgleichen` (V3.abgleich aus), `v3Spiegelprobe` (sammelt nur), `messwerte()` (nach `an = false` unerreichbar), `erg.abgeglichen` immer `[false, false]`, `<title>` und eine Meta stehen im `<body>`. `laeufe.forEach(q => q.fluegel[q.spiegel.i] …)` hält nur wegen der Einstimmigkeit (bei Mehrheit stürzt es ab, gemessen in einer Testkopie). Vorschlag: Eckabgleich und Abgleich entfernen (stehen in den Branches `stand-v3.x`). 1 h.
+11. **Homographie vom kleinen Blatt** (gemessen, kein einfacher Gewinn): v3 nutzt immer `Hvoll`. Testkopie mit Ähnlichkeit bei < 10°: ±5 % 10 statt 11, WZ 1 von +0,5 auf +6,2 %, KiZi abends 4 von −22 auf +4,6 % – zeigt nur, wie groß der Hebel ist. Vermutung: die Ebene wie in v2 (`fensterGenau`) aus den vier Flügelkanten nachbestimmen, das Blatt nur für den Maßstab. 4–8 h, erst nach Punkt 5.
+12. **Übungsfenster −2 % systematisch** (gemessen): gezeichnet 810 × 1240, v3 795 × 1228; die Profil-Kanten sitzen 6–10 mm zu weit innen, die Geraden (`v3Ecken`) treffen 809 × 1239. Auf echten Fotos bringt „Maß aus den Geraden“ nichts (±5 %: 10 statt 11), dort dominiert die falsche Kante. Niedrige Priorität.
+13. Kleines: GitHub-Token liegt im localStorage einer öffentlichen Seite – fine-grained Token nur für `foto-lotse-daten` (Contents: write) verwenden. Lichtmaß für die Balkontür nachmessen (trennt bei +3 % Breite Kante von Maßstab). Rechenzeit am Rechner 0,5–1,8 s je Foto. Was fehlt: ein Ablauf-Test im Repo (Playwright-Skript für den Übungsmodus), ein Prüfstand-Modus „wie der Kunde“, eine Plausibilitätsfrage am Ende („Flügel ca. 122 × 132 cm – kommt das hin?“) gegen Ausreißer wie −35 %.
+
+Empfohlene Reihenfolge für den Rest: 2 und 7 (Kundenablauf) → 5 (Höhe) → 6 (Livebild) → 9 und 10 (Aufräumen) → 11. Lernfotos gezielt: Kastenfenster, Verbund, dunkles Holz, immer mit Lichtmaß und Flügelanzahl, das erste Foto so, wie der Kunde es macht (frontal, 2,5–3,5 m).
 
 ## Änderungsprotokoll
 
@@ -162,7 +192,8 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
-| 4. Nov. 2026 | v3.3 `e4e5abf` | Spiegeln links ↔ rechts (`V3.spiegeln`, `V3.spiegelAb` 15 mm): weicht das Holz links und rechts um mehr als 15 mm ab, wird die Seite, die zur Bauart passt, auf die andere gespiegelt, aber nur, wenn alle 3 Durchgänge dieselbe Seite wollen; nicht bei 2 Flügeln. Spiegelprobe (Holzring-Vergleich der Ecken) wird mitgespeichert. Prüfstand gibt Anzahl Flügel weiter und zeigt Spiegelprobe und Spiegel-Vorschlag. Anzeige v3.3 | Levin: Ecken spiegeln und abgleichen | Prüfstand ±5 %: 11 statt 10, Median Breite 4,2 statt 4,4 %, kein Foto schlechter. Wackeltest ±5 %: 56 statt 48 von 141. Spiegelprobe noch ohne Aussagekraft |
+| 4. Nov. 2026 | Prüfung `COMMIT1` | (1) Gegenprobe gegen das eingetippte Maß nur noch bei „Selbst eingeben“; im Maßblatt-Modus „Gemessen: Flügel ca. B × H cm“ (`massZeigen`). (3) `pruefstand/nachtrag.json`: KiZi v2 (1505) als 2 Flügel. (4) `wackel.js`: Weichzeichnen selbst gerechnet ([1 2 1]-Kern), weil der Canvas-Filter in Headless-Chromium nicht wirkt. (8) Prüfstand sucht den Griff nur bei 1 Flügel und meldet die Griff-Trefferquote in der Kopfzeile. Abschnitt „Prüfung 4. Nov. 2026“ mit allen Befunden | Unabhängige Prüfung im Chat „Foto Lotse Check“; Levin hat 1, 3, 4, 8 freigegeben | Erkennung unverändert. Prüfstand: 5 von 30 auf ±2 %, 10 auf ±5 % (ehrlich statt 11), Griff 12 von 18. Wackeltest neue Basis: stabil 4 von 29, Streuung 8,5 %, Fehler 7,2 %, ±2 % 17/141, ±5 % 55/141. Übungsmodus (Playwright, iPhone-Viewport): 6 von 6 Fotos, keine Fehler; Galerie-Foto zeigt „Gemessen: Flügel ca. 122 × 129 cm“ statt „eingetippt ist 81 × 124 cm“ |
+| 4. Nov. 2026 | v3.3 `e4e5abf` | Spiegeln links ↔ rechts (`V3.spiegeln`, `V3.spiegelAb` 15 mm): weicht das Holz links und rechts um mehr als 15 mm ab, wird die Seite, die zur Bauart passt, auf die andere gespiegelt, aber nur, wenn alle 3 Durchgänge dieselbe Seite wollen; nicht bei 2 Flügeln. Spiegelprobe (Holzring-Vergleich der Ecken) wird mitgespeichert. Prüfstand gibt Anzahl Flügel weiter und zeigt Spiegelprobe und Spiegel-Vorschlag. Anzeige v3.3 | Levin: Ecken spiegeln und abgleichen | Prüfstand ±5 %: 11 statt 10, Median Breite 4,2 statt 4,4 %, kein Foto schlechter. Wackeltest ±5 %: 56 statt 48 von 141. Spiegelprobe noch ohne Aussagekraft. **Nachtrag Prüfung 4. Nov. abends:** einer der 4 Spiegel-Treffer (KiZi v2 Foto 3) war ein zweiflügeliges Fenster mit falschem Label; mit richtigem Label ±5 % 10 statt 10, Median Breite bleibt 4,2 % |
 | 4. Nov. 2026 | `3e5e252` | Ecken-Abgleich nach Levins Idee als Bild-Schablonen mit Nachsteuern in Runden gebaut, ausgeschaltet (`opt.eckabgleich`) | Levin: Ecken aufeinanderlegen, Toleranzen eingrenzen | Gespiegelte Ecken zu unähnlich (0,2–0,7), Maß nicht besser; Gründe und nächste Schritte unter Offene Punkte |
 | 4. Nov. 2026 | v3.2 `9478d76` | Ecken als Schnittpunkte von vier frei gefitteten Kanten: Eckwinkel und Diagonalen von Flügel und Glas, in allen Daten (Lernfoto-JSON, Durchlauf, Analyse→Lernfotos), in der Lernfoto-Vorschau und im Dialog (Messwerte). Neue Felder: echte Diagonalen. Ecken abgleichen gebaut, im Wackeltest schlechter, daher aus (`V3.abgleich`). Nachtrag: KiZi v3 (1734) mit Maß vom Holzfenster | Levin: Diagonalen/Winkel zeigen Verzug, Schleifen, Schwergängigkeit; alles sammeln | Prüfstand 5 von 30 auf ±2 % (bisher 4 von 29); Winkelrauschen ca. ±1° |
 | 4. Nov. 2026 | v3.1 `543cc2e` | v3 sucht dreimal (2, 2,5, 3 mm je Pixel), je Seite zählt die Mehrheit; Selbsteinschätzung `massSicher` (an jeder Seite mindestens 2 von 3 einig). Unsicheres Maß: Dialog sagt „Unsicher: am besten nochmal frontal aus 2 bis 3 m“ und wartet; Lernfoto-Vorschau zeigt „(unsicher)“. Prüfstand zählt Selbsteinschätzung | Gleiches Foto ergab je nach Bildverkleinerung (Handy) ein anderes Maß | Wackeltest ±2 %: 17 statt 6 von ~130; unsicher gemeldet 8, alle wirklich daneben |
@@ -190,6 +221,20 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe gut, Fensterkanten falsch.
 
 ## Offene Punkte
+
+Aus der Prüfung vom 4. Nov. abends (Nummern wie dort, Reihenfolge = Empfehlung):
+
+- [ ] **Flügelanzahl im Kundenablauf (Prüfung 2):** eine Frage „1 oder 2 Flügel?“ vor dem Start; Prüfstand zusätzlich mit Kundeneinstellung (Holz, 1 Flügel) laufen lassen
+- [ ] **Entwickler-Dinge vor dem Kunden verstecken (Prüfung 7):** `zeigeWerte` nur mit `?test`/Token, Entwickler-Knopf nur mit Token oder `?entw`, Text „unter ‚Ändern‘“ → „Manuelles Aufmaß“, Griff-Frage nur einmal stellen
+- [ ] **Höhe: Ende der Seitenfugen als Ecke (Prüfung 5)** – größter Hebel für frontale Fotos, nur mit Prüfstand vorher/nachher
+- [ ] **Livebild ohne v2-Umriss, Auslösen am Blatt (Prüfung 6)**, danach v3 mit einem Raster live
+- [ ] **Grenzwerte nach `V3`, `opt.fu` durchreichen, toten Code entfernen (Prüfung 9 und 10)** – Prüfstand muss identisch bleiben
+- [ ] **Ebene aus den Flügelkanten statt nur vom Blatt (Prüfung 11)**
+- [ ] Ablauf-Test (Playwright, Übungsmodus) ins Repo; Plausibilitätsfrage am Ende; Lichtmaß der Balkontür nachmessen (Prüfung 13)
+- [x] Gegenprobe nur bei „Selbst eingeben“ (Prüfung 1, 4. Nov. 2026)
+- [x] Wackeltest-Variante „weich“ repariert, KiZi v2 als 2 Flügel, Griff im Prüfstand nur bei 1 Flügel (Prüfung 3, 4, 8, 4. Nov. 2026)
+
+Ältere Punkte:
 
 - [ ] **Spiegelprobe aussagekräftig machen (v3.3):** Der Bildvergleich der Holzringe links ↔ rechts liegt bei guten und schlechten Fotos gleich um 0 (−0,2…0,44). Gründe: Holzmaserung ist nicht spiegelgleich, Bandseite hat Schere/Ecklager, Licht kommt von einer Seite. Nächster Versuch: statt 2D-Bild den Querschnitt vergleichen (Helligkeitsverlauf quer zur Kante, über die ganze Kantenlänge gemittelt: Glas → Glasleiste → Flügelholz → Fuge → Rahmen). Der ist links und rechts wirklich gleich. Damit (a) die Fuge auf der unsicheren Seite dort suchen, wo der Querschnitt am besten zur sicheren Seite passt, statt nur die Breite zu übertragen, und (b) als Selbsteinschätzung nutzen. Danach dasselbe oben ↔ unten nur für die Glasleiste
 - [x] Spiegeln links ↔ rechts über die Holzbreite (v3.3, 4. Nov. 2026)

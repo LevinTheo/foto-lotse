@@ -99,7 +99,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
-| 4. Nov. 2026 | (dieser) | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
+| 4. Nov. 2026 | `27efb0f` | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
 
 ## Lernfotos (Bestand)
 
@@ -115,7 +115,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
-| 4. Nov. 2026 | (dieser) | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |
+| 4. Nov. 2026 | `27efb0f` | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |
 | 4. Nov. 2026 | `e321dec` | Knopf „Fenster fertig“ statt „Neues Fenster“: schreibt `fenster.json` mit den endgültigen Angaben, mahnt fehlendes Maß einmal an | Bei den ersten 5 Lernfotos waren Name und Maß leer; so lässt sich das Maß auch nachträglich eintragen | Mit nachgestellter GitHub-Gegenstelle getestet |
 | 4. Nov. 2026 | `8aa537f` | Entwickler-Knopf „Lernfotos“: Fotos + echtes Maß + Lotse-Ergebnis ins private Repo `foto-lotse-daten` | Echte Fotos sammeln, damit die Erkennung an echten Fenstern getestet und verbessert werden kann | Mit nachgestellter GitHub-Gegenstelle getestet: Foto und JSON landen in `fenster/<Zeit>_<Name>/` |
 | 4. Nov. 2026 | `8aa537f` | Griff wird immer einmal bestätigt, erkannte Seite als Vorschlag hervorgehoben | Erster echter Test (Balkontür Küche, Kunststoff, Flügel 788 × 2023 mm, Griff rechts): Marker 4 von 4, Abstand 2,4 m, Schärfe 1,6 px, aber Kantensuche hängt sich an den Hintergrund (Markise, Sichtschutz, Wimpel) → Maß 499–795 × 739–1574 mm statt 788 × 2023; Griffsuche meldete dabei bei einer Auflösung „links, sicher“ | Keine falsche Griffseite mehr ohne Bestätigung |

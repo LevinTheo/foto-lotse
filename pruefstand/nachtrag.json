@@ -6,5 +6,18 @@
     "bauart": "kunststoff",
     "griff": "rechts",
     "notiz": "nachgetragen, Fotos 1 frontal ca. 1,9 m, 2 schräg links, 3 oben nah, 4 unten nah, 5 schräg rechts"
+  },
+  "2026-11-04_1603_fenster": {
+    "ignorieren": true,
+    "notiz": "einzelnes Foto ohne Maß, laut Levin unbekannt, nicht auswerten"
+  },
+  "2026-11-04_1647_fenster": {
+    "bauart": "kunststoff",
+    "fluegelAnzahl": 2,
+    "notiz": "nachgetragen: Schlafzimmer, Kunststoff, 2 Flügel (gemessen der linke)"
+  },
+  "2026-11-04_1425_fenster": {
+    "fluegelAnzahl": 2,
+    "notiz": "nachgetragen: 2 Flügel (gemessen der linke)"
   }
 }

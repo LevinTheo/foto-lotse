@@ -15,7 +15,8 @@ const NACHTRAG = JSON.parse(fs.readFileSync(path.join(__dirname, 'nachtrag.json'
 function wahrheit(ordner) {
   const f = path.join(DATEN, 'fenster', ordner, 'fenster.json');
   const w = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')).fenster : {};
-  return Object.assign({}, NACHTRAG[ordner] || {}, Object.fromEntries(Object.entries(w).filter(([, v]) => v !== null && v !== '')));
+  // Nachtrag ergänzt fehlende Angaben und korrigiert falsche (er gewinnt gegen fenster.json)
+  return Object.assign({}, Object.fromEntries(Object.entries(w).filter(([, v]) => v !== null && v !== '')), NACHTRAG[ordner] || {});
 }
 const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60, tiefe: 35 }, holz: { fs: 65, fu: 75, tiefe: 40 },
   kunststoff: { fs: 70, fu: 70, tiefe: 40 }, alu: { fs: 70, fu: 70, tiefe: 40 } };
@@ -38,6 +39,7 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
   const ordnerListe = fs.readdirSync(path.join(DATEN, 'fenster')).filter((o) => fs.statSync(path.join(DATEN, 'fenster', o)).isDirectory()).sort();
   for (const ordner of ordnerListe) {
     const w = wahrheit(ordner);
+    if (w.ignorieren) continue;
     const opt = Object.assign({ griff: true }, TYPEN[w.bauart] || TYPEN.holz);
     const fotos = fs.readdirSync(path.join(DATEN, 'fenster', ordner)).filter((f) => /^(foto|lauf)-.*\.jpg$/.test(f)).sort();
     for (const foto of fotos) {

@@ -122,6 +122,9 @@ Liegen im privaten Repo `LevinTheo/foto-lotse-daten`, bleiben dort dauerhaft. Or
 
 | Ordner | Fenster | Echtes Maß Flügel | Fotos | Lotse (Stand 4. Nov.) |
 | --- | --- | --- | --- | --- |
+| `fenster/2026-11-04_1603_fenster` | unbekannt, 1 Foto ohne Maß | – | 1 | wird nicht ausgewertet (`ignorieren` im Nachtrag); im Repo lassen, Claude hat dort nur Lesezugriff |
+| `fenster/2026-11-04_1647_fenster` | Schlafzimmer, Kunststoff (nachgetragen), 2 Flügel (nachgetragen, gemessen der linke), dämmrig, Licht an | 810 × 1246 mm | 3 | Analyse am Handy 834 × 1243 |
+| `fenster/2026-11-04_1425_fenster` | Wohnzimmer, Kunststoff, 2 Flügel (nachgetragen, gemessen der linke), Gegenlicht | 810 × 1246 mm | 4 | Analyse 814 × 1246 |
 | `fenster/2026-11-04_1331_fenster` | Kinderzimmer, Holz, 1 Flügel, Griff rechts, Rollo innen, **Ziergitter außen** (nicht angehakt), Markise, Gegenlicht | 1218 × 1320 mm (Rahmen innen 1068 × 1166, Rahmen sichtbar 76) | 5: aus 1,3–3,1 m, frontal und schräg | Schlimmster Fall bisher: Gitter + Markise + Sonne; selbst Levin sieht die Flügelkante nur unten an den Ecken |
 | `fenster/2026-11-04_1217_fenster` | Balkontür Küche, Kunststoff, Griff rechts | 788 × 2023 mm | 5: frontal ca. 1,9 m, schräg von links, oben nah, unten nah, schräg von rechts | Marker immer 4/4, Schärfe 1,6 px; Maß immer falsch (397–523 × 772–1829 mm), unten nah gar keins |
 

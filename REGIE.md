@@ -115,7 +115,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
-| 4. Nov. 2026 | (dieser) | Lernfotos: Felder „Am oder vor dem Fenster“ (Markise, Rollladen, Rollo, Jalousie, Insektenschutz, Gitter, Gardine) und „Hintergrund“ | Erklärt im Prüfstand, warum die Kantensuche danebenliegt (Markise an der Balkontür); wichtig fürs Angebot | – |
+| 4. Nov. 2026 | `6e6a8a4` | Lernfotos: Felder „Am oder vor dem Fenster“ (Markise, Rollladen, Rollo, Jalousie, Insektenschutz, Gitter, Gardine) und „Hintergrund“ | Erklärt im Prüfstand, warum die Kantensuche danebenliegt (Markise an der Balkontür); wichtig fürs Angebot | – |
 | 4. Nov. 2026 | `27efb0f` | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |
 | 4. Nov. 2026 | `e321dec` | Knopf „Fenster fertig“ statt „Neues Fenster“: schreibt `fenster.json` mit den endgültigen Angaben, mahnt fehlendes Maß einmal an | Bei den ersten 5 Lernfotos waren Name und Maß leer; so lässt sich das Maß auch nachträglich eintragen | Mit nachgestellter GitHub-Gegenstelle getestet |
 | 4. Nov. 2026 | `8aa537f` | Entwickler-Knopf „Lernfotos“: Fotos + echtes Maß + Lotse-Ergebnis ins private Repo `foto-lotse-daten` | Echte Fotos sammeln, damit die Erkennung an echten Fenstern getestet und verbessert werden kann | Mit nachgestellter GitHub-Gegenstelle getestet: Foto und JSON landen in `fenster/<Zeit>_<Name>/` |

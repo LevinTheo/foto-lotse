@@ -1880,7 +1880,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      4. Hinter der Glaskante, 30 bis 150 mm weiter außen, die Schattenfuge zwischen Flügel und Rahmen. Findet er keine, gilt das
         übliche Flügelholz je Bauart.
      Liegt eine Kante außerhalb des Fotos, gibt es kein Maß (statt zu raten). Läuft nur auf dem fertigen Foto, nicht im Livebild. */
-  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false, spiegeln: true, spiegelAb: 15 };
+  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false, spiegeln: true, spiegelAb: 15, spiegelnZwei: true };
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
     var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
@@ -2059,9 +2059,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // Spiegeln links ↔ rechts (Levin): Das Glas sitzt mittig im Flügel, links und rechts ist gleich viel Holz bis zur Fuge.
     // Weichen die beiden Seiten um mehr als V3.spiegelAb (15 mm) ab, ist eine falsch: die Seite, die besser zur Bauart passt, wird gespiegelt.
     // Hier nur der Vorschlag; angewendet wird er in messenV3 erst, wenn alle Durchgänge dieselbe Seite spiegeln wollen.
-    // Nicht bei 2 Flügeln (dort ist auf einer Seite der Stulp).
+    // Bei 2 Flügeln (gemessen der linke, rechts der Stulp) nur mit V3.spiegelnZwei: Prüfstand und Wackeltest waren damit besser
+    // (4. Nov. 2026, v3.4), das Holz bis zur Mittelfuge ist dort ungefähr so breit wie bis zur Fuge am Rahmen.
     var spiegel = null;
-    if (V3.spiegeln && nU !== 2) {
+    if (V3.spiegeln && (nU !== 2 || V3.spiegelnZwei)) {
       var hl = xl - F[0], hr = F[2] - xr;
       if (Math.abs(hl - hr) > V3.spiegelAb) {
         if (Math.abs(hl - fs) <= Math.abs(hr - fs)) spiegel = { seite: 'rechts', i: 2, wert: xr + hl };

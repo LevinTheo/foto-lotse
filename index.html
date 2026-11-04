@@ -530,6 +530,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       <div class="felder">
         <label class="feld"><span class="feld__name">Flügel breit</span><span class="feld__eingabe"><input id="entw-b" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Flügel hoch</span><span class="feld__eingabe"><input id="entw-h" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Rahmen innen breit</span><span class="feld__eingabe"><input id="entw-rib" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Rahmen innen hoch</span><span class="feld__eingabe"><input id="entw-rih" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Rahmen sichtbar breit</span><span class="feld__eingabe"><input id="entw-rb" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Flügel</span><span class="feld__eingabe"><select id="entw-nu"><option value="">?</option><option value="1">1</option><option value="2">2</option><option value="3">3 oder mehr</option></select></span></label>
       </div>
       <label class="feld"><span class="feld__name">Bauart</span><span class="feld__eingabe"><select id="entw-typ"><option value="">?</option><option value="kasten">Kastenfenster</option><option value="verbund">Verbundfenster</option><option value="holz">Holzfenster</option><option value="kunststoff">Kunststofffenster</option><option value="alu">Alu</option></select></span></label>
       <label class="feld"><span class="feld__name">Griff (von innen)</span><span class="feld__eingabe"><select id="entw-griff"><option value="">?</option><option value="links">links</option><option value="rechts">rechts</option><option value="mitte">Mitte (2 Flügel)</option></select></span></label>
@@ -3277,8 +3281,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     entwZeile('Fenster wird abgeschlossen …').then(function (li) {
       ghPut(ordner + '/fenster.json', textB64(JSON.stringify(meta, null, 2)), 'Fenster fertig ' + ordner).then(function () {
         ENTW.ordner = null; ENTW.nr = 0; entwFertigGewarnt = false;
-        ['entw-name', 'entw-b', 'entw-h', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
-        $('entw-typ').value = ''; $('entw-griff').value = '';
+        ['entw-name', 'entw-b', 'entw-h', 'entw-rib', 'entw-rih', 'entw-rb', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
+        $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = '';
         $('entw-liste').innerHTML = '';
         $('entw-ordner').textContent = 'Gespeichert ✓ (' + meta.fotos + ' Fotos in ' + ordner + '). Nächstes Fenster: erst Name und Maß, dann Fotos.';
         $('entw-name').focus();
@@ -3313,6 +3317,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function entwFenster() {
     return { name: $('entw-name').value.trim(), fluegelBreiteMm: +$('entw-b').value || null, fluegelHoeheMm: +$('entw-h').value || null,
+      rahmenInnenBreiteMm: +$('entw-rib').value || null, rahmenInnenHoeheMm: +$('entw-rih').value || null, rahmenSichtbarMm: +$('entw-rb').value || null,
+      fluegelAnzahl: +$('entw-nu').value || null,
       bauart: $('entw-typ').value || null, griff: $('entw-griff').value || null, notiz: $('entw-notiz').value.trim() };
   }
   function b64VonBlob(blob) {
@@ -3341,9 +3347,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     opt.griff = true;
     return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt).then(function (r) {
       var e = (r && r.erg) || {};
-      return { bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
+      return { cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
         ok: !!e.ok, grund: e.grund || '', fluegelMm: e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null, holzMm: e.roh && e.roh.holz ? e.roh.holz.map(Math.round) : null,
-        stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0] / q), Math.round(p[1] / q)]; }) : null,
+        stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }) : null,
         griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ };
     });
   }
@@ -3355,7 +3361,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function entwDatei(datei, quelle) {
     if (!entwBereit()) return Promise.resolve();
-    var ordner = entwOrdner(), nr = ++ENTW.nr, name = 'foto-' + zwei(nr), endung = /png$/i.test(datei.type) ? 'png' : 'jpg';
+    var ordner = entwOrdner(), nr = ++ENTW.nr, name = 'foto-' + zwei(nr), endung = 'jpg', klein = null;
     var li;
     return entwZeile(name + ': wird ausgewertet …').then(function (l) {
       li = l;
@@ -3368,11 +3374,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }).then(function (img) {
       return (img ? lotseSieht(img) : Promise.resolve(null)).catch(function () { return null; });
     }).then(function (sieht) {
+      if (sieht && sieht.cv) { klein = sieht.cv; delete sieht.cv; }
       li.textContent = name + ': lädt hoch …' + (sieht ? ' (Lotse: ' + sieht.marker + ' Marker' + (sieht.fluegelMm ? ', ' + sieht.fluegelMm.join(' × ') + ' mm' : '') + ')' : '');
       var meta = { zeit: new Date().toISOString(), quelle: quelle, datei: { name: datei.name, typ: datei.type, bytes: datei.size },
         fenster: entwFenster(), lotse: sieht, geraet: { ua: navigator.userAgent, bildschirm: screen.width + 'x' + screen.height + '@' + (window.devicePixelRatio || 1) },
         version: 'foto-lotse ' + (document.lastModified || '') };
-      return b64VonBlob(datei).then(function (b64) {
+      // Verkleinert hochladen: so groß, wie der Lotse rechnet (lange Seite 2576 px). Spart gut die Hälfte Platz, für die Messung geht nichts verloren.
+      var bildDaten = klein ? new Promise(function (ja) { klein.toBlob(function (bl) { ja(bl || datei); }, 'image/jpeg', 0.92); }) : Promise.resolve(datei);
+      return bildDaten.then(function (bl) { meta.hochgeladen = { bytes: bl.size, verkleinert: bl !== datei }; return b64VonBlob(bl); }).then(function (b64) {
         return ghPut(ordner + '/' + name + '.' + endung, b64, 'Lernfoto ' + ordner + '/' + name);
       }).then(function () {
         return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Lernfoto-Daten ' + ordner + '/' + name);

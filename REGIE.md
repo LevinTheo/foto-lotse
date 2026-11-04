@@ -70,7 +70,7 @@ Alles rechnet auf dem Handy, nichts wird verschickt. Die schwere Rechnung läuft
 | Spiegelung | Legt Griff-, Scheren-, Ecklager-Foto auf die richtige Seite | `P.band` = Seite der Bänder; daraus Griff, Schere, Ecklager, Hilfslinien, Texte, Skizze | `geometrie`, `mx`, `mr`, `Lm`, `texteSetzen` |
 | Automatisch weiter | Kein Klick zwischen den Fotos | Gutes Foto 1,5 s zeigen, dann weiter. Warten nur bei fehlendem Maß, Unschärfe nach 3 Versuchen oder Griff-Frage | `pruefen`, `weiter` |
 | Gesichter | Verpixelt Personen | face-api (TinyFaceDetector) nach dem Auslösen | `gesichterVerpixeln` |
-| Lernfotos (Entwickler) | Sammelt echte Fotos mit echtem Maß | Foto aus Kamera-App oder Galerie (Original), Lotse wertet es aus, beides geht per GitHub-API in das private Repo `LevinTheo/foto-lotse-daten`: `fenster/<Datum_Zeit>_<Name>/foto-01.jpg` + `foto-01.json` (echtes Maß, Bauart, Griff, Notiz, was der Lotse erkannt hat). „Fenster fertig“ schreibt die endgültigen Angaben als `fenster.json` (auch nachträglich eingetragene) und leert alles fürs nächste Fenster. Optional auch jedes Foto aus dem normalen Durchlauf (`lauf-…`). Token und Repo nur in localStorage auf dem Handy | `entwDatei`, `entwDurchlauf`, `lotseSieht`, `ghPut` |
+| Lernfotos (Entwickler) | Sammelt echte Fotos mit echtem Maß | Foto aus Kamera-App oder Galerie (Original), Lotse wertet es aus, beides geht per GitHub-API in das private Repo `LevinTheo/foto-lotse-daten`: `fenster/<Datum_Zeit>_<Name>/foto-01.jpg` + `foto-01.json` (echtes Maß, Bauart, Griff, Notiz, was der Lotse erkannt hat). „Fenster fertig“ schreibt die endgültigen Angaben als `fenster.json` (auch nachträglich eingetragene) und leert alles fürs nächste Fenster. Hochgeladen wird verkleinert auf 2576 px lange Seite (so groß rechnet der Lotse, ca. 0,8 statt 2 MB). Felder: Name, Flügel B/H, Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel, Bauart, Griff, Notiz. Optional auch jedes Foto aus dem normalen Durchlauf (`lauf-…`). Token und Repo nur in localStorage auf dem Handy | `entwDatei`, `entwDurchlauf`, `lotseSieht`, `ghPut` |
 
 Testen ohne Kamera: Der Übungsmodus zeichnet ein Fenster mit Maßblatt. Mit `?test` hinter der Adresse ist der Zustand lesbar (`window.__lotse`).
 
@@ -93,6 +93,14 @@ Alle Grenzwerte stehen im Objekt `TOL` in `index.html`.
 
 Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbreiten je Fenstertyp in `TYPEN`.
 
+## Prüfstand
+
+`node pruefstand/pruefstand.js <Pfad zu foto-lotse-daten> [Ausgabe]` lässt den aktuellen Lotsen über alle Lernfotos laufen und vergleicht mit den echten Maßen (`fenster.json`, sonst `pruefstand/nachtrag.json`). Ausgabe: `ergebnis.md` (Tabelle: Abweichung Breite/Höhe, Marker, Abstand, Griff richtig/falsch) und pro Foto ein Bild mit dem, was der Lotse erkannt hat. Nach jeder Änderung an der Erkennung laufen lassen und das Ergebnis hier eintragen. Fotos bleiben lokal, ins öffentliche Repo kommt nur der Code.
+
+| Datum | Commit | Fotos | auf ±2 % | Bemerkung |
+| --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | (dieser) | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
+
 ## Lernfotos (Bestand)
 
 Liegen im privaten Repo `LevinTheo/foto-lotse-daten`, bleiben dort dauerhaft. Ordner ohne `fenster.json` (vor dem Knopf „Fenster fertig“) hier zuordnen:
@@ -107,6 +115,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | (dieser) | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |
 | 4. Nov. 2026 | `e321dec` | Knopf „Fenster fertig“ statt „Neues Fenster“: schreibt `fenster.json` mit den endgültigen Angaben, mahnt fehlendes Maß einmal an | Bei den ersten 5 Lernfotos waren Name und Maß leer; so lässt sich das Maß auch nachträglich eintragen | Mit nachgestellter GitHub-Gegenstelle getestet |
 | 4. Nov. 2026 | `8aa537f` | Entwickler-Knopf „Lernfotos“: Fotos + echtes Maß + Lotse-Ergebnis ins private Repo `foto-lotse-daten` | Echte Fotos sammeln, damit die Erkennung an echten Fenstern getestet und verbessert werden kann | Mit nachgestellter GitHub-Gegenstelle getestet: Foto und JSON landen in `fenster/<Zeit>_<Name>/` |
 | 4. Nov. 2026 | `8aa537f` | Griff wird immer einmal bestätigt, erkannte Seite als Vorschlag hervorgehoben | Erster echter Test (Balkontür Küche, Kunststoff, Flügel 788 × 2023 mm, Griff rechts): Marker 4 von 4, Abstand 2,4 m, Schärfe 1,6 px, aber Kantensuche hängt sich an den Hintergrund (Markise, Sichtschutz, Wimpel) → Maß 499–795 × 739–1574 mm statt 788 × 2023; Griffsuche meldete dabei bei einer Auflösung „links, sicher“ | Keine falsche Griffseite mehr ohne Bestätigung |

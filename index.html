@@ -496,7 +496,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.5 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.6 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1310,12 +1310,13 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     nachhilfe: 8000,       // nach so vielen ms ohne Grün kommt der Hinweis, selbst auszulösen
     // Maßblatt
     abstand: 3, abstandMin: 2.5, abstandMax: 3.5,   // so weit (m) soll man vom Fenster weg stehen
-    versatz: 450,          // mm: so weit darf man neben der Fenstermitte stehen
-    stabil: 0.025,         // zwei Messungen hintereinander dürfen so weit auseinander liegen (2,5 %)
+    versatz: 450,          // mm: so weit darf die Kamera seitlich neben dem Maßblatt stehen (bei 2 Flügeln neben versatzZwei)
+    versatzZwei: 350,      // mm: bei 2 Flügeln klebt das Blatt links, die Fenstermitte liegt etwa so weit rechts davon
+    stabil: 0.025,         // Livebild: Abstand zum Blatt darf zwischen zwei Messungen so weit springen (2,5 %) …
+    stabilMm: 40,          // … und die Stelle vor dem Blatt so weit (mm), sonst „Halt still“
     gegenprobe: 0.08,      // ab so viel Abweichung zur Eingabe kommt „Bitte nachmessen“
     blattPixel: 1280,      // lange Seite des Bildes für die Messung im Livebild
     blattTakt: 150,        // ms Pause zwischen zwei Messungen im Livebild
-    zeigenAb: 2,           // Livebild: Umriss erst zeigen, wenn so oft hintereinander dasselbe Maß kam (sonst flackert er)
     // Schärfe: Breite des Übergangs an den stärksten Kanten in Pixeln (Bild auf 1600 px lange Seite). Darüber gilt das Foto als unscharf.
     // Erster Wert aus Versuchen am Rechner, muss mit echten Handyfotos nachgestellt werden (der Wert steht in den Messwerten).
     schaerfe: 3.6,
@@ -1837,6 +1838,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var marker = findeMarker(g, w, h);
     var lage = blattLage(marker, w, h, f);
     if (!lage) return { marker: marker.length, ok: false, grund: 'blatt' };
+    // Livebild (v3.6): nur das Blatt (Abstand, Lage), kein Fenster. Die schnelle Fenstersuche lag dort meist daneben.
+    if (opt && opt.nurBlatt) return { marker: marker.length, lage: lage, ok: false, grund: 'nurBlatt' };
     // v3 auf dem fertigen Foto (braucht die Farben), im Livebild weiter die schnelle Suche v2
     if (opt && opt.v3 && rgb) return messenV3(g, w, h, f, lage, opt, rgb, marker.length);
     var K = kantenKarten(g, w, h), roh = null, genau = null;
@@ -2827,7 +2830,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; clearTimeout(k.weiterUhr);
-    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.stabilZahl = 0;
+    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
     if (k.modus === 'foto') fotoStart();
@@ -2898,15 +2901,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (!b) return;
     k.massLaeuft = true;
     var gen = k.massGen;
-    massRechnen(b.g, b.w, b.h, b.f, massOpt(k.modus === 'uebung')).then(function (r) {
+    var opt = massOpt(k.modus === 'uebung'); opt.nurBlatt = true;
+    massRechnen(b.g, b.w, b.h, b.f, opt).then(function (r) {
       if (gen !== k.massGen) return;
       k.massLaeuft = false;
       k.massZeit = performance.now();
       if (!k.offen) return;
       var e = (r && r.erg) || { ok: false, marker: 0 }, alt = k.mass;
       e.ms = r ? r.ms : 0; e.schirm = b.schirm; e.zeit = performance.now(); e.bw = b.w; e.bh = b.h;
-      e.stabil = !!(e.ok && alt && alt.ok && Math.abs(e.breite - alt.breite) < TOL.stabil * e.breite && Math.abs(e.hoehe - alt.hoehe) < TOL.stabil * e.hoehe);
-      k.stabilZahl = e.stabil ? (k.stabilZahl || 0) + 1 : 0;   // wie oft hintereinander dasselbe Maß
+      // Ruhig = Abstand und Stelle vor dem Blatt springen zwischen zwei Messungen kaum
+      e.stabil = !!(e.lage && alt && alt.lage && Math.abs(e.lage.z - alt.lage.z) < TOL.stabil * e.lage.z &&
+        Math.hypot(e.lage.fuss[0] - alt.lage.fuss[0], e.lage.fuss[1] - alt.lage.fuss[1]) < TOL.stabilMm);
       k.mass = e;
     });
   }
@@ -2929,22 +2934,20 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (!e.ok) return { art: 'fotoOhneFenster' };
       return { art: 'passt', ecken: e.ecken.map(e.schirm) };
     }
-    if (!e || jetzt - e.zeit > 2500 || !e.lage) return { art: e && e.marker ? 'blattTeil' : 'blattSuchen' };
-    var war = k.letzteArt === 'passt', z = (e.ok ? e.abstand : e.lage.z) / 1000;
+    // Livebild (v3.6, Prüfung 6): ausgelöst wird nur am Maßblatt. Die schnelle Fenstersuche (v2) lag im Livebild meist daneben
+    // (Prüfstand: auf 8 von 9 frontalen Fotos 10–138 % falsch), deshalb kein Fensterumriss und keine Hinweise aus falschen Ecken.
+    // Geprüft wird: Blatt zu sehen (mind. 3 Marker), Abstand 2,5–3,5 m, mittig davor, ruhig. Bei 2,5–3,5 m passt ein Fenster bis
+    // ca. 2,7 m Breite ins Bild. Das Maß kommt danach vom fertigen Foto (v3).
+    if (!e || jetzt - e.zeit > 2500 || !e.lage || e.lage.anzahl < 3) return { art: e && e.marker ? 'blattTeil' : 'blattSuchen' };
+    var war = k.letzteArt === 'passt', z = e.lage.z / 1000;
     var zMin = TOL.abstandMin - (war ? 0.15 : 0), zMax = TOL.abstandMax + (war ? 0.15 : 0);
     if (z < zMin) return { art: 'zurueckM', m: z };
-    if (!e.ok) return { art: z > zMax ? 'naeherM' : 'fensterGanz', m: z };
-    var ecken = e.ecken.map(e.schirm), fr = freiFlaeche();
-    var xs = ecken.map(function (p) { return p[0]; }), ys = ecken.map(function (p) { return p[1]; });
-    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
-    if (x1 - x0 > fr.w || y1 - y0 > fr.h) return { art: 'zurueckGanz', ecken: ecken, m: z };
-    var dx = x0 < fr.x ? -1 : x1 > fr.x + fr.w ? 1 : 0, dy = y0 < fr.y ? -1 : y1 > fr.y + fr.h ? 1 : 0;
-    if (dx || dy) return { art: dx ? (dx < 0 ? 'links' : 'rechts') : (dy < 0 ? 'oben' : 'unten'), ecken: ecken };
-    if (z > zMax) return { art: 'naeherM', m: z, ecken: ecken };
-    var v = e.versatz ? e.versatz[0] : 0;
-    if (Math.abs(v) > TOL.versatz + (war ? 100 : 0)) return { art: v > 0 ? 'mitteRechts' : 'mitteLinks', ecken: ecken };
-    if (!e.stabil && !war) return { art: 'halten', ecken: ecken };
-    return { art: 'passt', ecken: ecken };
+    if (z > zMax) return { art: 'naeherM', m: z };
+    // Wo steht die Kamera vor dem Blatt? fuss = Stelle auf der Scheibe genau vor der Kamera (mm, Blattkoordinaten)
+    var v = e.lage.fuss[0] - MASS.MB.b / 2 - (P.nU === 2 ? TOL.versatzZwei : 0);
+    if (Math.abs(v) > TOL.versatz + (war ? 100 : 0)) return { art: v > 0 ? 'mitteLinks' : 'mitteRechts' };
+    if (!e.stabil && !war) return { art: 'halten' };
+    return { art: 'passt' };
   }
   function blattText(z) {
     switch (z.art) {
@@ -2952,9 +2955,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       case 'blattTeil': return 'Das ganze Maßblatt ins Bild';
       case 'zurueckM': return 'Geh ' + meterText(TOL.abstand - z.m) + ' zurück';
       case 'naeherM': return 'Geh ' + meterText(z.m - TOL.abstand) + ' näher ran';
-      case 'zurueckGanz': return 'Geh etwas zurück, das ganze Fenster muss ins Bild';
-      case 'fensterGanz': return 'Das ganze Fenster ins Bild';
-      case 'halten': return 'Halt still, ich messe …';
+      case 'halten': return 'Halt still …';
       case 'fotoMessen': return 'Foto wird gemessen …';
       case 'fotoOhneBlatt': return 'Kein Maßblatt erkannt. Selbst auslösen oder anderes Foto.';
       case 'fotoOhneFenster': return 'Fensterkanten nicht erkannt. Selbst auslösen oder anderes Foto.';
@@ -2985,10 +2986,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     c.setTransform(DPR, 0, 0, DPR, 0, 0);
     c.clearRect(0, 0, W, H);
     var frisch = !!e && (k.modus === 'foto' || performance.now() - e.zeit < 2500);
-    // Im Livebild den Umriss nur zeigen, wenn das Fenster sicher gefunden ist (mehrmals hintereinander dasselbe Maß
-    // oder alles passt). Vorher springende Rahmen sind anstrengend für die Augen (Levin, 4. Nov. 2026).
-    var sicher = k.modus === 'foto' || ok || (e && e.stabil && (k.stabilZahl || 0) >= TOL.zeigenAb);
-    var fenster = frisch && e.ok && sicher ? (z.ecken || e.ecken.map(e.schirm)) : null;
+    // Fensterumriss nur beim Galeriefoto (dort misst v3 das fertige Foto). Im Livebild gibt es keinen (v3.6): Ecken wie beim
+    // Ausweis-Scan und das erkannte Maßblatt, grün sobald alles passt.
+    var fenster = k.modus === 'foto' && frisch && e.ok ? (z.ecken || e.ecken.map(e.schirm)) : null;
     c.lineCap = 'square'; c.lineJoin = 'miter'; c.globalAlpha = 1;
     if (fenster) {
       c.fillStyle = 'rgba(6, 12, 9, 0.38)';
@@ -3457,15 +3457,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     } catch (e) { return null; }
   }
   function unscharf(sch) { return !!(sch && sch.breite > TOL.schaerfe); }
-  // Livemessung auf die Pixel des Fotos umrechnen (wenn das große Foto selbst nicht klappt)
-  function umrechnen(e, f) {
-    var n = {};
-    for (var key in e) n[key] = e[key];
-    n.ecken = e.ecken.map(function (p) { return [p[0] * f, p[1] * f]; });
-    if (e.lage) n.lage = { H: MASS.mal3([[f, 0, 0], [0, f, 0], [0, 0, 1]], e.lage.H), z: e.lage.z };
-    n.ausLive = true;
-    return n;
-  }
+
   // Vorschau fürs Prüfen: das Foto mit dem gemessenen Umriss. Gespeichert wird das Foto ohne Umriss.
   function mitUmriss(cv, m) {
     var c2 = kopie(cv), c = c2.getContext('2d'), lw = Math.max(2, Math.round(cv.width / 260));
@@ -3507,7 +3499,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // Beim ganzen Fenster innen wird immer gemessen: mit Maßblatt als Maß, sonst als Gegenprobe, falls ein Blatt klebt
     var messung = Promise.resolve(null);
     if (cv && s.id === 'innen') messung = blatt && modus === 'foto' ? Promise.resolve(k.fotoMessung) : fotoMessen(cv, modus);
-    var live = blatt && modus !== 'foto' && k.mass && k.mass.ok && performance.now() - k.mass.zeit < 1500 ? k.mass : null;
     var bl = $('blitz');
     bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
     var pruefung = cv && modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0);
@@ -3516,7 +3507,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var pause = new Promise(function (ja) { setTimeout(ja, RUHIG ? 0 : 280); });
     Promise.all([pruefung, pause, messung]).then(function (e) {
       var url = null, vorschau = null, m = e[2] && e[2].ok ? e[2] : null;
-      if (!m && live && cv) m = umrechnen(live, cv.width / live.bw);
       try { url = cv ? cv.toDataURL('image/jpeg', 0.9) : null; } catch (x) { url = null; }
       try { if (m && url) vorschau = mitUmriss(cv, m); } catch (x) { vorschau = null; }
       pruefen(url, e[0], m, vorschau);

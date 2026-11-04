@@ -496,7 +496,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.4 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.5 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1880,7 +1880,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      4. Hinter der Glaskante, 30 bis 150 mm weiter außen, die Schattenfuge zwischen Flügel und Rahmen. Findet er keine, gilt das
         übliche Flügelholz je Bauart.
      Liegt eine Kante außerhalb des Fotos, gibt es kein Maß (statt zu raten). Läuft nur auf dem fertigen Foto, nicht im Livebild. */
-  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false, spiegeln: true, spiegelAb: 15, spiegelnZwei: true };
+  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false, spiegeln: true, spiegelAb: 15, spiegelnZwei: true,
+    enden: true, endeLuecke: 40, endeTol: 30, endeMax: 300 };   // enden: Glaskante oben/unten am Ende der seitlichen Glaskanten prüfen (v3.5)
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
     var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
@@ -2001,6 +2002,54 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
     return best;
   }
+  /* Ende einer senkrechten Kante (v3.5, Levins Ecken-Idee in neuer Form): Alle Ecken sind gleich gebaut, die sichere Seite
+     zeigt, wo die unsichere Ecke sitzt. Die seitlichen Glaskanten sind fast immer sauber zu sehen; wo sie oben und unten
+     aufhören, sitzen die Ecken vom Glas. Rollo, Rollokasten, Laibung oben oder Schwelle und Boden unten verdecken die
+     Glaskante oben/unten, verlängern aber die seitliche Kante nicht.
+     Gemessen wird entlang der Geraden durch die Seitenkante (v3Gerade): je Zeile die stärkste Kante in ±6 mm. Gezählt wird der
+     längste Lauf über der Schwelle (45 % vom Median in der Mitte), der die Mitte berührt; Lücken bis V3.endeLuecke mm
+     (Griff, Beschlag, ein Ast im Hintergrund) werden überbrückt. Ergebnis: [oben, unten] in mm, oder null. */
+  function v3Enden(E, gr, von, bis) {
+    if (!gr) return null;
+    var S = E.S, W = V3.W, Hh = V3.H, st = new Int16Array(Hh), v;
+    for (v = 0; v < Hh; v++) {
+      var y = V3.Y0 + v * S, x = gr.steig * y + gr.ab, u = Math.round((x - V3.X0) / S), m = 0;
+      for (var k = u - 3; k <= u + 3; k++) { if (k < 1 || k >= W - 1) { m = -1; break; } var i = v * W + k; if (!E.M[i]) { m = -1; break; } if (E.gx[i] > m) m = E.gx[i]; }
+      st[v] = m;
+    }
+    var a = Math.round((von - V3.Y0) / S), b = Math.round((bis - V3.Y0) / S), werte = [];
+    a = a + Math.round(0.25 * (b - a)); b = b - Math.round(0.25 * (b - a));
+    for (v = Math.max(1, a); v <= Math.min(Hh - 2, b); v++) if (st[v] >= 0) werte.push(st[v]);
+    if (werte.length < 20) return null;
+    var T = Math.max(40, 0.45 * v3Median(werte)), luecke = Math.round(V3.endeLuecke / S), best = null;
+    for (v = 1; v < Hh - 1; v++) {
+      if (st[v] < T) continue;
+      var anf = v, letzt = v, gap = 0;
+      while (v < Hh - 2) { v++; if (st[v] >= T) { letzt = v; gap = 0; } else if (st[v] < 0 || ++gap > luecke) break; }
+      if (letzt >= a && anf <= b && (!best || letzt - anf > best[1] - best[0])) best = [anf, letzt];
+    }
+    return best ? [V3.Y0 + best[0] * S, V3.Y0 + best[1] * S] : null;
+  }
+  // Glaskante oben (k = 0) bzw. unten (k = 1) gegen die Enden der beiden Seitenkanten prüfen.
+  // Passt sie zu einem Ende (±V3.endeTol), bleibt sie. Sind sich beide Enden einig, gilt ihr Mittel. Liegen beide Enden auf
+  // derselben Seite der Kante, gilt das nähere (die Kante liegt dann sicher falsch, und die nähere Seitenkante reicht am weitesten),
+  // aber nur bis V3.endeMax weit.
+  // Liegt die Kante zwischen den Enden, bleibt sie. Neue Lage: die stärkste waagerechte Kante dort (±endeTol), sonst das Ende selbst.
+  function v3AmEnde(kante, enden, k) {
+    var cur = v3mm(kante.i, V3.Y0), es = enden.filter(Boolean).map(function (e) { return e[k]; }), tol = V3.endeTol, ziel = null;
+    if (!es.length) return kante;
+    if (es.length === 2 && Math.abs(es[0] - es[1]) <= tol) ziel = (es[0] + es[1]) / 2;
+    if (ziel !== null ? Math.abs(cur - ziel) <= tol : es.some(function (e) { return Math.abs(cur - e) <= tol; })) return kante;
+    if (ziel === null) {
+      if (es.length < 2 || (es[0] - cur) * (es[1] - cur) <= 0) return kante;
+      ziel = Math.abs(es[0] - cur) < Math.abs(es[1] - cur) ? es[0] : es[1];
+      // Mehr als V3.endeMax (30 cm) daneben ist kein Rollo, keine Laibung und keine Schwelle mehr, sondern eine abgerissene Seitenkante
+      if (Math.abs(ziel - cur) > V3.endeMax) return kante;
+    }
+    var best = null;
+    (kante.alle || []).forEach(function (c) { if (Math.abs(v3mm(c.i, V3.Y0) - ziel) <= tol && (!best || c.wert > best.wert)) best = c; });
+    return best ? { i: best.i, wert: best.wert, alle: kante.alle, amEnde: true } : { i: v3px(ziel, V3.Y0), wert: 0, alle: kante.alle, amEnde: true };
+  }
   function v3Finden(E, fs, nU) {
     var yt = -150, yb = 447, xl = -150, xr = 360, ref = null, l, r, o, u, Pv, Ph;
     for (var runde = 0; runde < 3; runde++) {
@@ -2025,6 +2074,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
     Pv = v3Profil(E, true, yt + 40, yb - 40); Ph = v3Profil(E, false, xl + 40, xr - 40);
     var fL = v3Fuge(Pv, l.i, -1, fs), fR = v3Fuge(Pv, r.i, 1, fs);
+    // Oben und unten: Glaskante am Ende der seitlichen Glaskanten prüfen (v3.5)
+    var enden = null, amEnde = [false, false];
+    if (V3.enden) {
+      enden = [xl, xr].map(function (x) { return v3Enden(E, v3Gerade(E, true, x, yt, yb), yt, yb); });
+      var o2 = v3AmEnde(o, enden, 0), u2 = v3AmEnde(u, enden, 1);
+      amEnde = [!!o2.amEnde, !!u2.amEnde];
+      if (amEnde[0] || amEnde[1]) { o = o2; u = u2; yt = v3mm(o.i, V3.Y0); yb = v3mm(u.i, V3.Y0); Ph = v3Profil(E, false, xl + 40, xr - 40); }
+    }
     // Ecken abgleichen (Levins Idee): Ein Fenster ist rundum gleich aufgebaut. Die Holzbreite von der Glaskante bis zur
     // Fuge an den Seiten ist die Vorlage; oben und unten gewinnt die Glaskante, deren Holz dazu passt. So fallen
     // Rollokasten und Fensterbank raus, auch wenn sie dieselbe Farbe haben.
@@ -2069,7 +2126,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         else spiegel = { seite: 'links', i: 0, wert: xl - hr };
       }
     }
-    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref, holzSeite: ds, abgeglichen: abgeglichen, spiegel: spiegel };
+    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref, holzSeite: ds, abgeglichen: abgeglichen, spiegel: spiegel,
+      enden: enden && enden.map(function (e) { return e && e.map(Math.round); }), amEnde: amEnde };
   }
 
   /* ---------- Ecken, Winkel, Diagonalen ----------
@@ -2312,6 +2370,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     erg.massSicher = laeufe.length >= 2 && z.einig.every(function (k) { return k >= 2; });
     erg.abgeglichen = laeufe.map(function (q) { return q.abgeglichen; });
     erg.spiegelVorschlag = sp.map(function (x) { return x[0]; }).join(''); erg.gespiegelt = spiegelSeite;
+    // Je Durchgang: Glaskante oben/unten an das Ende der Seitenkanten gelegt? z. B. „o- o- --“
+    erg.amEnde = laeufe.map(function (q) { return (q.amEnde && q.amEnde[0] ? 'o' : '-') + (q.amEnde && q.amEnde[1] ? 'u' : '-'); }).join(' ');
     if (E2 && (opt.nU || 1) !== 2) { try { erg.spiegelprobe = v3Spiegelprobe(E2, F, Gl); } catch (x) { erg.spiegelprobe = null; } }
     // Ecken, Winkel, Diagonalen (Flügel und Glas), in mm am Flügel (Tiefe herausgerechnet)
     if (E2) {

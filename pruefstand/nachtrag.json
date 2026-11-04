@@ -19,5 +19,16 @@
   "2026-11-04_1425_fenster": {
     "fluegelAnzahl": 2,
     "notiz": "nachgetragen: 2 Flügel (gemessen der linke)"
+  },
+  "2026-11-04_1734_fenster": {
+    "fluegelBreiteMm": 1220,
+    "fluegelHoeheMm": 1318,
+    "rahmenInnenBreiteMm": 1068,
+    "rahmenInnenHoeheMm": 1167,
+    "notiz": "nachgetragen von „KiZi Fenster abends“ (2026-11-04_1650), dasselbe Holzfenster mit Gitter; frühere Messung 1218 × 1320"
+  },
+  "2026-11-04_1331_fenster": {
+    "name": "KiZi Holz (Mittag)",
+    "notiz": "dasselbe Fenster wie 1650 und 1734"
   }
 }

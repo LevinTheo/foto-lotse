@@ -2439,7 +2439,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       '. Gardine zur Seite, Jalousie hoch. Dann stell dich ca. 3 m mittig vors Fenster. Am besten bei gleichmäßigem Tageslicht ohne direkte Sonne aufs Fenster.' : s.tipp;
     $('k-nachhilfe').textContent = blatt ? 'Klappt es nicht? Selbst auf den Auslöser tippen, gemessen wird trotzdem.'
       : 'Klappt es nicht? Fenster in die Linien und selbst auf den Auslöser tippen.';
-    tippZeigen(true, blatt ? 9000 : 6000);
+    tippZeigen(!blatt, 6000);
     $('k-skip').hidden = s.pflicht;
     $('k-ort').hidden = true;
     miniZeigen();
@@ -2736,7 +2736,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var zeigeWerte = true;
   function prozent(x) { return Math.round(x * 100) + ' %'; }
   function messwerte(z, s) {
-    var blatt = blattSchritt(s), el = $('k-mess'), an = !!(zeigeWerte && s.auto && (blatt || k.modus !== 'uebung'));
+    var blatt = blattSchritt(s), el = $('k-mess'), an = false;   // Livebild ohne Messwerte (zu viel Text, Levin 4. Nov. 2026)
     if (el.hidden === an) el.hidden = !an;
     if (!an) return;
     var tr = k.treffer, zeilen = [];
@@ -2807,11 +2807,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       } else if (z.art !== 'passt') k.fastSeit = 0;
     } else z = { art: 'manuell' };
     var warten = performance.now() < (k.warteBis || 0);
+    var nachhilfe = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && z.art !== 'gerade' && z.art !== 'senkrecht' && t - k.schrittStart > TOL.nachhilfe;
     if (warten) setStatus(k.warteText, 'gerade');
+    else if (nachhilfe) setStatus('Mach einfach ein Foto, wir messen danach genauer.', '');
     else setStatus(statusText(z, s), z.art);
     messwerte(z, s);
-    var nh = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && t - k.schrittStart > TOL.nachhilfe;
-    if ($('k-nachhilfe').hidden === nh) $('k-nachhilfe').hidden = !nh;
+    if (!$('k-nachhilfe').hidden) $('k-nachhilfe').hidden = true;
     if (z.art !== 'passt') k.sperre = false;
     var darf = z.art === 'passt' && !k.sperre && !k.gemacht && !warten;
     if (darf) { if (!k.passtSeit) k.passtSeit = t; } else k.passtSeit = 0;

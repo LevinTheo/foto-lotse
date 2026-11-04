@@ -47,6 +47,7 @@ Die Maße der Profile (IV 68, 78, 92) und der Aufbau von Kastenfenstern sind wei
 | `fonts/` | Schrift Space Grotesk (SIL OFL 1.1) |
 | `pruefstand/pruefstand.js` | Prüfstand: Lotse über alle Lernfotos, Vergleich mit echten Maßen |
 | `pruefstand/wackel.js` | Wackeltest: jedes Lernfoto in 5 Varianten (Weichzeichnen selbst gerechnet), Streuung der Maße |
+| `pruefstand/uebung.js` | Ablauf-Test: spielt den Übungsmodus wie ein Kunde am Handy durch (1 und 2 Flügel), prüft Texte, Fragen, Entwickler-Sachen, Konsolenfehler |
 | `pruefstand/nachtrag.json` | Nachgetragene echte Maße, Flügelanzahl, Bauart und „ignorieren“ je Lernfoto-Ordner (gewinnt gegen `fenster.json`) |
 
 Live: https://levintheo.github.io/foto-lotse/ (GitHub Pages, Branch `main`).
@@ -122,6 +123,14 @@ Alle Grenzwerte stehen im Objekt `TOL` in `index.html`.
 | `blattPixel`, `blattTakt` | 1280 px, 150 ms | Bildgröße und Takt der Livemessung |
 
 Holzbreiten je Fenstertyp stehen in `TYPEN` (Prüfstand und Wackeltest lesen sie seit v3.7 aus der Seite, nicht mehr aus Kopien; neu `alu`, geschätzt wie Kunststoff). Alle Grenzwerte der Messung laufen im Hintergrund-Thread und stehen deshalb im Objekt `V3` (nicht in `TOL`), seit v3.7 jeder mit Namen und Kommentar: Glaskante (`glasKante` 0,35, `ruhigVon`/`ruhigBis` 8–44 mm, `ruhigUnruhe` 12, `ruhigVerhaeltnis` 2, `unruhigFaktor` 0,3, `besser` 0,15, `farbe` 40, `farbeSeiten` 50, `bandVon`/`bandBis` 8–40 mm), Fuge (`fugeVon`/`fugeBis` 30–150 mm, `fugeKante` 0,25, `fugeStrafe` 0,8, `fuBauart` aus), Mehrheit und Prüfung (`einig` 12 mm, `stimmig` 20/−20/40/−15/45 mm, `groesse` 250/350/2600/2800 mm, `aehnlichBis` 10°), Griff (`griffVerh` 1,35, `griffWert` 1,5, `griffVon`/`griffBis` 22–82 %), Spiegeln (`spiegeln` an, `spiegelAb` 15 mm, `spiegelnZwei` an), Ecken am Ende (`enden` an, `endeLuecke` 40 mm, `endeTol` 30 mm, `endeMax` 300 mm, `endeAnteil` 0,45, `endeMin` 40, `endePx` 3). Nicht ausgelagert sind nur Bauteile der Rechnung selbst (Raster 2/2,5/3 mm, Ausschnitt ums Blatt, Suchstart am Blattrand, Kantenstärke der Geraden in `v3Gerade`).
+
+## Ablauf-Test
+
+`node pruefstand/uebung.js [Pfad zum Lotsen] [--bilder <Ordner>]` (Playwright mit Chromium, ca. 30 Sekunden): öffnet die Seite in iPhone-13-Größe ohne `?test` und spielt den Übungsmodus zweimal ganz durch, mit 1 und mit 2 Flügeln. Prüft: kein Entwickler-Knopf und kein Schalter „Messwerte zeigen“ für den Kunden, die Frage „Wie viele Flügel?“, Tipp „auf die (linke) Scheibe“, Livebild schickt beim zu nahen Start zurück, alle Fotos lösen aus, Griff-Frage nur bei 1 Flügel und nur einmal, keine Messwerte im Prüfdialog, am Ende „Alle Pflichtfotos sind da“, Flügelanzahl gemerkt, mit `?test` ist der Entwickler-Knopf da, keine Fehler in der Konsole. Endet mit „Ablauf-Test bestanden“ oder einer Fehlerliste (Rückgabewert 1). Nach jeder Änderung am Ablauf laufen lassen.
+
+| Datum | Stand | Ergebnis |
+| --- | --- | --- |
+| 4. Nov. 2026 | v3.7 | bestanden, 1 und 2 Flügel je 6 Schritte (5 Fotos, außen übersprungen), Übungsfenster „ca. 79 × 122 cm“ bzw. „linker Flügel ca. 39 × 123 cm“. Gegenprobe: gegen `stand-v3.3` meldet er 4 Fehler (Entwickler-Knopf sichtbar, keine Flügel-Frage) |
 
 ## Wackeltest
 
@@ -210,6 +219,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3.7 (Ablauf-Test) | `pruefstand/uebung.js` ins Repo (bisher nur als Skript in `/tmp`), Abschnitt „Ablauf-Test“, Hinweis in `CLAUDE.md` | Prüfung 13: Ablauf-Test fehlte im Repo; jeder Chat soll den Kundenablauf gleich prüfen können | bestanden auf v3.7; gegen `stand-v3.3` meldet er die alten Fehler |
 | 4. Nov. 2026 | v3.7 | (Prüfung 9) Alle Grenzwerte der Messung mit Namen und Kommentar in `V3` (Liste unter Stellschrauben), auch Griff und `blattLage`. `opt.fu` wird an `v3Finden` durchgereicht, gilt aber nur mit `V3.fuBauart` (aus). `TYPEN` nur noch in `index.html`, Prüfstand und Wackeltest lesen sie über `window.__lotse.TYPEN`; `alu` ergänzt. (Prüfung 10) Entfernt: `v3Eckabgleich`, `v3EckRunde`, `v3Kantenbild`, `abgleichen` samt `V3.abgleich` und `holzSeite`, `v3Spiegelprobe`, `v3Ring`, `v3Aehnlich`, `erg.abgeglichen`, `messwerte()` samt Box `k-mess`, die alte Fenstersuche v2 (`kantenKarten` … `fensterGenau`, ca. 230 Zeilen; ohne Farben gibt `messen` jetzt „kein Maß“). Spiegeln übernimmt nur noch Durchgänge, die wirklich dieselbe Seite spiegeln wollen (stürzt bei Mehrheit nicht mehr ab). `<title>` und Meta in den `<head>`. Prüfstand ohne v2-Vergleich und Spiegelprobe. Anzeige v3.7. `index.html` 4002 → ca. 3700 Zeilen | Unabhängige Prüfung: Grenzwerte verstreut, Kopien von `TYPEN`, toter Code | Prüfstand jede Zeile identisch mit v3.6 (8 / 16, Median B 3,4 %, H 1,7 %), Wackeltest identisch (42 / 84 von 141). `fuBauart` an: ±2 % 7 statt 8, deshalb aus. Ablauf-Test 1 und 2 Flügel ohne Fehler |
 | 4. Nov. 2026 | v3.6 | Livebild: `messen(…, { nurBlatt })` sucht nur noch das Maßblatt, kein Fenster. `deutenBlatt` prüft Marker (≥ 3), Abstand, Stelle vor dem Blatt (`lage.fuss`, `TOL.versatz`, bei 2 Flügeln `TOL.versatzZwei`) und Ruhe (`TOL.stabil`, neu `TOL.stabilMm`). Kein Fensterumriss im Livebild mehr (nur noch beim Galeriefoto, dort misst v3); entfernt: `TOL.zeigenAb`, `stabilZahl`, Texte „ganzes Fenster ins Bild“, Rückgriff auf die Livemessung beim Auslösen (`umrechnen`). Anzeige v3.6 | Prüfung 6: v2 lag im Livebild auf 8 von 9 frontalen Fotos 10–138 % daneben, Umriss und Hinweise kamen aus falschen Ecken | Prüfstand und Wackeltest identisch mit v3.5. Ablauf-Test 1 und 2 Flügel ohne Fehler; Übung: zu nah „Geh ca. 1 m zurück“, bei 3 m „Halt still …“, dann löst er aus. Nachgestellt an den Lernfotos: hätte bei 5 von 30 ausgelöst, siehe Prüfstand |
 | 4. Nov. 2026 | v3.5 | Ecken am Ende der seitlichen Glaskanten (`v3Enden`, `v3AmEnde`, Schalter `V3.enden`, `endeLuecke` 40, `endeTol` 30, `endeMax` 300 mm): die Glaskante oben/unten wird gegen die Stelle geprüft, an der die seitlichen Glaskanten aufhören, und bei Bedarf dorthin gelegt (Regeln siehe Technik). Prüfstand zeigt „Ende o- …“ je Durchgang. Anzeige v3.5 | Prüfung 5: Höhe bei 4 von 9 frontalen Fotos 7–11,5 % zu groß (Rollo/Laibung oben, Schwelle/Boden unten). Levins Ecken-Idee: alle Ecken sind gleich gebaut, die sichere Seite zeigt, wo die unsichere Ecke sitzt | Prüfstand ±2 % **8 statt 5**, ±5 % **16 statt 12**, Median Höhe **1,7 statt 4,3 %**; wie der Kunde 8 / 16. Wackeltest ±2 % **42 statt 19**, ±5 % **84 statt 60** von 141, Fehler Median 4,1 statt 7,2 %, stabil 5 statt 4 von 29. Ablauf-Test 1 und 2 Flügel ohne Fehler (Übungsfenster weiter 79 × 122 cm) |
@@ -253,7 +263,8 @@ Aus der Prüfung vom 4. Nov. abends (Nummern wie dort, Reihenfolge = Empfehlung)
 - [ ] v3 mit einem Raster live probieren (Prüfung 6, zweiter Teil): nur wenn es am Handy schnell genug ist; dann wieder ein Umriss, aber nur bei `massSicher`
 - [x] **Grenzwerte nach `V3`, `opt.fu` durchreichen, toten Code entfernen (Prüfung 9 und 10)** (v3.7, 4. Nov. 2026: identisch gemessen; `fuBauart` getestet, aus)
 - [ ] **Ebene aus den Flügelkanten statt nur vom Blatt (Prüfung 11)**
-- [ ] Ablauf-Test (Playwright, Übungsmodus) ins Repo; Plausibilitätsfrage am Ende; Lichtmaß der Balkontür nachmessen (Prüfung 13)
+- [x] Ablauf-Test (Playwright, Übungsmodus) ins Repo: `pruefstand/uebung.js` (4. Nov. 2026)
+- [ ] Plausibilitätsfrage am Ende („Flügel ca. 122 × 132 cm – kommt das hin?“); Lichtmaß der Balkontür und Holz unten an einem Kunststofffenster nachmessen (Prüfung 13, v3.7)
 - [x] Gegenprobe nur bei „Selbst eingeben“ (Prüfung 1, 4. Nov. 2026)
 - [x] Wackeltest-Variante „weich“ repariert, KiZi v2 als 2 Flügel, Griff im Prüfstand nur bei 1 Flügel (Prüfung 3, 4, 8, 4. Nov. 2026)
 

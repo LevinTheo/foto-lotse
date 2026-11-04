@@ -1856,6 +1856,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         übliche Flügelholz je Bauart.
      Liegt eine Kante außerhalb des Fotos, gibt es kein Maß (statt zu raten). Läuft nur auf dem fertigen Foto, nicht im Livebild. */
   var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650 };
+  function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
     var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
     var R = new Uint8Array(n), Gn = new Uint8Array(n), Bl = new Uint8Array(n), Y = new Float32Array(n), M0 = new Uint8Array(n);
@@ -1917,7 +1918,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var res = [];
     for (var i = Math.max(1, lo); i < Math.min(C.length - 1, hi); i++) {
       if (!(C[i] >= minC && C[i] >= C[i - 1] && C[i] >= C[i + 1])) continue;
-      if (res.length && i - res[res.length - 1] <= 3) { if (C[i] > C[res[res.length - 1]]) res[res.length - 1] = i; }
+      if (res.length && i - res[res.length - 1] <= Math.round(6 / V3.S)) { if (C[i] > C[res[res.length - 1]]) res[res.length - 1] = i; }
       else res.push(i);
     }
     return res;
@@ -1945,7 +1946,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var best = null;
     for (var n = 0; n < kand.length; n++) {
       var i = kand[n], aussen = [], innen = [], bad = false;
-      for (var d = 4; d < 22; d++) {
+      for (var d = Math.round(8 / V3.S); d < Math.round(44 / V3.S); d++) {
         var ia = i + richtung * d, ii = i - richtung * d;
         if (ia < 0 || ia >= V.length || V[ia] !== V[ia]) { bad = true; break; }
         aussen.push(V[ia]);
@@ -2000,13 +2001,43 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var F = [fL ? v3mm(fL.i, V3.X0) : xl - fs, fO ? v3mm(fO.i, V3.Y0) : yt - fs, fR ? v3mm(fR.i, V3.X0) : xr + fs, fU ? v3mm(fU.i, V3.Y0) : yb + fs + 10];
     return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref };
   }
+  function v3Mehrheit(laeufe) {
+    if (!laeufe.length) return null;
+    if (laeufe.length === 1) return laeufe[0];
+    var z = { glas: [], fluegel: [], fugen: [], rahmenfarbe: laeufe[0].rahmenfarbe, einig: [] };
+    for (var s = 0; s < 4; s++) {
+      var best = 0, bestN = -1;
+      for (var a = 0; a < laeufe.length; a++) {
+        var n = 0;
+        for (var b = 0; b < laeufe.length; b++) if (Math.abs(laeufe[a].glas[s] - laeufe[b].glas[s]) <= 12) n++;
+        if (n > bestN) { bestN = n; best = a; }
+      }
+      // Mittel der Läufe, die sich mit dem besten einig sind
+      var gs = 0, fs = 0, k = 0, fu = false;
+      for (b = 0; b < laeufe.length; b++) if (Math.abs(laeufe[best].glas[s] - laeufe[b].glas[s]) <= 12) { gs += laeufe[b].glas[s]; fs += laeufe[b].fluegel[s]; fu = fu || laeufe[b].fugen[s]; k++; }
+      z.glas.push(gs / k); z.fluegel.push(fs / k); z.fugen.push(fu); z.einig.push(k);
+    }
+    return z;
+  }
   function messenV3(g, w, h, f, lage, opt, rgb, marker) {
-    var Hm = lage.Hvoll || lage.H, E = v3Entzerren(rgb, g, w, h, Hm), z = v3Finden(E, opt.fs || 65);
+    var Hm = lage.Hvoll || lage.H;
+    // Dreimal suchen (2, 2,5 und 3 mm je Pixel); je Seite zählt die Kante, auf die sich die meisten Durchgänge einigen.
+    // So kippt das Maß nicht, nur weil ein Handy das Bild minimal anders verkleinert (Wackeltest 4. Nov. 2026).
+    var laeufe = [];
+    (opt.raster || [2, 2.5, 3]).forEach(function (S) {
+      v3Raster(S);
+      var zz = v3Finden(v3Entzerren(rgb, g, w, h, Hm), opt.fs || 65);
+      if (zz) laeufe.push(zz);
+    });
+    v3Raster(2);
+    var z = v3Mehrheit(laeufe);
     var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung } };
     if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
     var F = z.fluegel, Gl = z.glas, D = lage.z, k2 = (D - (opt.tiefe || 0)) / D;
     erg.roh = { ok: true, fluegel: F, glas: Gl, holz: [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]] };
-    erg.fugen = z.fugen;
+    erg.fugen = z.fugen; erg.einig = z.einig;
+    // Sicher nur, wenn sich an jeder Seite mindestens zwei der drei Durchgänge einig sind
+    erg.massSicher = laeufe.length >= 2 && z.einig.every(function (k) { return k >= 2; });
     erg.breite = (F[2] - F[0]) * k2; erg.hoehe = (F[3] - F[1]) * k2;
     erg.ecken = [[F[0], F[1]], [F[2], F[1]], [F[2], F[3]], [F[0], F[3]]].map(function (p) { return abb(Hm, p[0], p[1]); });
     erg.abstand = D; erg.neigung = lage.neigung;
@@ -3150,6 +3181,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         var b = Math.round(m.breite / 10), h = Math.round(m.hoehe / 10);
         if (blattModus()) txt = P.nU === 2 ? 'Gemessen: linker Flügel ca. ' + b + ' × ' + h + ' cm, beide zusammen ca. ' + (2 * b) + ' cm breit'
           : 'Gemessen: Flügel ca. ' + b + ' × ' + h + ' cm';
+        if (blattModus() && m.massSicher === false) { warn = true; txt += '. Unsicher: am besten nochmal frontal aus 2 bis 3 m.'; }
         else {
           var bp = P.nU === 2 ? Math.round(P.fb / 2) : P.fb, ab = Math.max(Math.abs(b - bp) / bp, Math.abs(h - P.fh) / P.fh);
           warn = ab > TOL.gegenprobe;
@@ -3189,7 +3221,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       frageGriff = true;
     }
     // Ohne Maß (Maßblatt-Modus) oder unscharf trotz Wiederholung: der Kunde entscheidet. Sonst geht es von selbst weiter.
-    var warten = (s.id === 'innen' && blattModus() && !messung) || (weich && k.modus !== 'uebung');
+    var warten = (s.id === 'innen' && blattModus() && (!messung || messung.massSicher === false)) || (weich && k.modus !== 'uebung');
     $('p-titel').textContent = frageGriff ? (k.griffVorschlag ? 'Griff ' + k.griffVorschlag + '?' : 'Eine Frage noch') : warten ? 'Gut geworden?' : 'Gespeichert';
     $('p-frage').textContent = weich ? 'Das Foto ist etwas unscharf. Nochmal, oder so nehmen?' :
       frageGriff ? (k.griffVorschlag ? 'Ich glaube, der Griff ist ' + k.griffVorschlag + '. Tipp auf die richtige Seite.' : 'Den Griff konnte ich auf dem Foto nicht sicher erkennen.') :
@@ -3566,7 +3598,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (TYPEN[bauart]) { opt.fs = TYPEN[bauart].s * 10; opt.fu = TYPEN[bauart].u * 10; opt.tiefe = TYPEN[bauart].tiefe; }
     return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt, rgbVon(c, cv.width, cv.height)).then(function (r) {
       var e = (r && r.erg) || {};
-      return { version: e.version || 'v2', cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
+      return { version: e.version || 'v2', massSicher: e.massSicher === undefined ? null : e.massSicher, einig: e.einig || null, cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
         ok: !!e.ok, grund: e.grund || '', fluegelMm: e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null, holzMm: e.roh && e.roh.holz ? e.roh.holz.map(Math.round) : null,
         stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }) : null,
         griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ };
@@ -3590,7 +3622,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     else if (!sieht.marker) text = 'Lotse: kein Maßblatt gefunden';
     else if (!sieht.fluegelMm) text = 'Lotse: Maßblatt (' + sieht.marker + ' Marker), aber kein Fenster';
     else {
-      text = 'Lotse ' + sieht.fluegelMm.join(' × ') + ' mm';
+      text = 'Lotse ' + sieht.fluegelMm.join(' × ') + ' mm' + (sieht.massSicher === false ? ' (unsicher)' : '');
       if (w.fluegelBreiteMm && w.fluegelHoeheMm) {
         var pb = (sieht.fluegelMm[0] - w.fluegelBreiteMm) / w.fluegelBreiteMm * 100, ph = (sieht.fluegelMm[1] - w.fluegelHoeheMm) / w.fluegelHoeheMm * 100;
         var p = function (x) { return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(0) + ' %'; };

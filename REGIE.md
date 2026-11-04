@@ -105,12 +105,23 @@ Alle Grenzwerte stehen im Objekt `TOL` in `index.html`.
 
 Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbreiten je Fenstertyp in `TYPEN`.
 
+## Wackeltest
+
+`node <proto>/wackel.js` (liegt nicht im Repo, Vorlage siehe Commit-Beschreibung): jedes Lernfoto in 5 Varianten (Original, auf 90 % und 75 % verkleinert, JPEG 70 %, leicht weich) durch v3. Misst, ob dasselbe Foto auf verschiedenen Handys dasselbe Maß ergäbe.
+
+| Datum | Stand | stabil (< 1 % Streuung) | Streuung Median | Fehler Median | ±2 % |
+| --- | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3 | 7 von 27 | 5,3 % | 7,4 % | 6 von 128 |
+| 4. Nov. 2026 | „nächste ruhige Kante gewinnt“ (verworfen) | 3–6 von 27 | 7,7–14,1 % | 8,2–14,0 % | 5–7 |
+| 4. Nov. 2026 | v3.1: Mehrheit aus 3 Rastern (2/2,5/3 mm) | 7 von 28 | 4,9 % | 7,3 % | 17 von 136 |
+
 ## Prüfstand
 
 `node pruefstand/pruefstand.js <Pfad zu foto-lotse-daten> [Ausgabe]` lässt den aktuellen Lotsen über alle Lernfotos laufen und vergleicht mit den echten Maßen (`fenster.json`, sonst `pruefstand/nachtrag.json`). Ausgabe: `ergebnis.md` (Tabelle: Abweichung Breite/Höhe, Marker, Abstand, Griff richtig/falsch) und pro Foto ein Bild mit dem, was der Lotse erkannt hat. Nach jeder Änderung an der Erkennung laufen lassen und das Ergebnis hier eintragen. Fotos bleiben lokal, ins öffentliche Repo kommt nur der Code.
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3.1 (dieser) | 29 aus 7 Fenstern | 4 von 29 (±5 %: 9) | Mehrheit aus 3 Rastern + Selbsteinschätzung. Median Breite 4,4 %, Höhe 4,3 %. Als „unsicher“ gemeldet: 8, davon alle 8 wirklich > 5 % daneben (keine Fehlalarme); als „sicher“ gemeldet: 20, davon 9 auf ±5 % (11 falsch, aber sicher gemeldet → noch zu tun). Frontale Analysefotos: WZ 814 × 1244 (echt 810 × 1246), KiZi 1218 × 1301 (1218 × 1320). Rechenzeit ca. 2 s am Rechner |
 | 4. Nov. 2026 | v3 (`3a465a9`) | 29 mit Maß aus 8 Fenstern | 1 von 29 (±5 %: 9, v2: 4) | Median Breite 3,1 %, Höhe 4,4 % (v2: 20,5 % / 33,0 %). Neu: Wohnzimmer Kunststoff 2-flüglig (Analysefoto 814 × 1246 statt 810 × 1246), Abendfotos mit Licht an (Spiegelungen vom Zimmer in der Scheibe; Analysefotos −1 bis +3 %). **Auffällig: dasselbe Foto gibt am Handy und im Prüfstand teils verschiedene Maße** (SZ Dunkel: Handy 834 × 1243, Prüfstand 775 × 1454) → v3 reagiert empfindlich auf kleine Unterschiede (Bildverkleinerung, JPEG, Bauart-Einstellung) |
 | 4. Nov. 2026 | `53d7150` (v3) | 14 aus 3 Fenstern | 0 von 14 (±5 %: 2, v2: 0) | **v3**: Median Breite 2,5 %, Höhe 7,1 % (v2: 30,3 % / 44,1 %). 4 Nahfotos ohne ganzes Fenster: jetzt „kein Maß“ statt falscher Zahl. Griff 8 von 10 richtig. Höhe noch zu groß: unten Türschwelle, oben Rollokasten (gleiche Farbe wie Rahmen). Rechenzeit ca. 1,3 s am Rechner |
 | 4. Nov. 2026 | `e2b8264` | 14 aus 3 Fenstern | 0 von 14 | Neues Fenster „Kinderzimmer“ (Holz, Flügel 1218 × 1320, Ziergitter außen, Markise, Gegenlicht): bestes Foto aus 3,1 m −11,7 % / +0,2 %, sonst −12 bis −68 %. Griff 4 von 5 falsch |
@@ -134,6 +145,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3.1 (dieser) | v3 sucht dreimal (2, 2,5, 3 mm je Pixel), je Seite zählt die Mehrheit; Selbsteinschätzung `massSicher` (an jeder Seite mindestens 2 von 3 einig). Unsicheres Maß: Dialog sagt „Unsicher: am besten nochmal frontal aus 2 bis 3 m“ und wartet; Lernfoto-Vorschau zeigt „(unsicher)“. Prüfstand zählt Selbsteinschätzung | Gleiches Foto ergab je nach Bildverkleinerung (Handy) ein anderes Maß | Wackeltest ±2 %: 17 statt 6 von ~130; unsicher gemeldet 8, alle wirklich daneben |
 | 4. Nov. 2026 | `7c71ecf` | Livebild aufgeräumt: keine Messwerte-Box, kein Kasten „Klappt es nicht?“ (stattdessen nach 8 s in der Statuszeile „Mach einfach ein Foto, wir messen danach genauer.“), beim ersten Foto kein Tipp von selbst (Text kommt später auf die Website vor den Start) | Zu viel Text, zu wenig Platz zum Ausrichten | – |
 | 4. Nov. 2026 | `5b96620` | Tipp beim ersten Foto: „Am besten bei gleichmäßigem Tageslicht ohne direkte Sonne aufs Fenster.“ | Levins Idee: Kunden ohne direkte Sonne fotografieren lassen (früher Abend/Morgen, bewölkt), Maße werden besser. Ob es wirklich hilft, zeigt das Feld „Licht“ im Prüfstand | – |
 | 4. Nov. 2026 | `27cf973` | Knopf „In Lernfotos übernehmen“ im Prüfdialog der Analyse; Feld „Licht“; Vorschau aktualisiert sich bei nachträglich eingetragenem Maß | Levin testet jedes Fenster zuerst mit der normalen Analyse und übernimmt das Foto dann in die Sammlung | Übungsdurchlauf: Foto landet als foto-01 mit `quelle: analyse`, Vorschau −2 % / −2 % |
@@ -159,7 +171,7 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 
 ## Offene Punkte
 
-- [ ] **v3 robuster machen:** gleiches Foto muss überall dasselbe Maß ergeben (Handy vs. Prüfstand, Bauart leer vs. gesetzt). Ursache suchen (Schwellen bei Kantenstärke/Unruhe, Rahmenfarbe), Ergebnis über mehrere Einstellungen mitteln oder Abstimmung zwischen Kandidaten
+- [ ] **v3 robuster machen (teils erledigt, v3.1):** noch 11 von 20 „sicher“ gemeldeten Maßen > 5 % daneben; nahe und schräge Fotos springen weiter. gleiches Foto muss überall dasselbe Maß ergeben (Handy vs. Prüfstand, Bauart leer vs. gesetzt). Ursache suchen (Schwellen bei Kantenstärke/Unruhe, Rahmenfarbe), Ergebnis über mehrere Einstellungen mitteln oder Abstimmung zwischen Kandidaten
 - [ ] **v3 Höhe verbessern:** unten nicht die Türschwelle/den Boden nehmen, oben nicht den Rollokasten (beide in Rahmenfarbe). Ideen: Holz unten breiter als seitlich erwarten, Fuge muss gefunden werden, Glaskante oben/unten gegen Seitenverhältnis prüfen
 - [ ] v3 auch im Livebild (Führung), wenn schnell genug
 - [x] Kantensuche von der Holzseite her (v3, 4. Nov. 2026)

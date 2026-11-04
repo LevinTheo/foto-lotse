@@ -488,7 +488,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.2 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.3 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1857,7 +1857,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      4. Hinter der Glaskante, 30 bis 150 mm weiter außen, die Schattenfuge zwischen Flügel und Rahmen. Findet er keine, gilt das
         übliche Flügelholz je Bauart.
      Liegt eine Kante außerhalb des Fotos, gibt es kein Maß (statt zu raten). Läuft nur auf dem fertigen Foto, nicht im Livebild. */
-  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false };
+  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650, abgleich: false, spiegeln: true, spiegelAb: 15 };
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
     var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
@@ -1978,7 +1978,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
     return best;
   }
-  function v3Finden(E, fs) {
+  function v3Finden(E, fs, nU) {
     var yt = -150, yb = 447, xl = -150, xr = 360, ref = null, l, r, o, u, Pv, Ph;
     for (var runde = 0; runde < 3; runde++) {
       Pv = v3Profil(E, true, yt + 40, yb - 40);
@@ -2033,7 +2033,19 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     o = oA; u = uA; yt = v3mm(o.i, V3.Y0); yb = v3mm(u.i, V3.Y0);
     var fO = o.fuge, fU = u.fuge;
     var F = [fL ? v3mm(fL.i, V3.X0) : xl - fs, fO ? v3mm(fO.i, V3.Y0) : yt - fs, fR ? v3mm(fR.i, V3.X0) : xr + fs, fU ? v3mm(fU.i, V3.Y0) : yb + fs + 10];
-    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref, holzSeite: ds, abgeglichen: abgeglichen };
+    // Spiegeln links ↔ rechts (Levin): Das Glas sitzt mittig im Flügel, links und rechts ist gleich viel Holz bis zur Fuge.
+    // Weichen die beiden Seiten um mehr als V3.spiegelAb (15 mm) ab, ist eine falsch: die Seite, die besser zur Bauart passt, wird gespiegelt.
+    // Hier nur der Vorschlag; angewendet wird er in messenV3 erst, wenn alle Durchgänge dieselbe Seite spiegeln wollen.
+    // Nicht bei 2 Flügeln (dort ist auf einer Seite der Stulp).
+    var spiegel = null;
+    if (V3.spiegeln && nU !== 2) {
+      var hl = xl - F[0], hr = F[2] - xr;
+      if (Math.abs(hl - hr) > V3.spiegelAb) {
+        if (Math.abs(hl - fs) <= Math.abs(hr - fs)) spiegel = { seite: 'rechts', i: 2, wert: xr + hl };
+        else spiegel = { seite: 'links', i: 0, wert: xl - hr };
+      }
+    }
+    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref, holzSeite: ds, abgeglichen: abgeglichen, spiegel: spiegel };
   }
 
   /* ---------- Ecken, Winkel, Diagonalen ----------
@@ -2190,6 +2202,37 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var mm = neu.map(function (p) { return [V3.X0 + p[0] * S, V3.Y0 + p[1] * S]; });
     return { ecken: mm, einig: einig, guete: guete, vorschlaege: vorschlaege.map(function (v) { return v.map(function (p) { return [Math.round(V3.X0 + p.x * S), Math.round(V3.Y0 + p.y * S), Math.round(p.ncc * 100) / 100]; }); }) };
   }
+  /* Spiegelprobe (Levins Idee, richtig umgesetzt): An jeder Ecke wird nur der Holzring abgetastet, in Ecken-eigener
+     Richtung (u nach innen waagerecht, v nach innen senkrecht). Dadurch sind linke und rechte Ecke ohne Umrechnen
+     vergleichbar, Spiegeln steckt in der Richtung. Das Glasinnere (Hintergrund) und weit außen zählen nicht.
+     Ähnlichkeit oben links ↔ oben rechts und unten links ↔ unten rechts: hoch = Ecken sitzen gleich = Maß glaubwürdig. */
+  function v3Ring(E, K, x, y, sx, sy, holz) {
+    var S = E.S, W = V3.W, Hh = V3.H, r = Math.round(70 / S), innen = Math.round((holz + 12) / S), aussen = Math.round(40 / S), v = [];
+    for (var b = -r; b <= r; b++) for (var a = -r; a <= r; a++) {
+      var imRing = (a >= -aussen && a <= innen && b >= -aussen) || (b >= -aussen && b <= innen && a >= -aussen);
+      if (!imRing) continue;
+      var px = Math.round(x + sx * a), py = Math.round(y + sy * b);
+      v.push(px >= 0 && py >= 0 && px < W && py < Hh ? K[py * W + px] : 0);
+    }
+    return v;
+  }
+  function v3Aehnlich(a, b) {
+    var n = a.length, ma = 0, mb = 0, i;
+    for (i = 0; i < n; i++) { ma += a[i]; mb += b[i]; }
+    ma /= n; mb /= n;
+    var sab = 0, saa = 0, sbb = 0;
+    for (i = 0; i < n; i++) { var da = a[i] - ma, db = b[i] - mb; sab += da * db; saa += da * da; sbb += db * db; }
+    return saa && sbb ? sab / Math.sqrt(saa * sbb) : 0;
+  }
+  function v3Spiegelprobe(E, F, Gl) {
+    var K = v3Kantenbild(E), S = E.S, px = function (mm, o) { return (mm - o) / S; };
+    var hz = [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]], holzS = (hz[0] + hz[2]) / 2;
+    var ol = v3Ring(E, K, px(F[0], V3.X0), px(F[1], V3.Y0), 1, 1, Math.max(holzS, hz[1]));
+    var or = v3Ring(E, K, px(F[2], V3.X0), px(F[1], V3.Y0), -1, 1, Math.max(holzS, hz[1]));
+    var ul = v3Ring(E, K, px(F[0], V3.X0), px(F[3], V3.Y0), 1, -1, Math.max(holzS, hz[3]));
+    var ur = v3Ring(E, K, px(F[2], V3.X0), px(F[3], V3.Y0), -1, -1, Math.max(holzS, hz[3]));
+    return { oben: Math.round(v3Aehnlich(ol, or) * 100) / 100, unten: Math.round(v3Aehnlich(ul, ur) * 100) / 100 };
+  }
   function v3Mehrheit(laeufe) {
     if (!laeufe.length) return null;
     if (laeufe.length === 1) return laeufe[0];
@@ -2215,11 +2258,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var laeufe = [], E2 = null;
     (opt.raster || [2, 2.5, 3]).forEach(function (S) {
       v3Raster(S);
-      var E = v3Entzerren(rgb, g, w, h, Hm), zz = v3Finden(E, opt.fs || 65);
+      var E = v3Entzerren(rgb, g, w, h, Hm), zz = v3Finden(E, opt.fs || 65, opt.nU || 1);
       if (S === 2) E2 = E;
       if (zz) laeufe.push(zz);
     });
     v3Raster(2);
+    // Spiegeln nur, wenn alle Durchgänge (mind. 2) dieselbe Seite für falsch halten. Sind sie uneins, bleibt das Maß,
+    // wie es gemessen wurde (Prüfstand 4. Nov. 2026: uneinige Spiegelungen haben ein gutes Maß verdorben).
+    var sp = laeufe.map(function (q) { return q.spiegel ? q.spiegel.seite : '-'; });
+    var spiegelSeite = laeufe.length >= 2 && sp[0] !== '-' && sp.every(function (x) { return x === sp[0]; }) ? sp[0] : null;
+    if (spiegelSeite) laeufe.forEach(function (q) { q.fluegel = q.fluegel.slice(); q.fluegel[q.spiegel.i] = q.spiegel.wert; });
     var z = v3Mehrheit(laeufe);
     var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung } };
     if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
@@ -2239,6 +2287,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // Sicher nur, wenn sich an jeder Seite mindestens zwei der drei Durchgänge einig sind
     erg.massSicher = laeufe.length >= 2 && z.einig.every(function (k) { return k >= 2; });
     erg.abgeglichen = laeufe.map(function (q) { return q.abgeglichen; });
+    erg.spiegelVorschlag = sp.map(function (x) { return x[0]; }).join(''); erg.gespiegelt = spiegelSeite;
+    if (E2 && (opt.nU || 1) !== 2) { try { erg.spiegelprobe = v3Spiegelprobe(E2, F, Gl); } catch (x) { erg.spiegelprobe = null; } }
     // Ecken, Winkel, Diagonalen (Flügel und Glas), in mm am Flügel (Tiefe herausgerechnet)
     if (E2) {
       var geo = function (R) {
@@ -2439,7 +2489,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function blattModus() { return P.mass === 'blatt'; }
   function blattSchritt(s) { return blattModus() && !!s && s.id === 'innen'; }
   // fs, fu: sichtbares Flügelholz in mm, tiefe: Außenkante Flügel bis Glas (in der gezeichneten Übung liegt alles in einer Ebene)
-  function massOpt(uebung) { var T = typ(); return { fs: T.s * 10, fu: T.u * 10, tiefe: uebung ? 0 : T.tiefe }; }
+  function massOpt(uebung) { var T = typ(); return { fs: T.s * 10, fu: T.u * 10, tiefe: uebung ? 0 : T.tiefe, nU: P.nU }; }
   function komma(x, n) { return x.toFixed(n).replace('.', ','); }
 
   /* ---------- Zustand ---------- */

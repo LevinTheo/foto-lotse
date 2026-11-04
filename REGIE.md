@@ -1,6 +1,6 @@
 # Foto-Lotse – Regiebericht
 
-Stand: 4. Nov. 2026 · Levin (Holtcraft) · **Version v3**
+Stand: 4. Nov. 2026 · Levin (Holtcraft) · **Version v3.3**
 
 ## Versionen
 
@@ -8,7 +8,9 @@ Jeder Stand liegt auf GitHub. Zurückholen: Claude sagen „bau zurück auf vX�
 
 | Version | Wo | Was |
 | --- | --- | --- |
-| v3 | Branch `main` (aktuell) | Fenstermaß auf dem fertigen Foto von der Holzseite her (entzerren, ruhiger Holzstreifen, Rahmenfarbe, Schattenfuge) |
+| v3.3 | Branch `main` (aktuell) | wie v3.2, dazu Spiegeln links ↔ rechts (Holzbreite der sicheren Seite auf die falsche übertragen, nur wenn alle 3 Durchgänge einig) |
+| v3.2 | Branch `stand-v3.2` | v3 mit 3-Raster-Mehrheit, Selbsteinschätzung, Ecken/Winkel/Diagonalen |
+| v3 | Branch `stand-v3` | Fenstermaß auf dem fertigen Foto von der Holzseite her (entzerren, ruhiger Holzstreifen, Rahmenfarbe, Schattenfuge) |
 | v2 | Branch `stand-v2` (Commit `c38168f`) | Ablauf ohne Zwischenklicks, Schärfe, Griffvorschlag, Lernfotos, Prüfstand; Kantensuche vom Blatt nach außen |
 
 Git-Tags lassen sich aus Claudes Umgebung nicht hochladen, deshalb sind Versionen als Branches gesichert.
@@ -74,6 +76,8 @@ Alles rechnet auf dem Handy, nichts wird verschickt. Die schwere Rechnung läuft
 
 | Baustein | Was er tut | Wie (kurz) | Funktion im Code |
 | --- | --- | --- | --- |
+| Spiegeln links ↔ rechts (v3.3, Levins Idee) | Korrigiert eine falsch gefundene Flügelkante links oder rechts | Bei 1 Flügel ist links und rechts gleich viel Holz (Glaskante → Fuge). Weichen beide Seiten um mehr als `V3.spiegelAb` (15 mm) ab, ist eine falsch: die Seite, deren Holzbreite näher an der Bauart liegt, wird auf die andere gespiegelt. Angewendet nur, wenn alle 3 Raster-Durchgänge dieselbe Seite spiegeln wollen (sonst bleibt das Maß). Nicht bei 2 Flügeln (Stulp). Schalter `V3.spiegeln`. Im Ergebnis: `spiegelVorschlag` (z. B. „lll“, „-rr“), `gespiegelt` | `v3Finden` (Vorschlag), `messenV3` (Entscheidung) |
+| Spiegelprobe (v3.3, sammelt nur) | Vergleicht die Ecken links und rechts als Bild | L-förmiger Holzring (Glaskante −4 cm bis Holz +12 mm, Glasinneres und weit außen weggelassen) je Ecke, OL↔OR und UL↔UR gespiegelt verglichen (Korrelation −1…1). Wird gespeichert, entscheidet noch nichts: Werte −0,2…0,44 bei guten und schlechten Fotos gleich | `v3Ring`, `v3Aehnlich`, `v3Spiegelprobe` |
 | Ecken, Winkel, Diagonalen (v3.2) | Liefert die vier Eckwinkel und beide Diagonalen von Flügel und Glas | Jede Kante als eigene Gerade (leicht schräg erlaubt): alle 6 mm stärkste Kante in ±10 mm, Ausreißer raus, Gerade durch; Ecken = Schnittpunkte. In `geometrie.fluegel/glas`: Winkel OL/OR/UR/UL, Diagonalen OL→UR / OR→UL, Δ, Neigung der Kanten, Streuung. Messrauschen derzeit ca. ±1° | `v3Ecken`, `v3Gerade`, `v3Schnitt` |
 | Ecken abgleichen (Levins Idee, aus) | Oben/unten die Glaskante wählen, deren Holz zur Seite passt | Holzbreite Glaskante→Fuge der Seiten als Vorlage; nur wenn die gefundene Kante klar nicht passt. Wackeltest schlechter (Fuge oben/unten zu unsicher) → `V3.abgleich = false` | `abgleichen` in `v3Finden` |
 | Fenstermaß v3 (fertiges Foto) | Findet Glas und Flügel von der Holzseite her | 1. Foto mit dem Maßblatt auf die Glasebene entzerren (2 mm/px, Bereich 3,2 × 3,3 m ums Blatt). 2. Glaskante = Linie, die über die ganze Länge durchläuft und hinter der ein ruhiger Streifen beginnt (Holz). 3. Rahmenfarbe aus den Seiten, oben/unten nur gleiche Farbe (gegen Markise, Decke). 4. Schattenfuge 30–150 mm hinter der Glaskante, sonst Flügelholz je Bauart. Kante außerhalb des Fotos: kein Maß statt raten. Livebild nutzt weiter v2 | `messenV3`, `v3Entzerren`, `v3Finden`, `v3Glaskante`, `v3Fuge`, `v3Bandfarbe` |
@@ -105,7 +109,7 @@ Alle Grenzwerte stehen im Objekt `TOL` in `index.html`.
 | `gegenprobe` | 8 % | Abweichung zum eingetippten Maß für „Bitte nachmessen“ |
 | `blattPixel`, `blattTakt` | 1280 px, 150 ms | Bildgröße und Takt der Livemessung |
 
-Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbreiten je Fenstertyp in `TYPEN`.
+Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbreiten je Fenstertyp in `TYPEN`. Die Schalter der v3-Messung laufen im Hintergrund-Thread und stehen deshalb im Objekt `V3` (nicht in `TOL`): `spiegeln` (an), `spiegelAb` (15 mm), `abgleich` (aus).
 
 ## Wackeltest
 
@@ -117,7 +121,10 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 | 4. Nov. 2026 | „nächste ruhige Kante gewinnt“ (verworfen) | 3–6 von 27 | 7,7–14,1 % | 8,2–14,0 % | 5–7 |
 | 4. Nov. 2026 | v3.1: Mehrheit aus 3 Rastern (2/2,5/3 mm) | 7 von 28 | 4,9 % | 7,3 % | 17 von 136 |
 | 4. Nov. 2026 | Ecken abgleichen eingeschaltet (verworfen, Schalter `V3.abgleich`) | 6 von 29 | 8,5 % | 8,0 % | 14 von 141 |
-| 4. Nov. 2026 | v3.2 (Abgleich aus, Ecken/Winkel neu) | 7 von 29 | 6,2 % | 7,2 % | 19 von 141 |
+| 4. Nov. 2026 | v3.2 (Abgleich aus, Ecken/Winkel neu) | 7 von 29 | 6,2 % | 7,2 % | 19 von 141 (±5 %: 48) |
+| 4. Nov. 2026 | v3.3: Spiegeln links ↔ rechts, nur wenn alle 3 Durchgänge einig | 5 von 29 | 6,2 % | 7,1 % | 20 von 141 (**±5 %: 56**) |
+
+v3.3: Weniger „stabil“, weil Fotos, die vorher stur falsch lagen, jetzt richtig, aber mit ein paar mm Streuung liegen (Balkontür Foto 2: vorher 830–832 mm in allen Varianten, jetzt 783–792, echt 788).
 
 ## Prüfstand
 
@@ -125,6 +132,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3.3 | 30 aus 8 Fenstern | **5 von 30** (±5 %: **11**) | Median Breite 4,2 %, Höhe 4,3 %. Spiegeln greift bei 4 Fotos: Balkontür 2 Breite +5,6 → +1,0 %, Balkontür 5 −19,3 → −16,1 %, KiZi v2 Foto 3 −7,3 → −4,6 %, KiZi abends 1 unverändert gut. Kein Foto schlechter. Erster Versuch ohne Einigkeits-Bedingung: 4 von 30, weil KiZi v2 Foto 4 von −0,7 auf −9,4 % kippte (Durchgänge uneinig „rrl“). Selbsteinschätzung: sicher 21, davon 10 auf ±5 %; unsicher 8, davon 7 wirklich > 5 % daneben. Spiegelprobe trennt gute und schlechte Fotos nicht (siehe Offene Punkte) |
 | 4. Nov. 2026 | v3.2 `9478d76` | 30 aus 8 Fenstern | **5 von 30** (±5 %: 10) | Median Breite 4,4 %, Höhe 4,3 %. Neu: Ecken, Winkel, Diagonalen. Frontale Analysefotos: Eckwinkel 88,5–91,3°, Diagonalen-Δ −2 bis +22 mm. Dasselbe KiZi-Fenster dreimal: Flügel-Δ 16 / 19 / 2 mm → Messrauschen derzeit ca. ±1° und ±20 mm, ein hängender Flügel (wenige mm) ist damit noch nicht erkennbar. Übungsfenster (exakt rechtwinklig): 89,5/89,5/90,5/90,5° |
 | 4. Nov. 2026 | v3.1 `543cc2e` | 29 aus 7 Fenstern | 4 von 29 (±5 %: 9) | Mehrheit aus 3 Rastern + Selbsteinschätzung. Median Breite 4,4 %, Höhe 4,3 %. Als „unsicher“ gemeldet: 8, davon alle 8 wirklich > 5 % daneben (keine Fehlalarme); als „sicher“ gemeldet: 20, davon 9 auf ±5 % (11 falsch, aber sicher gemeldet → noch zu tun). Frontale Analysefotos: WZ 814 × 1244 (echt 810 × 1246), KiZi 1218 × 1301 (1218 × 1320). Rechenzeit ca. 2 s am Rechner |
 | 4. Nov. 2026 | v3 (`3a465a9`) | 29 mit Maß aus 8 Fenstern | 1 von 29 (±5 %: 9, v2: 4) | Median Breite 3,1 %, Höhe 4,4 % (v2: 20,5 % / 33,0 %). Neu: Wohnzimmer Kunststoff 2-flüglig (Analysefoto 814 × 1246 statt 810 × 1246), Abendfotos mit Licht an (Spiegelungen vom Zimmer in der Scheibe; Analysefotos −1 bis +3 %). **Auffällig: dasselbe Foto gibt am Handy und im Prüfstand teils verschiedene Maße** (SZ Dunkel: Handy 834 × 1243, Prüfstand 775 × 1454) → v3 reagiert empfindlich auf kleine Unterschiede (Bildverkleinerung, JPEG, Bauart-Einstellung) |
@@ -150,6 +158,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3.3 | Spiegeln links ↔ rechts (`V3.spiegeln`, `V3.spiegelAb` 15 mm): weicht das Holz links und rechts um mehr als 15 mm ab, wird die Seite, die zur Bauart passt, auf die andere gespiegelt, aber nur, wenn alle 3 Durchgänge dieselbe Seite wollen; nicht bei 2 Flügeln. Spiegelprobe (Holzring-Vergleich der Ecken) wird mitgespeichert. Prüfstand gibt Anzahl Flügel weiter und zeigt Spiegelprobe und Spiegel-Vorschlag. Anzeige v3.3 | Levin: Ecken spiegeln und abgleichen | Prüfstand ±5 %: 11 statt 10, Median Breite 4,2 statt 4,4 %, kein Foto schlechter. Wackeltest ±5 %: 56 statt 48 von 141. Spiegelprobe noch ohne Aussagekraft |
 | 4. Nov. 2026 | `3e5e252` | Ecken-Abgleich nach Levins Idee als Bild-Schablonen mit Nachsteuern in Runden gebaut, ausgeschaltet (`opt.eckabgleich`) | Levin: Ecken aufeinanderlegen, Toleranzen eingrenzen | Gespiegelte Ecken zu unähnlich (0,2–0,7), Maß nicht besser; Gründe und nächste Schritte unter Offene Punkte |
 | 4. Nov. 2026 | v3.2 `9478d76` | Ecken als Schnittpunkte von vier frei gefitteten Kanten: Eckwinkel und Diagonalen von Flügel und Glas, in allen Daten (Lernfoto-JSON, Durchlauf, Analyse→Lernfotos), in der Lernfoto-Vorschau und im Dialog (Messwerte). Neue Felder: echte Diagonalen. Ecken abgleichen gebaut, im Wackeltest schlechter, daher aus (`V3.abgleich`). Nachtrag: KiZi v3 (1734) mit Maß vom Holzfenster | Levin: Diagonalen/Winkel zeigen Verzug, Schleifen, Schwergängigkeit; alles sammeln | Prüfstand 5 von 30 auf ±2 % (bisher 4 von 29); Winkelrauschen ca. ±1° |
 | 4. Nov. 2026 | v3.1 `543cc2e` | v3 sucht dreimal (2, 2,5, 3 mm je Pixel), je Seite zählt die Mehrheit; Selbsteinschätzung `massSicher` (an jeder Seite mindestens 2 von 3 einig). Unsicheres Maß: Dialog sagt „Unsicher: am besten nochmal frontal aus 2 bis 3 m“ und wartet; Lernfoto-Vorschau zeigt „(unsicher)“. Prüfstand zählt Selbsteinschätzung | Gleiches Foto ergab je nach Bildverkleinerung (Handy) ein anderes Maß | Wackeltest ±2 %: 17 statt 6 von ~130; unsicher gemeldet 8, alle wirklich daneben |
@@ -178,6 +187,8 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 
 ## Offene Punkte
 
+- [ ] **Spiegelprobe aussagekräftig machen (v3.3):** Der Bildvergleich der Holzringe links ↔ rechts liegt bei guten und schlechten Fotos gleich um 0 (−0,2…0,44). Gründe: Holzmaserung ist nicht spiegelgleich, Bandseite hat Schere/Ecklager, Licht kommt von einer Seite. Nächster Versuch: statt 2D-Bild den Querschnitt vergleichen (Helligkeitsverlauf quer zur Kante, über die ganze Kantenlänge gemittelt: Glas → Glasleiste → Flügelholz → Fuge → Rahmen). Der ist links und rechts wirklich gleich. Damit (a) die Fuge auf der unsicheren Seite dort suchen, wo der Querschnitt am besten zur sicheren Seite passt, statt nur die Breite zu übertragen, und (b) als Selbsteinschätzung nutzen. Danach dasselbe oben ↔ unten nur für die Glasleiste
+- [x] Spiegeln links ↔ rechts über die Holzbreite (v3.3, 4. Nov. 2026)
 - [ ] **Ecken abgleichen (Levins Idee, richtig verstanden 4. Nov. abends, gebaut, aus):** Jede Ecke als Bild-Schablone (140 × 140 mm Kantenbild) gespiegelt an die drei anderen legen, in Runden nachsteuern (±16 cm, ±3 cm, ±1 cm …, bis sich nichts mehr bewegt), je Ecke entscheidet die Mehrheit (`v3Eckabgleich`, `v3EckRunde`, Schalter `opt.eckabgleich`). Erster Test: Ähnlichkeit gespiegelter Ecken nur 0,2–0,7, Vorschläge 1–5 cm auseinander, Maß unverändert oder schlechter (WZ +1,1 % statt +0,5 %). Gründe: Schablone enthält den Hintergrund hinter dem Glas; Ecken nicht ganz gleich (unten breiteres Holz, oben Rollokasten, Bandseite Schere/Ecklager); bei 2 Flügeln Stulp statt Rahmen. Nächste Schritte: Schablone nur auf den Holzring (Glaskante −1 cm bis Rahmen +4 cm) beschränken, Glasinneres ausblenden; nur Paare abgleichen, die wirklich gleich gebaut sind (links↔rechts bei 1 Flügel; oben↔unten nur Seitenteile); 2-flügelig gesondert. Älterer Versuch „Holzbreite abgleichen“ (`V3.abgleich`) ebenfalls aus. Ein Fenster ist an allen vier Ecken gleich aufgebaut (Glasleiste, Flügelholz, Fuge, Rahmen). Sauber erkannte Ecke als Vorlage, die anderen dagegen prüfen (Holzbreite, Fugenabstand, Farbe); oben Rollokasten / unten Fensterbank passen dann nicht und fallen raus
 - [ ] **Verzug erkennen (Levins Idee, Messung läuft mit, v3.2):** Winkel/Diagonalen werden gemessen und gesammelt; Rauschen ±1° / ±20 mm ist noch zu groß für hängende Flügel (wenige mm). Echte Diagonalen sammeln (neue Felder), dann vergleichen. Diagonalen vergleichen (maßstabsunabhängig), erst sinnvoll wenn Ecken auf wenige mm sitzen und die Ebene nicht nur vom kleinen Blatt kommt (sonst Schein-Trapez). Praktischer zuerst: Fugenbreite in den Nahfotos (Scherenlager oben, Ecklager unten) messen; hängender Flügel = Fuge oben/unten ungleich. Ziel z. B. „Flügel hängt ca. 4 mm, Beschlag nachstellen“, bei Kastendoppelfenstern häufig
 - [ ] **v3 robuster machen (teils erledigt, v3.1):** noch 11 von 20 „sicher“ gemeldeten Maßen > 5 % daneben; nahe und schräge Fotos springen weiter. gleiches Foto muss überall dasselbe Maß ergeben (Handy vs. Prüfstand, Bauart leer vs. gesetzt). Ursache suchen (Schwellen bei Kantenstärke/Unruhe, Rahmenfarbe), Ergebnis über mehrere Einstellungen mitteln oder Abstimmung zwischen Kandidaten

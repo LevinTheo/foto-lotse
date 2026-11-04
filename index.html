@@ -525,7 +525,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       <button class="knopf knopf--rand knopf--klein" id="entw-speichern" type="button">Zugang speichern</button>
     </details>
     <fieldset>
-      <legend>Dieses Fenster</legend>
+      <legend>Dieses Fenster (erst ausfüllen, dann fotografieren)</legend>
       <label class="feld"><span class="feld__name">Name</span><span class="feld__eingabe"><input id="entw-name" type="text" placeholder="z. B. Balkontür Küche"></span></label>
       <div class="felder">
         <label class="feld"><span class="feld__name">Flügel breit</span><span class="feld__eingabe"><input id="entw-b" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
@@ -539,7 +539,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     <div class="entw__knoepfe">
       <button class="knopf knopf--haupt knopf--klein" id="entw-kamera" type="button">Fotos machen</button>
       <button class="knopf knopf--rand knopf--klein" id="entw-galerie" type="button">Aus Galerie</button>
-      <button class="knopf knopf--rand knopf--klein" id="entw-neu" type="button">Neues Fenster</button>
+      <button class="knopf knopf--rand knopf--klein" id="entw-neu" type="button">Fenster fertig</button>
     </div>
     <p class="entw__klein" id="entw-ordner"></p>
     <ol class="entw__liste" id="entw-liste"></ol>
@@ -3261,7 +3261,30 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     });
   });
   $('entw-mit').addEventListener('change', function () { ENTW.mit = this.checked; entwMerken(); });
-  $('entw-neu').addEventListener('click', function () { ENTW.ordner = null; ENTW.nr = 0; $('entw-liste').innerHTML = ''; $('entw-ordner').textContent = 'Neues Fenster: Name und Maß oben eintragen, dann fotografieren.'; $('entw-name').focus(); });
+  // Fenster fertig: die endgültigen Angaben (auch nachträglich eingetragene) als fenster.json in den Ordner, dann alles leeren fürs nächste Fenster
+  var entwFertigGewarnt = false;
+  $('entw-neu').addEventListener('click', function () {
+    if (!ENTW.ordner || !ENTW.nr) { entwZeile('Noch keine Fotos für dieses Fenster.'); return; }
+    var f = entwFenster();
+    if ((!f.fluegelBreiteMm || !f.fluegelHoeheMm) && !entwFertigGewarnt) {
+      entwFertigGewarnt = true;
+      entwZeile('Das echte Maß fehlt noch. Oben eintragen und nochmal „Fenster fertig“ tippen (oder ohne Maß nochmal tippen).').then(function (li) { li.classList.add('fehler'); });
+      $('entw-b').focus();
+      return;
+    }
+    if (!entwBereit()) return;
+    var ordner = ENTW.ordner, meta = { fertig: new Date().toISOString(), fotos: ENTW.nr, fenster: f, geraet: { ua: navigator.userAgent } };
+    entwZeile('Fenster wird abgeschlossen …').then(function (li) {
+      ghPut(ordner + '/fenster.json', textB64(JSON.stringify(meta, null, 2)), 'Fenster fertig ' + ordner).then(function () {
+        ENTW.ordner = null; ENTW.nr = 0; entwFertigGewarnt = false;
+        ['entw-name', 'entw-b', 'entw-h', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
+        $('entw-typ').value = ''; $('entw-griff').value = '';
+        $('entw-liste').innerHTML = '';
+        $('entw-ordner').textContent = 'Gespeichert ✓ (' + meta.fotos + ' Fotos in ' + ordner + '). Nächstes Fenster: erst Name und Maß, dann Fotos.';
+        $('entw-name').focus();
+      }, function (x) { li.textContent = 'Abschließen hat nicht geklappt (' + (x && x.message ? x.message : x) + '). Nochmal tippen.'; li.classList.add('fehler'); });
+    });
+  });
   $('entw-kamera').addEventListener('click', function () { $('entw-datei-kamera').value = ''; $('entw-datei-kamera').click(); });
   $('entw-galerie').addEventListener('click', function () { $('entw-datei-galerie').value = ''; $('entw-datei-galerie').click(); });
   ['entw-datei-kamera', 'entw-datei-galerie'].forEach(function (id) {

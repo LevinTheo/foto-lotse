@@ -41,6 +41,9 @@ Die Maße der Profile (IV 68, 78, 92) und der Aufbau von Kastenfenstern sind wei
 | `README.md` | Kurzbeschreibung |
 | `vendor/face-api.js` + `vendor/model/` | Gesichtserkennung zum Verpixeln (MIT-Lizenz) |
 | `fonts/` | Schrift Space Grotesk (SIL OFL 1.1) |
+| `pruefstand/pruefstand.js` | Prüfstand: Lotse über alle Lernfotos, Vergleich mit echten Maßen |
+| `pruefstand/wackel.js` | Wackeltest: jedes Lernfoto in 5 Varianten, Streuung der Maße |
+| `pruefstand/nachtrag.json` | Nachgetragene echte Maße und „ignorieren“ je Lernfoto-Ordner |
 
 Live: https://levintheo.github.io/foto-lotse/ (GitHub Pages, Branch `main`).
 
@@ -113,7 +116,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 ## Wackeltest
 
-`node <proto>/wackel.js` (liegt nicht im Repo, Vorlage siehe Commit-Beschreibung): jedes Lernfoto in 5 Varianten (Original, auf 90 % und 75 % verkleinert, JPEG 70 %, leicht weich) durch v3. Misst, ob dasselbe Foto auf verschiedenen Handys dasselbe Maß ergäbe.
+`node pruefstand/wackel.js <Pfad zu foto-lotse-daten> [Pfad zum Lotsen]` (braucht Playwright mit Chromium, dauert ca. 6 Minuten): jedes Lernfoto in 5 Varianten (Original, auf 90 % und 75 % verkleinert, JPEG 70 %, leicht weich) durch v3. Misst, ob dasselbe Foto auf verschiedenen Handys dasselbe Maß ergäbe.
 
 | Datum | Stand | stabil (< 1 % Streuung) | Streuung Median | Fehler Median | ±2 % |
 | --- | --- | --- | --- | --- | --- |
@@ -132,6 +135,7 @@ v3.3: Weniger „stabil“, weil Fotos, die vorher stur falsch lagen, jetzt rich
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | (dieser) | Wackeltest als `pruefstand/wackel.js` ins Repo (Daten- und Lotse-Pfad als Argument); geparkte Ideen gesammelt unter Offene Punkte → Geparkt (Tür-Lotse, Preis, Ablage über Tim, Datenbank) | Ein neuer Chat soll den Lotsen unabhängig prüfen können und dafür alles im Repo finden | Wackeltest aus dem Repo: gleiche Zahlen wie v3.3 (stabil 5/29, ±2 % 20/141, ±5 % 56/141) |
 | 4. Nov. 2026 | v3.3 `e4e5abf` | 30 aus 8 Fenstern | **5 von 30** (±5 %: **11**) | Median Breite 4,2 %, Höhe 4,3 %. Spiegeln greift bei 4 Fotos: Balkontür 2 Breite +5,6 → +1,0 %, Balkontür 5 −19,3 → −16,1 %, KiZi v2 Foto 3 −7,3 → −4,6 %, KiZi abends 1 unverändert gut. Kein Foto schlechter. Erster Versuch ohne Einigkeits-Bedingung: 4 von 30, weil KiZi v2 Foto 4 von −0,7 auf −9,4 % kippte (Durchgänge uneinig „rrl“). Selbsteinschätzung: sicher 21, davon 10 auf ±5 %; unsicher 8, davon 7 wirklich > 5 % daneben. Spiegelprobe trennt gute und schlechte Fotos nicht (siehe Offene Punkte) |
 | 4. Nov. 2026 | v3.2 `9478d76` | 30 aus 8 Fenstern | **5 von 30** (±5 %: 10) | Median Breite 4,4 %, Höhe 4,3 %. Neu: Ecken, Winkel, Diagonalen. Frontale Analysefotos: Eckwinkel 88,5–91,3°, Diagonalen-Δ −2 bis +22 mm. Dasselbe KiZi-Fenster dreimal: Flügel-Δ 16 / 19 / 2 mm → Messrauschen derzeit ca. ±1° und ±20 mm, ein hängender Flügel (wenige mm) ist damit noch nicht erkennbar. Übungsfenster (exakt rechtwinklig): 89,5/89,5/90,5/90,5° |
 | 4. Nov. 2026 | v3.1 `543cc2e` | 29 aus 7 Fenstern | 4 von 29 (±5 %: 9) | Mehrheit aus 3 Rastern + Selbsteinschätzung. Median Breite 4,4 %, Höhe 4,3 %. Als „unsicher“ gemeldet: 8, davon alle 8 wirklich > 5 % daneben (keine Fehlalarme); als „sicher“ gemeldet: 20, davon 9 auf ±5 % (11 falsch, aber sicher gemeldet → noch zu tun). Frontale Analysefotos: WZ 814 × 1244 (echt 810 × 1246), KiZi 1218 × 1301 (1218 × 1320). Rechenzeit ca. 2 s am Rechner |
@@ -212,6 +216,13 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 - [ ] „Manuelles Aufmaß“: Kunde misst selbst mit dem Zollstock und gibt Maß für Maß ein (eigener geführter Ablauf)
 - [ ] Fotosammlung von Anfang an mitführen: Fotos plus Aufmaß vor Ort als richtige Antwort
 - [ ] Prüfung durch Tim vor dem Einbau in die Website
+
+### Geparkt (Ideen von Levin, später, noch nicht begonnen)
+
+- [ ] **Tür-Lotse:** Balkon-, Terrassen- und Haustüren. Levin fragte, ob dafür ein eigenes Repo sinnvoll ist. Vorschlag aus dem Chat: als Modus im selben Lotsen (gleiches Maßblatt, gleiche Messung, andere Fotoschritte), damit beide aus denselben Lernfotos besser werden. Noch nicht entschieden. Erst angehen, wenn das Fenstermaß stabil ist
+- [ ] **Preis:** aus Maß, Bauart, Beschlägen und Schäden in wenigen Klicks ein Preis (siehe Zielbild). Noch keine Preislogik im Lotsen
+- [ ] **Ablage für echte Kunden:** In der privaten Testphase bleiben die Lernfotos im privaten GitHub-Repo (Levin hat die Erlaubnis der Mieter, keine Personen auf den Fotos). Für den Betrieb mit Kunden kommt später ein großer Speicher über Tim
+- [ ] **Gesammelte Fenster als Datenbank:** jedes aufgemessene Fenster (Fotos plus Levins Aufmaß) als Lernfall, damit die Erkennung mit der Zeit genauer wird (siehe „Fotosammlung von Anfang an mitführen“)
 
 ## Nachbauen
 

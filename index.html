@@ -205,6 +205,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .entw__knoepfe .knopf { padding: 0 8px; font-size: 14px; }
 .entw__liste { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.5; font-variant-numeric: tabular-nums; }
 .entw__liste .fehler { color: #c0392b; }
+.entw__wahl { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; }
+.entw__wahl .feld__name { flex-basis: 100%; }
 .knopf svg { flex: none; }
 
 .fertig { display: grid; gap: 12px; padding: 16px; background: var(--success-soft); color: var(--ink); }
@@ -537,6 +539,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       </div>
       <label class="feld"><span class="feld__name">Bauart</span><span class="feld__eingabe"><select id="entw-typ"><option value="">?</option><option value="kasten">Kastenfenster</option><option value="verbund">Verbundfenster</option><option value="holz">Holzfenster</option><option value="kunststoff">Kunststofffenster</option><option value="alu">Alu</option></select></span></label>
       <label class="feld"><span class="feld__name">Griff (von innen)</span><span class="feld__eingabe"><select id="entw-griff"><option value="">?</option><option value="links">links</option><option value="rechts">rechts</option><option value="mitte">Mitte (2 Flügel)</option></select></span></label>
+      <div class="entw__wahl" id="entw-dran">
+        <span class="feld__name">Am oder vor dem Fenster</span>
+        <label><input type="checkbox" value="markise"> Markise</label>
+        <label><input type="checkbox" value="rollladen"> Rollladen außen</label>
+        <label><input type="checkbox" value="rollo-innen"> Rollo / Plissee innen</label>
+        <label><input type="checkbox" value="jalousie"> Jalousie</label>
+        <label><input type="checkbox" value="insektenschutz"> Insektenschutz</label>
+        <label><input type="checkbox" value="gitter"> Gitter</label>
+        <label><input type="checkbox" value="gardine"> Gardine / Vorhang</label>
+      </div>
+      <label class="feld"><span class="feld__name">Hintergrund hinter der Scheibe</span><span class="feld__eingabe"><select id="entw-hinter"><option value="">?</option><option value="ruhig">ruhig (Wand, Himmel)</option><option value="gemischt">gemischt</option><option value="unruhig">unruhig (Balkon, Bäume, viele Linien)</option></select></span></label>
       <label class="feld"><span class="feld__name">Notiz</span><span class="feld__eingabe"><input id="entw-notiz" type="text" placeholder="Licht, Abstand, Besonderes"></span></label>
     </fieldset>
     <label class="schalter" for="entw-mit"><input type="checkbox" id="entw-mit"> Beim normalen Durchlauf („Analyse starten“) alle Fotos mit hochladen</label>
@@ -3282,7 +3295,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       ghPut(ordner + '/fenster.json', textB64(JSON.stringify(meta, null, 2)), 'Fenster fertig ' + ordner).then(function () {
         ENTW.ordner = null; ENTW.nr = 0; entwFertigGewarnt = false;
         ['entw-name', 'entw-b', 'entw-h', 'entw-rib', 'entw-rih', 'entw-rb', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
-        $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = '';
+        $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = ''; $('entw-hinter').value = '';
+        Array.prototype.forEach.call(document.querySelectorAll('#entw-dran input'), function (c) { c.checked = false; });
         $('entw-liste').innerHTML = '';
         $('entw-ordner').textContent = 'Gespeichert ✓ (' + meta.fotos + ' Fotos in ' + ordner + '). Nächstes Fenster: erst Name und Maß, dann Fotos.';
         $('entw-name').focus();
@@ -3319,6 +3333,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return { name: $('entw-name').value.trim(), fluegelBreiteMm: +$('entw-b').value || null, fluegelHoeheMm: +$('entw-h').value || null,
       rahmenInnenBreiteMm: +$('entw-rib').value || null, rahmenInnenHoeheMm: +$('entw-rih').value || null, rahmenSichtbarMm: +$('entw-rb').value || null,
       fluegelAnzahl: +$('entw-nu').value || null,
+      amFenster: Array.prototype.filter.call(document.querySelectorAll('#entw-dran input'), function (c) { return c.checked; }).map(function (c) { return c.value; }),
+      hintergrund: $('entw-hinter').value || null,
       bauart: $('entw-typ').value || null, griff: $('entw-griff').value || null, notiz: $('entw-notiz').value.trim() };
   }
   function b64VonBlob(blob) {

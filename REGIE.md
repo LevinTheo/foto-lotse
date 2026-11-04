@@ -171,6 +171,8 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 
 ## Offene Punkte
 
+- [ ] **Ecken abgleichen (Levins Idee, nächster Schritt):** Ein Fenster ist an allen vier Ecken gleich aufgebaut (Glasleiste, Flügelholz, Fuge, Rahmen). Sauber erkannte Ecke als Vorlage, die anderen dagegen prüfen (Holzbreite, Fugenabstand, Farbe); oben Rollokasten / unten Fensterbank passen dann nicht und fallen raus
+- [ ] **Später: Verzug erkennen (Levins Idee).** Diagonalen vergleichen (maßstabsunabhängig), erst sinnvoll wenn Ecken auf wenige mm sitzen und die Ebene nicht nur vom kleinen Blatt kommt (sonst Schein-Trapez). Praktischer zuerst: Fugenbreite in den Nahfotos (Scherenlager oben, Ecklager unten) messen; hängender Flügel = Fuge oben/unten ungleich. Ziel z. B. „Flügel hängt ca. 4 mm, Beschlag nachstellen“, bei Kastendoppelfenstern häufig
 - [ ] **v3 robuster machen (teils erledigt, v3.1):** noch 11 von 20 „sicher“ gemeldeten Maßen > 5 % daneben; nahe und schräge Fotos springen weiter. gleiches Foto muss überall dasselbe Maß ergeben (Handy vs. Prüfstand, Bauart leer vs. gesetzt). Ursache suchen (Schwellen bei Kantenstärke/Unruhe, Rahmenfarbe), Ergebnis über mehrere Einstellungen mitteln oder Abstimmung zwischen Kandidaten
 - [ ] **v3 Höhe verbessern:** unten nicht die Türschwelle/den Boden nehmen, oben nicht den Rollokasten (beide in Rahmenfarbe). Ideen: Holz unten breiter als seitlich erwarten, Fuge muss gefunden werden, Glaskante oben/unten gegen Seitenverhältnis prüfen
 - [ ] v3 auch im Livebild (Führung), wenn schnell genug

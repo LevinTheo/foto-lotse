@@ -1,17 +1,17 @@
 // Wackeltest: jedes Lernfoto in 5 Varianten (Original, 90 %, 75 %, JPEG 70 %, leicht weich [1 2 1]-Kern) durch v3,
 // misst, ob dasselbe Foto auf verschiedenen Handys dasselbe Maß ergäbe.
 // Aufruf: node pruefstand/wackel.js <Pfad zu foto-lotse-daten> [Pfad zum Lotsen, Standard: dieses Repo]
-// Braucht Playwright mit Chromium. Bauart-Werte (TY) sind eine Kopie von TYPEN in index.html.
+// Braucht Playwright mit Chromium. Holzbreiten je Bauart kommen aus TYPEN in index.html.
 const fs = require('fs'), path = require('path'); const { chromium } = require('playwright');
 const DATEN = process.argv[2] || '/home/claude/foto-lotse-daten', LOTSE = process.argv[3] || path.join(__dirname, '..');
 const NT = JSON.parse(fs.readFileSync(path.join(LOTSE, 'pruefstand/nachtrag.json'), 'utf8'));
-const TY = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60, tiefe: 35 }, holz: { fs: 65, fu: 75, tiefe: 40 }, kunststoff: { fs: 70, fu: 70, tiefe: 40 } };
 (async () => { const b = await chromium.launch(); const p = await b.newPage();
   await p.route('http://lotse.test/**', (route) => { const u = new URL(route.request().url());
     const f = u.pathname.startsWith('/_daten/') ? path.join(DATEN, decodeURIComponent(u.pathname.slice(8))) : path.join(LOTSE, decodeURIComponent(u.pathname));
     if (!fs.existsSync(f)) return route.fulfill({ status: 404, body: '' });
     route.fulfill({ status: 200, body: fs.readFileSync(f), contentType: f.endsWith('.html') ? 'text/html' : f.endsWith('.jpg') ? 'image/jpeg' : 'text/javascript' }); });
   await p.goto('http://lotse.test/index.html?test');
+  const TY = await p.evaluate(() => { const T = window.__lotse.TYPEN, r = {}; Object.keys(T).forEach((k) => { r[k] = { fs: T[k].s * 10, fu: T[k].u * 10, tiefe: T[k].tiefe }; }); return r; });
   let zeilen = [], spreads = [], fehler = [];
   for (const o of fs.readdirSync(path.join(DATEN, 'fenster')).sort()) {
     let w = {}; try { w = JSON.parse(fs.readFileSync(path.join(DATEN, 'fenster', o, 'fenster.json'))).fenster; } catch (e) {}

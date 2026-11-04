@@ -1,6 +1,17 @@
 # Foto-Lotse – Regiebericht
 
-Stand: 4. Nov. 2026 · Levin (Holtcraft)
+Stand: 4. Nov. 2026 · Levin (Holtcraft) · **Version v3**
+
+## Versionen
+
+Jeder Stand liegt auf GitHub. Zurückholen: Claude sagen „bau zurück auf vX“.
+
+| Version | Wo | Was |
+| --- | --- | --- |
+| v3 | Branch `main` (aktuell) | Fenstermaß auf dem fertigen Foto von der Holzseite her (entzerren, ruhiger Holzstreifen, Rahmenfarbe, Schattenfuge) |
+| v2 | Branch `stand-v2` (Commit `c38168f`) | Ablauf ohne Zwischenklicks, Schärfe, Griffvorschlag, Lernfotos, Prüfstand; Kantensuche vom Blatt nach außen |
+
+Git-Tags lassen sich aus Claudes Umgebung nicht hochladen, deshalb sind Versionen als Branches gesichert.
 
 Dieser Bericht hält jeden Schritt und jede Änderung am Foto-Lotsen fest, damit sich der Stand jederzeit nachvollziehen und nachbauen lässt. Der genaue Stand ist immer der Code in diesem Repo. Neue Änderungen kommen oben ins Änderungsprotokoll.
 
@@ -63,7 +74,8 @@ Alles rechnet auf dem Handy, nichts wird verschickt. Die schwere Rechnung läuft
 
 | Baustein | Was er tut | Wie (kurz) | Funktion im Code |
 | --- | --- | --- | --- |
-| Maßblatt | Misst den Flügel ohne Zollstock | A4 hochkant, 4 ArUco-Marker 4×4 (Nr. 0–3, je 80 mm, 12 mm vom Rand). Aus den Markern: Maßstab, Abstand, Schräge. Dann Kanten Glas und Flügel suchen, Fluchtpunkte, Tiefe je Fenstertyp abziehen | `findeMarker`, `blattLage`, `fensterMessen`, `fensterGenau`, `messen` |
+| Fenstermaß v3 (fertiges Foto) | Findet Glas und Flügel von der Holzseite her | 1. Foto mit dem Maßblatt auf die Glasebene entzerren (2 mm/px, Bereich 3,2 × 3,3 m ums Blatt). 2. Glaskante = Linie, die über die ganze Länge durchläuft und hinter der ein ruhiger Streifen beginnt (Holz). 3. Rahmenfarbe aus den Seiten, oben/unten nur gleiche Farbe (gegen Markise, Decke). 4. Schattenfuge 30–150 mm hinter der Glaskante, sonst Flügelholz je Bauart. Kante außerhalb des Fotos: kein Maß statt raten. Livebild nutzt weiter v2 | `messenV3`, `v3Entzerren`, `v3Finden`, `v3Glaskante`, `v3Fuge`, `v3Bandfarbe` |
+| Maßblatt (v2, Livebild) | Misst den Flügel ohne Zollstock | A4 hochkant, 4 ArUco-Marker 4×4 (Nr. 0–3, je 80 mm, 12 mm vom Rand). Aus den Markern: Maßstab, Abstand, Schräge. Dann Kanten Glas und Flügel suchen, Fluchtpunkte, Tiefe je Fenstertyp abziehen | `findeMarker`, `blattLage`, `fensterMessen`, `fensterGenau`, `messen` |
 | Führung im Livebild | „Geh 1 m zurück“, „Mittig davor“, „Halt still“ | Etwa 3 Messungen pro Sekunde auf 1280 px, Ziel 2,5–3,5 m, löst selbst aus | `massLive`, `deutenBlatt` |
 | Schärfe | Erkennt verwackelte oder falsch scharfgestellte Fotos | Bild auf 1600 px lange Seite, an den stärksten 1,5 % der Kanten Breite des Übergangs 10–90 % messen, senkrecht und waagerecht getrennt, der schlechtere Wert zählt | `schaerfe`, `kantenBreite`, `schaerfeVon` |
 | Griffsuche | Schlägt die Griffseite vor, Bänder gegenüber. Vorerst bestätigt der Kunde immer mit einem Tipp (Vorschlag hervorgehoben) | Flügelholz links und rechts in 9 Spalten abtasten, Abweichung vom Rest desselben Holzes plus Kanten, 12-cm-Fenster zwischen 22 % und 82 % der Höhe. Farbunabhängig. Sicher ab Verhältnis 1,35 und Wert 1,5 und nur bei stimmiger Messung, sonst eine Frage | `griffSuchen` |
@@ -99,6 +111,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3 (dieser) | 14 aus 3 Fenstern | 0 von 14 (±5 %: 2, v2: 0) | **v3**: Median Breite 2,5 %, Höhe 7,1 % (v2: 30,3 % / 44,1 %). 4 Nahfotos ohne ganzes Fenster: jetzt „kein Maß“ statt falscher Zahl. Griff 8 von 10 richtig. Höhe noch zu groß: unten Türschwelle, oben Rollokasten (gleiche Farbe wie Rahmen). Rechenzeit ca. 1,3 s am Rechner |
 | 4. Nov. 2026 | `e2b8264` | 14 aus 3 Fenstern | 0 von 14 | Neues Fenster „Kinderzimmer“ (Holz, Flügel 1218 × 1320, Ziergitter außen, Markise, Gegenlicht): bestes Foto aus 3,1 m −11,7 % / +0,2 %, sonst −12 bis −68 %. Griff 4 von 5 falsch |
 | 4. Nov. 2026 | `27efb0f` | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
 
@@ -117,6 +130,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3 (dieser) | **v3: Fenstermaß von der Holzseite her** (Levins Idee „von außen nach innen“): Entzerren auf die Glasebene, Glaskante = durchgehende Linie vor ruhigem Holzstreifen, Rahmenfarbe rundum gleich, Schattenfuge; nur auf dem fertigen Foto. Prüfstand vergleicht v2 und v3. Versionsanzeige „Foto-Lotse v3“ oben auf der Seite | Kantensuche hing sich an den Hintergrund | Prüfstand: Median Breite 2,5 % / Höhe 7,1 % statt 30 % / 44 %; Übungsfenster 80 × 122 statt 81 × 124 |
 | 4. Nov. 2026 | `19f9d53` | Lernfotos: Vorschaubild mit erkanntem Flügel (grün) und Vergleich zum echten Maß in Prozent direkt in der Liste | Levin sieht sofort am Handy, ob der Lotse das Fenster erkannt hat; kein Ankreuzen nötig, der Prüfstand rechnet ohnehin selbst | Getestet mit 2 Balkontür-Fotos (−23 %/−44 % und −37 %/−44 %) |
 | 4. Nov. 2026 | `6e6a8a4` | Lernfotos: Felder „Am oder vor dem Fenster“ (Markise, Rollladen, Rollo, Jalousie, Insektenschutz, Gitter, Gardine) und „Hintergrund“ | Erklärt im Prüfstand, warum die Kantensuche danebenliegt (Markise an der Balkontür); wichtig fürs Angebot | – |
 | 4. Nov. 2026 | `27efb0f` | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |
@@ -137,6 +151,9 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 
 ## Offene Punkte
 
+- [ ] **v3 Höhe verbessern:** unten nicht die Türschwelle/den Boden nehmen, oben nicht den Rollokasten (beide in Rahmenfarbe). Ideen: Holz unten breiter als seitlich erwarten, Fuge muss gefunden werden, Glaskante oben/unten gegen Seitenverhältnis prüfen
+- [ ] v3 auch im Livebild (Führung), wenn schnell genug
+- [x] Kantensuche von der Holzseite her (v3, 4. Nov. 2026)
 - [ ] **Wichtigster Punkt: Kantensuche robust gegen unruhigen Hintergrund.** Erkenntnis Kinderzimmer: Die verlässlichen Kanten liegen auf der Holzseite, nicht am Glas: Laibung → Blendrahmen → Schattenfuge Rahmen/Flügel → Flügel. Diese Fuge ist unabhängig vom Hintergrund (Gitter, Markise, Gegenlicht). Also von außen nach innen suchen bzw. die Fuge gezielt suchen, nicht nur vom Blatt nach außen über die Scheibe. Weitere Ideen: Glaskante muss über (fast) die ganze Glashöhe bzw. -breite durchlaufen, nicht nur neben dem Blatt; das Profil zwischen Glaskante und Flügelkante muss über die ganze Länge gleichmäßig sein (Zaunlatten, Wimpel, Markise sind es nicht); Bauart-Profilbreiten (IV 68/78/92, Kunststoff) als Erwartung. Mit Lernfotos testen, nicht an einem Foto festmachen
 - [ ] Lernfotos sammeln (Ziel erst mal 20–30 Fenster, verschiedene Bauarten, Licht, Hintergründe)
 - [ ] „Nochmal analysieren“ nach selbst Auslösen und für Galeriefotos (gründlicher, Gegenlicht ausgleichen)

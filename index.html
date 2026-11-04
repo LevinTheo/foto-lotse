@@ -487,7 +487,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse · Test</span>
+    <span class="marke__label">Foto-Lotse v3 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1804,10 +1804,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
 
   // Alles zusammen: Marker → Lage → Kanten grob → Geraden genau (zwei Runden)
-  function messen(g, w, h, f, opt, fein) {
+  function messen(g, w, h, f, opt, fein, rgb) {
     var marker = findeMarker(g, w, h);
     var lage = blattLage(marker, w, h, f);
     if (!lage) return { marker: marker.length, ok: false, grund: 'blatt' };
+    // v3 auf dem fertigen Foto (braucht die Farben), im Livebild weiter die schnelle Suche v2
+    if (opt && opt.v3 && rgb) return messenV3(g, w, h, f, lage, opt, rgb, marker.length);
     var K = kantenKarten(g, w, h), roh = null, genau = null;
     for (var runde = 0; runde < 2; runde++) {
       roh = fensterMessen(K, lage, opt, fein);
@@ -1832,6 +1834,185 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       try { erg.griff = griffSuchen(g, w, h, erg, roh); } catch (x) { erg.griff = null; }
       // Liegen die Flügelkanten nicht stimmig (Holz links und rechts sehr verschieden), liegen auch die Suchstreifen falsch:
       // dann lieber fragen als raten
+      if (erg.griff && !erg.sicher) { erg.griff.sicher = false; erg.griff.grund = 'messung'; }
+    }
+    return erg;
+  }
+
+  /* ---------- v3: Fenster von der Holzseite her finden ----------
+     Idee von Levin (4. Nov. 2026): nicht vom Blatt über die unruhige Scheibe nach außen tasten, sondern dort suchen, wo es ruhig ist:
+     am Holz. Ablauf:
+     1. Das Foto wird mit dem Maßblatt auf die Glasebene entzerrt (2 mm je Pixel), als stünde man genau frontal davor.
+        Das Fenster ist dann ein gerades Rechteck.
+     2. Glaskante = eine Linie, die über (fast) die ganze Länge durchläuft und hinter der ein ruhiger Streifen beginnt (Holz).
+        Hinter der Scheibe ist es unruhig (Balkon, Gitter, Bäume), auf dem Holz nicht.
+     3. Der Rahmen hat rundum dieselbe Farbe: Die Farbe neben den beiden Seiten ist die Vorlage, oben und unten zählt nur ein
+        Streifen in derselben Farbe (sonst hält er die Markise oder eine Decke für Holz).
+     4. Hinter der Glaskante, 30 bis 150 mm weiter außen, die Schattenfuge zwischen Flügel und Rahmen. Findet er keine, gilt das
+        übliche Flügelholz je Bauart.
+     Liegt eine Kante außerhalb des Fotos, gibt es kein Maß (statt zu raten). Läuft nur auf dem fertigen Foto, nicht im Livebild. */
+  var V3 = { S: 2, X0: -1500, Y0: -1500, W: 1605, H: 1650 };
+  function v3Entzerren(rgb, g, w, h, Hm) {
+    var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
+    var R = new Uint8Array(n), Gn = new Uint8Array(n), Bl = new Uint8Array(n), Y = new Float32Array(n), M0 = new Uint8Array(n);
+    for (var v = 0; v < Hh; v++) {
+      var my = V3.Y0 + v * S;
+      for (var u = 0; u < W; u++) {
+        var mx = V3.X0 + u * S, p = abb(Hm, mx, my), x = p[0], y = p[1], i = v * W + u;
+        if (!(x >= 0 && y >= 0 && x < w - 1.001 && y < h - 1.001)) continue;
+        var x0 = Math.floor(x), y0 = Math.floor(y), fx = x - x0, fy = y - y0, j = y0 * w + x0;
+        var a = (1 - fx) * (1 - fy), b = fx * (1 - fy), c = (1 - fx) * fy, d = fx * fy;
+        Y[i] = g[j] * a + g[j + 1] * b + g[j + w] * c + g[j + w + 1] * d;
+        var k = 3 * j, k2 = 3 * (j + w);
+        R[i] = rgb[k] * a + rgb[k + 3] * b + rgb[k2] * c + rgb[k2 + 3] * d;
+        Gn[i] = rgb[k + 1] * a + rgb[k + 4] * b + rgb[k2 + 1] * c + rgb[k2 + 4] * d;
+        Bl[i] = rgb[k + 2] * a + rgb[k + 5] * b + rgb[k2 + 2] * c + rgb[k2 + 5] * d;
+        M0[i] = 1;
+      }
+    }
+    // Rand vom Foto um 2 Pixel einziehen (dort sind die Werte halb aus dem Nichts)
+    var M1 = new Uint8Array(n), M = new Uint8Array(n), r, q;
+    for (v = 0; v < Hh; v++) for (u = 0; u < W; u++) { q = 1; for (r = -2; r <= 2; r++) { var uu = u + r; if (uu < 0 || uu >= W || !M0[v * W + uu]) { q = 0; break; } } M1[v * W + u] = q; }
+    for (v = 0; v < Hh; v++) for (u = 0; u < W; u++) { q = 1; for (r = -2; r <= 2; r++) { var vv = v + r; if (vv < 0 || vv >= Hh || !M1[vv * W + u]) { q = 0; break; } } M[v * W + u] = q; }
+    // Kantenkarten (Sobel), quer zur Kante um 1 Pixel verbreitert, ab ca. 15 Graustufen Sprung voll
+    var gx = new Float32Array(n), gy = new Float32Array(n), ex = new Float32Array(n), ey = new Float32Array(n);
+    for (v = 1; v < Hh - 1; v++) for (u = 1; u < W - 1; u++) {
+      i = v * W + u;
+      var A = Y[i - W - 1], B = Y[i - W], C = Y[i - W + 1], D = Y[i - 1], F = Y[i + 1], G = Y[i + W - 1], K = Y[i + W], L = Y[i + W + 1];
+      gx[i] = Math.abs((C + 2 * F + L) - (A + 2 * D + G)); gy[i] = Math.abs((G + 2 * K + L) - (A + 2 * B + C));
+    }
+    for (v = 1; v < Hh - 1; v++) for (u = 1; u < W - 1; u++) {
+      i = v * W + u;
+      if (!M[i]) continue;
+      ex[i] = Math.min(1, Math.max(gx[i - 1], gx[i], gx[i + 1]) / 60);
+      ey[i] = Math.min(1, Math.max(gy[i - W], gy[i], gy[i + W]) / 60);
+    }
+    return { R: R, G: Gn, B: Bl, Y: Y, M: M, ex: ex, ey: ey };
+  }
+  function v3px(mm, o) { return Math.round((mm - o) / V3.S); }
+  function v3mm(p, o) { return o + p * V3.S; }
+  // Profil quer zu den Kanten: C = Anteil der Länge mit Kante, V = Unruhe (Streuung der Helligkeit längs)
+  function v3Profil(E, senkrecht, von, bis) {
+    var W = V3.W, Hh = V3.H, len = senkrecht ? W : Hh, C = new Float32Array(len), V = new Float32Array(len);
+    var a = Math.max(0, v3px(von, senkrecht ? V3.Y0 : V3.X0)), b = Math.min(senkrecht ? Hh : W, v3px(bis, senkrecht ? V3.Y0 : V3.X0));
+    var span = Math.max(1, b - a), map = senkrecht ? E.ex : E.ey;
+    for (var t = 0; t < len; t++) {
+      var su = 0, n = 0, s1 = 0, s2 = 0;
+      for (var q = a; q < b; q++) {
+        var i = senkrecht ? q * W + t : t * W + q;
+        su += map[i];
+        if (E.M[i]) { n++; s1 += E.Y[i]; s2 += E.Y[i] * E.Y[i]; }
+      }
+      C[t] = su / span;
+      if (n < span * 0.6) V[t] = NaN;
+      else { var mu = s1 / n; V[t] = Math.sqrt(Math.max(0, s2 / n - mu * mu)); }
+    }
+    return { C: C, V: V };
+  }
+  function v3Spitzen(C, lo, hi, minC) {
+    var res = [];
+    for (var i = Math.max(1, lo); i < Math.min(C.length - 1, hi); i++) {
+      if (!(C[i] >= minC && C[i] >= C[i - 1] && C[i] >= C[i + 1])) continue;
+      if (res.length && i - res[res.length - 1] <= 3) { if (C[i] > C[res[res.length - 1]]) res[res.length - 1] = i; }
+      else res.push(i);
+    }
+    return res;
+  }
+  function v3Median(arr) { var a = arr.filter(function (x) { return x === x; }).sort(function (p, q) { return p - q; }); return a.length ? (a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2) : NaN; }
+  // Mittlere Rahmenfarbe 8 bis 40 mm außerhalb der Kante i, über die Länge von..bis (mm). null: Streifen nicht (ganz) im Foto
+  function v3Bandfarbe(E, senkrecht, i, richtung, von, bis) {
+    var W = V3.W, Hh = V3.H, d0 = Math.round(8 / V3.S), d1 = Math.round(40 / V3.S), a, b, p0, p1;
+    if (senkrecht) { a = Math.max(0, v3px(von, V3.Y0)); b = Math.min(Hh, v3px(bis, V3.Y0)); p0 = richtung < 0 ? i - d1 : i + d0; p1 = richtung < 0 ? i - d0 : i + d1; if (p0 < 0 || p1 > W) return null; }
+    else { a = Math.max(0, v3px(von, V3.X0)); b = Math.min(W, v3px(bis, V3.X0)); p0 = richtung < 0 ? i - d1 : i + d0; p1 = richtung < 0 ? i - d0 : i + d1; if (p0 < 0 || p1 > Hh) return null; }
+    var r = [], gg = [], bb = [], alle = 0;
+    for (var q = a; q < b; q += 2) for (var t = p0; t < p1; t += 2) {
+      var k = senkrecht ? q * W + t : t * W + q;
+      alle++;
+      if (!E.M[k]) continue;
+      r.push(E.R[k]); gg.push(E.G[k]); bb.push(E.B[k]);
+    }
+    if (!alle || r.length < alle * 0.7) return null;
+    return [v3Median(r), v3Median(gg), v3Median(bb)];
+  }
+  function v3Abstand(p, q) { return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); }
+  function v3Glaskante(P, start, richtung, grenze, farbe, ref) {
+    var C = P.C, V = P.V, lo = richtung < 0 ? grenze : start, hi = richtung < 0 ? start : grenze;
+    var kand = v3Spitzen(C, lo, hi, 0.35).sort(function (p, q) { return Math.abs(p - start) - Math.abs(q - start); });
+    var best = null;
+    for (var n = 0; n < kand.length; n++) {
+      var i = kand[n], aussen = [], innen = [], bad = false;
+      for (var d = 4; d < 22; d++) {
+        var ia = i + richtung * d, ii = i - richtung * d;
+        if (ia < 0 || ia >= V.length || V[ia] !== V[ia]) { bad = true; break; }
+        aussen.push(V[ia]);
+        if (ii >= 0 && ii < V.length) innen.push(V[ii]);
+      }
+      if (bad || aussen.length < 5) continue;
+      var va = v3Median(aussen), vi = v3Median(innen);
+      var ruhig = va < 12 || vi / Math.max(va, 1) > 2;
+      var fb = farbe(i);
+      if (!fb) continue;
+      if (ref && v3Abstand(fb, ref) > 40) continue;
+      var wert = C[i] * (ruhig ? 1 : 0.3);
+      if (!best || wert > best.wert + 0.15) best = { i: i, wert: wert };
+    }
+    return best;
+  }
+  function v3Fuge(P, glas, richtung, erwartet) {
+    var C = P.C, best = null;
+    for (var d = Math.round(30 / V3.S); d < Math.round(150 / V3.S); d++) {
+      var i = glas + richtung * d;
+      if (i < 1 || i >= C.length - 1) break;
+      if (!(C[i] >= C[i - 1] && C[i] >= C[i + 1]) || C[i] < 0.25) continue;
+      var wert = C[i] - 0.8 * Math.abs(d * V3.S - erwartet) / erwartet;
+      if (!best || wert > best.wert) best = { i: i, wert: wert };
+    }
+    return best;
+  }
+  function v3Finden(E, fs) {
+    var yt = -150, yb = 447, xl = -150, xr = 360, ref = null, l, r, o, u, Pv, Ph;
+    for (var runde = 0; runde < 3; runde++) {
+      Pv = v3Profil(E, true, yt + 40, yb - 40);
+      (function (a, b) {
+        l = v3Glaskante(Pv, v3px(-10, V3.X0), -1, v3px(-1500, V3.X0), function (i) { return v3Bandfarbe(E, true, i, -1, a, b); }, ref);
+        r = v3Glaskante(Pv, v3px(220, V3.X0), 1, v3px(1700, V3.X0), function (i) { return v3Bandfarbe(E, true, i, 1, a, b); }, ref);
+      })(yt + 40, yb - 40);
+      if (!l || !r) return null;
+      xl = v3mm(l.i, V3.X0); xr = v3mm(r.i, V3.X0);
+      if (!ref) {
+        var fl = v3Bandfarbe(E, true, l.i, -1, yt + 40, yb - 40), fr = v3Bandfarbe(E, true, r.i, 1, yt + 40, yb - 40);
+        if (fl && fr && v3Abstand(fl, fr) < 50) ref = [(fl[0] + fr[0]) / 2, (fl[1] + fr[1]) / 2, (fl[2] + fr[2]) / 2];
+      }
+      Ph = v3Profil(E, false, xl + 40, xr - 40);
+      (function (a, b) {
+        o = v3Glaskante(Ph, v3px(-10, V3.Y0), -1, v3px(-1500, V3.Y0), function (i) { return v3Bandfarbe(E, false, i, -1, a, b); }, ref);
+        u = v3Glaskante(Ph, v3px(307, V3.Y0), 1, v3px(1790, V3.Y0), function (i) { return v3Bandfarbe(E, false, i, 1, a, b); }, ref);
+      })(xl + 40, xr - 40);
+      if (!o || !u) return null;
+      yt = v3mm(o.i, V3.Y0); yb = v3mm(u.i, V3.Y0);
+    }
+    Pv = v3Profil(E, true, yt + 40, yb - 40); Ph = v3Profil(E, false, xl + 40, xr - 40);
+    var fL = v3Fuge(Pv, l.i, -1, fs), fR = v3Fuge(Pv, r.i, 1, fs), fO = v3Fuge(Ph, o.i, -1, fs), fU = v3Fuge(Ph, u.i, 1, fs + 10);
+    var F = [fL ? v3mm(fL.i, V3.X0) : xl - fs, fO ? v3mm(fO.i, V3.Y0) : yt - fs, fR ? v3mm(fR.i, V3.X0) : xr + fs, fU ? v3mm(fU.i, V3.Y0) : yb + fs + 10];
+    return { glas: [xl, yt, xr, yb], fluegel: F, fugen: [!!fL, !!fO, !!fR, !!fU], rahmenfarbe: ref };
+  }
+  function messenV3(g, w, h, f, lage, opt, rgb, marker) {
+    var Hm = lage.Hvoll || lage.H, E = v3Entzerren(rgb, g, w, h, Hm), z = v3Finden(E, opt.fs || 65);
+    var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung } };
+    if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
+    var F = z.fluegel, Gl = z.glas, D = lage.z, k2 = (D - (opt.tiefe || 0)) / D;
+    erg.roh = { ok: true, fluegel: F, glas: Gl, holz: [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]] };
+    erg.fugen = z.fugen;
+    erg.breite = (F[2] - F[0]) * k2; erg.hoehe = (F[3] - F[1]) * k2;
+    erg.ecken = [[F[0], F[1]], [F[2], F[1]], [F[2], F[3]], [F[0], F[3]]].map(function (p) { return abb(Hm, p[0], p[1]); });
+    erg.abstand = D; erg.neigung = lage.neigung;
+    erg.versatz = lage.fuss ? [((F[0] + F[2]) / 2 - lage.fuss[0]) * k2, ((F[1] + F[3]) / 2 - lage.fuss[1]) * k2] : [0, 0];
+    var hz = erg.roh.holz, lr = (hz[0] + hz[2]) / 2;
+    erg.sicher = Math.abs(hz[0] - hz[2]) < 20 && hz[1] > lr - 20 && hz[1] < lr + 40 && hz[3] > lr - 15 && hz[3] < lr + 45;
+    erg.ok = !(erg.breite < 250 || erg.hoehe < 350 || erg.breite > 2600 || erg.hoehe > 2800);
+    erg.grund = erg.ok ? '' : 'fenster';
+    if (erg.ok && opt.griff) {
+      try { erg.griff = griffSuchen(g, w, h, erg, erg.roh); } catch (x) { erg.griff = null; }
       if (erg.griff && !erg.sicher) { erg.griff.sicher = false; erg.griff.grund = 'messung'; }
     }
     return erg;
@@ -1963,21 +2144,21 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       sicher: verh >= 1.35 && gross.wert >= 1.5 };
   }
   /*MASS-ENDE*/
-    return { messen: messen, schaerfe: schaerfe, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
+    return { messen: messen, findeMarker: findeMarker, blattLage: blattLage, schaerfe: schaerfe, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
   }
   var MASS = massModul();
   var arbeiter = null, auftragNr = 0, auftraege = {};
   function massSelbst(d) {
     var t0 = performance.now(), erg;
-    try { erg = MASS.messen(d.g, d.w, d.h, d.f, d.opt, false); } catch (e) { erg = { ok: false, marker: 0, grund: 'fehler' }; }
+    try { erg = MASS.messen(d.g, d.w, d.h, d.f, d.opt, false, d.rgb || null); } catch (e) { erg = { ok: false, marker: 0, grund: 'fehler' }; }
     return { erg: erg, ms: Math.round(performance.now() - t0) };
   }
-  function massRechnen(g, w, h, f, opt) {
-    var d = { g: g, w: w, h: h, f: f, opt: opt };
+  function massRechnen(g, w, h, f, opt, rgb) {
+    var d = { g: g, w: w, h: h, f: f, opt: opt, rgb: rgb || null };
     if (arbeiter === null) {
       try {
         var code = 'var M = (' + massModul.toString() + ')();\n' +
-          'onmessage = function (e) { var d = e.data, t0 = Date.now(), erg; try { erg = M.messen(new Uint8Array(d.g), d.w, d.h, d.f, d.opt, false); }' +
+          'onmessage = function (e) { var d = e.data, t0 = Date.now(), erg; try { erg = M.messen(new Uint8Array(d.g), d.w, d.h, d.f, d.opt, false, d.rgb ? new Uint8Array(d.rgb) : null); }' +
           ' catch (x) { erg = { ok: false, marker: 0, grund: "fehler" }; } postMessage({ id: d.id, erg: erg, ms: Date.now() - t0 }); };';
         arbeiter = new Worker(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })));
         arbeiter.onmessage = function (e) { var ja = auftraege[e.data.id]; delete auftraege[e.data.id]; if (ja) ja(e.data); };
@@ -1992,7 +2173,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var id = ++auftragNr;
     return new Promise(function (ja) {
       auftraege[id] = ja;
-      try { arbeiter.postMessage({ id: id, g: g.buffer, w: w, h: h, f: f, opt: opt }, [g.buffer]); }
+      try { arbeiter.postMessage({ id: id, g: g.buffer, w: w, h: h, f: f, opt: opt, rgb: rgb ? rgb.buffer : null }, rgb ? [g.buffer, rgb.buffer] : [g.buffer]); }
       catch (e) { delete auftraege[id]; arbeiter = false; ja(massSelbst(d)); }
     });
   }
@@ -2000,6 +2181,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var d = ctx.getImageData(0, 0, w, h).data, g = new Uint8Array(w * h);
     for (var i = 0, j = 0; i < g.length; i++, j += 4) g[i] = (77 * d[j] + 150 * d[j + 1] + 29 * d[j + 2]) >> 8;
     return g;
+  }
+  function rgbVon(ctx, w, h) {
+    var d = ctx.getImageData(0, 0, w, h).data, o = new Uint8Array(w * h * 3);
+    for (var i = 0, j = 0, k = 0; i < w * h; i++, j += 4, k += 3) { o[k] = d[j]; o[k + 1] = d[j + 1]; o[k + 2] = d[j + 2]; }
+    return o;
   }
   function blattModus() { return P.mass === 'blatt'; }
   function blattSchritt(s) { return blattModus() && !!s && s.id === 'innen'; }
@@ -2865,8 +3051,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var v = $('video'), f = modus === 'kamera' && v.videoWidth ? 0.693 * Math.max(v.videoWidth, v.videoHeight) : 0.693 * Math.max(w, h);
     var opt = massOpt(modus === 'uebung');
     opt.griff = P.nU === 1;   // auf dem fertigen Foto auch den Griff suchen
-    var arbeit = massRechnen(g, w, h, f, opt).then(function (r) { return r && r.erg; });
-    var zeit = new Promise(function (ja) { setTimeout(function () { ja(null); }, 8000); });
+    opt.v3 = true;            // fertiges Foto: Suche von der Holzseite her (v3)
+    var rgb = null;
+    try { rgb = rgbVon(cv.getContext('2d'), w, h); } catch (e) { rgb = null; }
+    var arbeit = massRechnen(g, w, h, f, opt, rgb).then(function (r) { return r && r.erg; });
+    var zeit = new Promise(function (ja) { setTimeout(function () { ja(null); }, 25000); });   // v3 braucht auf dem Handy ein paar Sekunden
     return Promise.race([arbeit, zeit]);
   }
   // Schärfe eines Fotos: auf feste Größe (lange Seite 1600 px) bringen und an den Kanten messen
@@ -3128,8 +3317,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var gen = ++k.massGen, g;
     try { g = grauVon(c, cv.width, cv.height); } catch (e) { k.fotoMessung = { ok: false, marker: 0, zeit: performance.now() }; return; }
     var opt = massOpt(false);
-    opt.griff = P.nU === 1;
-    massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt).then(function (r) {
+    opt.griff = P.nU === 1; opt.v3 = true;
+    massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt, rgbVon(c, cv.width, cv.height)).then(function (r) {
       if (gen !== k.massGen) return;
       var e = (r && r.erg) || { ok: false, marker: 0 };
       e.ms = r ? r.ms : 0; e.zeit = performance.now(); e.bw = cv.width; e.bh = cv.height;
@@ -3362,10 +3551,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var c = cv.getContext('2d', { willReadFrequently: true });
     c.drawImage(img, 0, 0, cv.width, cv.height);
     var sch = schaerfeVon(cv), g = grauVon(c, cv.width, cv.height), opt = massOpt(false);
-    opt.griff = true;
-    return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt).then(function (r) {
+    opt.griff = true; opt.v3 = true;
+    var bauart = $('entw-typ').value;
+    if (TYPEN[bauart]) { opt.fs = TYPEN[bauart].s * 10; opt.fu = TYPEN[bauart].u * 10; opt.tiefe = TYPEN[bauart].tiefe; }
+    return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt, rgbVon(c, cv.width, cv.height)).then(function (r) {
       var e = (r && r.erg) || {};
-      return { cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
+      return { version: e.version || 'v2', cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
         ok: !!e.ok, grund: e.grund || '', fluegelMm: e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null, holzMm: e.roh && e.roh.holz ? e.roh.holz.map(Math.round) : null,
         stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }) : null,
         griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ };

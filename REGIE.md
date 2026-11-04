@@ -115,6 +115,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | (dieser) | Lernfotos: Vorschaubild mit erkanntem Flügel (grün) und Vergleich zum echten Maß in Prozent direkt in der Liste | Levin sieht sofort am Handy, ob der Lotse das Fenster erkannt hat; kein Ankreuzen nötig, der Prüfstand rechnet ohnehin selbst | Getestet mit 2 Balkontür-Fotos (−23 %/−44 % und −37 %/−44 %) |
 | 4. Nov. 2026 | `6e6a8a4` | Lernfotos: Felder „Am oder vor dem Fenster“ (Markise, Rollladen, Rollo, Jalousie, Insektenschutz, Gitter, Gardine) und „Hintergrund“ | Erklärt im Prüfstand, warum die Kantensuche danebenliegt (Markise an der Balkontür); wichtig fürs Angebot | – |
 | 4. Nov. 2026 | `27efb0f` | Lernfotos verkleinert hochladen (2576 px, ca. 0,8 MB); neue Felder Rahmen innen B/H, Rahmen sichtbar, Anzahl Flügel; Prüfstand `pruefstand/` | Speicher sparen ohne Verlust für die Messung; mehr echte Maße für spätere Erkennung; alle Fenster nach jeder Änderung neu prüfen | Upload 1,95 MB → 0,8 MB. Prüfstand: 0 von 9 auf ±2 % |
 | 4. Nov. 2026 | `e321dec` | Knopf „Fenster fertig“ statt „Neues Fenster“: schreibt `fenster.json` mit den endgültigen Angaben, mahnt fehlendes Maß einmal an | Bei den ersten 5 Lernfotos waren Name und Maß leer; so lässt sich das Maß auch nachträglich eintragen | Mit nachgestellter GitHub-Gegenstelle getestet |

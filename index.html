@@ -205,6 +205,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .entw__knoepfe .knopf { padding: 0 8px; font-size: 14px; }
 .entw__liste { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.5; font-variant-numeric: tabular-nums; }
 .entw__liste .fehler { color: #c0392b; }
+.entw__vorschau { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 10px; }
+.entw__vorschau img { width: 110px; height: auto; flex: none; border: 1px solid var(--line); }
 .entw__wahl { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; }
 .entw__wahl .feld__name { flex-basis: 100%; }
 .knopf svg { flex: none; }
@@ -3369,6 +3371,36 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ };
     });
   }
+  // Kleines Vorschaubild mit dem erkannten Flügel (grün) und dem Vergleich zum echten Maß, direkt in der Liste
+  function entwVorschauBild(cv, sieht) {
+    var b = 220, h = Math.round(b * cv.height / cv.width), k = document.createElement('canvas');
+    k.width = b * 2; k.height = h * 2;
+    var c = k.getContext('2d'), f = k.width / cv.width;
+    c.drawImage(cv, 0, 0, k.width, k.height);
+    if (sieht && sieht.ecken) {
+      c.strokeStyle = '#00e060'; c.lineWidth = 4;
+      c.beginPath(); sieht.ecken.forEach(function (p, i) { if (i) c.lineTo(p[0] * f, p[1] * f); else c.moveTo(p[0] * f, p[1] * f); }); c.closePath(); c.stroke();
+    }
+    return k.toDataURL('image/jpeg', 0.75);
+  }
+  function entwVorschau(li, url, sieht) {
+    var w = entwFenster(), text;
+    if (!sieht) text = 'Lotse: nicht ausgewertet';
+    else if (!sieht.marker) text = 'Lotse: kein Maßblatt gefunden';
+    else if (!sieht.fluegelMm) text = 'Lotse: Maßblatt (' + sieht.marker + ' Marker), aber kein Fenster';
+    else {
+      text = 'Lotse ' + sieht.fluegelMm.join(' × ') + ' mm';
+      if (w.fluegelBreiteMm && w.fluegelHoeheMm) {
+        var pb = (sieht.fluegelMm[0] - w.fluegelBreiteMm) / w.fluegelBreiteMm * 100, ph = (sieht.fluegelMm[1] - w.fluegelHoeheMm) / w.fluegelHoeheMm * 100;
+        var p = function (x) { return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(0) + ' %'; };
+        text += ', echt ' + w.fluegelBreiteMm + ' × ' + w.fluegelHoeheMm + ' · ' + p(pb) + ' / ' + p(ph) + (Math.abs(pb) <= 2 && Math.abs(ph) <= 2 ? ' ✓' : '');
+      }
+    }
+    var d = document.createElement('div'); d.className = 'entw__vorschau';
+    if (url) { var im = document.createElement('img'); im.src = url; im.alt = 'Was der Lotse erkannt hat'; d.appendChild(im); }
+    var t = document.createElement('span'); t.textContent = text; d.appendChild(t);
+    li.appendChild(d);
+  }
   function entwBereit() {
     if (ENTW.token && ENTW.repo) return true;
     entwZeile('Erst den Zugang einrichten (oben).').then(function (li) { li.classList.add('fehler'); });
@@ -3377,7 +3409,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function entwDatei(datei, quelle) {
     if (!entwBereit()) return Promise.resolve();
-    var ordner = entwOrdner(), nr = ++ENTW.nr, name = 'foto-' + zwei(nr), endung = 'jpg', klein = null;
+    var ordner = entwOrdner(), nr = ++ENTW.nr, name = 'foto-' + zwei(nr), endung = 'jpg', klein = null, vorschau = null;
     var li;
     return entwZeile(name + ': wird ausgewertet …').then(function (l) {
       li = l;
@@ -3391,6 +3423,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       return (img ? lotseSieht(img) : Promise.resolve(null)).catch(function () { return null; });
     }).then(function (sieht) {
       if (sieht && sieht.cv) { klein = sieht.cv; delete sieht.cv; }
+      vorschau = klein ? entwVorschauBild(klein, sieht) : null;
       li.textContent = name + ': lädt hoch …' + (sieht ? ' (Lotse: ' + sieht.marker + ' Marker' + (sieht.fluegelMm ? ', ' + sieht.fluegelMm.join(' × ') + ' mm' : '') + ')' : '');
       var meta = { zeit: new Date().toISOString(), quelle: quelle, datei: { name: datei.name, typ: datei.type, bytes: datei.size },
         fenster: entwFenster(), lotse: sieht, geraet: { ua: navigator.userAgent, bildschirm: screen.width + 'x' + screen.height + '@' + (window.devicePixelRatio || 1) },
@@ -3402,7 +3435,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       }).then(function () {
         return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Lernfoto-Daten ' + ordner + '/' + name);
       }).then(function () {
-        li.textContent = name + ': hochgeladen ✓' + (sieht ? ' · Lotse: ' + sieht.marker + ' Marker' + (sieht.fluegelMm ? ', ' + sieht.fluegelMm.join(' × ') + ' mm' : ', kein Maß') : '');
+        li.textContent = name + ': hochgeladen ✓';
+        entwVorschau(li, vorschau, sieht);
       });
     }).catch(function (x) {
       if (li) { li.textContent = name + ': Fehler beim Hochladen (' + (x && x.message ? x.message : x) + ')'; li.classList.add('fehler'); }

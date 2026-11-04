@@ -111,6 +111,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | v3 (`3a465a9`) | 29 mit Maß aus 8 Fenstern | 1 von 29 (±5 %: 9, v2: 4) | Median Breite 3,1 %, Höhe 4,4 % (v2: 20,5 % / 33,0 %). Neu: Wohnzimmer Kunststoff 2-flüglig (Analysefoto 814 × 1246 statt 810 × 1246), Abendfotos mit Licht an (Spiegelungen vom Zimmer in der Scheibe; Analysefotos −1 bis +3 %). **Auffällig: dasselbe Foto gibt am Handy und im Prüfstand teils verschiedene Maße** (SZ Dunkel: Handy 834 × 1243, Prüfstand 775 × 1454) → v3 reagiert empfindlich auf kleine Unterschiede (Bildverkleinerung, JPEG, Bauart-Einstellung) |
 | 4. Nov. 2026 | `53d7150` (v3) | 14 aus 3 Fenstern | 0 von 14 (±5 %: 2, v2: 0) | **v3**: Median Breite 2,5 %, Höhe 7,1 % (v2: 30,3 % / 44,1 %). 4 Nahfotos ohne ganzes Fenster: jetzt „kein Maß“ statt falscher Zahl. Griff 8 von 10 richtig. Höhe noch zu groß: unten Türschwelle, oben Rollokasten (gleiche Farbe wie Rahmen). Rechenzeit ca. 1,3 s am Rechner |
 | 4. Nov. 2026 | `e2b8264` | 14 aus 3 Fenstern | 0 von 14 | Neues Fenster „Kinderzimmer“ (Holz, Flügel 1218 × 1320, Ziergitter außen, Markise, Gegenlicht): bestes Foto aus 3,1 m −11,7 % / +0,2 %, sonst −12 bis −68 %. Griff 4 von 5 falsch |
 | 4. Nov. 2026 | `27efb0f` | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
@@ -155,6 +156,7 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 
 ## Offene Punkte
 
+- [ ] **v3 robuster machen:** gleiches Foto muss überall dasselbe Maß ergeben (Handy vs. Prüfstand, Bauart leer vs. gesetzt). Ursache suchen (Schwellen bei Kantenstärke/Unruhe, Rahmenfarbe), Ergebnis über mehrere Einstellungen mitteln oder Abstimmung zwischen Kandidaten
 - [ ] **v3 Höhe verbessern:** unten nicht die Türschwelle/den Boden nehmen, oben nicht den Rollokasten (beide in Rahmenfarbe). Ideen: Holz unten breiter als seitlich erwarten, Fuge muss gefunden werden, Glaskante oben/unten gegen Seitenverhältnis prüfen
 - [ ] v3 auch im Livebild (Führung), wenn schnell genug
 - [x] Kantensuche von der Holzseite her (v3, 4. Nov. 2026)

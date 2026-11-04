@@ -8,7 +8,7 @@ Jeder Stand liegt auf GitHub. Zurückholen: Claude sagen „bau zurück auf vX�
 
 | Version | Wo | Was |
 | --- | --- | --- |
-| v3.3 | Branch `main` (aktuell) | wie v3.2, dazu Spiegeln links ↔ rechts (Holzbreite der sicheren Seite auf die falsche übertragen, nur wenn alle 3 Durchgänge einig) |
+| v3.3 | Branch `main` (aktuell), gesichert als `stand-v3.3` | wie v3.2, dazu Spiegeln links ↔ rechts (Holzbreite der sicheren Seite auf die falsche übertragen, nur wenn alle 3 Durchgänge einig) |
 | v3.2 | Branch `stand-v3.2` | v3 mit 3-Raster-Mehrheit, Selbsteinschätzung, Ecken/Winkel/Diagonalen |
 | v3 | Branch `stand-v3` | Fenstermaß auf dem fertigen Foto von der Holzseite her (entzerren, ruhiger Holzstreifen, Rahmenfarbe, Schattenfuge) |
 | v2 | Branch `stand-v2` (Commit `c38168f`) | Ablauf ohne Zwischenklicks, Schärfe, Griffvorschlag, Lernfotos, Prüfstand; Kantensuche vom Blatt nach außen |

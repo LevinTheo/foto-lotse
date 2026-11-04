@@ -99,6 +99,7 @@ Grenzen der Griffsuche (1,35 / 1,5 / 22–82 %) stehen in `griffSuchen`, Holzbre
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 4. Nov. 2026 | `e2b8264` | 14 aus 3 Fenstern | 0 von 14 | Neues Fenster „Kinderzimmer“ (Holz, Flügel 1218 × 1320, Ziergitter außen, Markise, Gegenlicht): bestes Foto aus 3,1 m −11,7 % / +0,2 %, sonst −12 bis −68 %. Griff 4 von 5 falsch |
 | 4. Nov. 2026 | `27efb0f` | 9 aus 2 Fenstern (beide dieselbe Balkontür) | 0 von 9 | Ausgangslage. Abweichung meist −20 bis −50 %; Ergebnis hängt stark von der Bauart-Einstellung ab (am Handy mit „Holz“ 724 × 2101, im Prüfstand mit „Kunststoff“ 583 × 1130) |
 
 ## Lernfotos (Bestand)
@@ -107,6 +108,7 @@ Liegen im privaten Repo `LevinTheo/foto-lotse-daten`, bleiben dort dauerhaft. Or
 
 | Ordner | Fenster | Echtes Maß Flügel | Fotos | Lotse (Stand 4. Nov.) |
 | --- | --- | --- | --- | --- |
+| `fenster/2026-11-04_1331_fenster` | Kinderzimmer, Holz, 1 Flügel, Griff rechts, Rollo innen, **Ziergitter außen** (nicht angehakt), Markise, Gegenlicht | 1218 × 1320 mm (Rahmen innen 1068 × 1166, Rahmen sichtbar 76) | 5: aus 1,3–3,1 m, frontal und schräg | Schlimmster Fall bisher: Gitter + Markise + Sonne; selbst Levin sieht die Flügelkante nur unten an den Ecken |
 | `fenster/2026-11-04_1217_fenster` | Balkontür Küche, Kunststoff, Griff rechts | 788 × 2023 mm | 5: frontal ca. 1,9 m, schräg von links, oben nah, unten nah, schräg von rechts | Marker immer 4/4, Schärfe 1,6 px; Maß immer falsch (397–523 × 772–1829 mm), unten nah gar keins |
 
 ## Änderungsprotokoll
@@ -135,7 +137,7 @@ Erster echter Test am 4. Nov. 2026 (Balkontür, siehe oben): Marker und Schärfe
 
 ## Offene Punkte
 
-- [ ] **Wichtigster Punkt: Kantensuche robust gegen unruhigen Hintergrund.** Ideen: Glaskante muss über (fast) die ganze Glashöhe bzw. -breite durchlaufen, nicht nur neben dem Blatt; das Profil zwischen Glaskante und Flügelkante muss über die ganze Länge gleichmäßig sein (Zaunlatten, Wimpel, Markise sind es nicht); Bauart-Profilbreiten (IV 68/78/92, Kunststoff) als Erwartung. Mit Lernfotos testen, nicht an einem Foto festmachen
+- [ ] **Wichtigster Punkt: Kantensuche robust gegen unruhigen Hintergrund.** Erkenntnis Kinderzimmer: Die verlässlichen Kanten liegen auf der Holzseite, nicht am Glas: Laibung → Blendrahmen → Schattenfuge Rahmen/Flügel → Flügel. Diese Fuge ist unabhängig vom Hintergrund (Gitter, Markise, Gegenlicht). Also von außen nach innen suchen bzw. die Fuge gezielt suchen, nicht nur vom Blatt nach außen über die Scheibe. Weitere Ideen: Glaskante muss über (fast) die ganze Glashöhe bzw. -breite durchlaufen, nicht nur neben dem Blatt; das Profil zwischen Glaskante und Flügelkante muss über die ganze Länge gleichmäßig sein (Zaunlatten, Wimpel, Markise sind es nicht); Bauart-Profilbreiten (IV 68/78/92, Kunststoff) als Erwartung. Mit Lernfotos testen, nicht an einem Foto festmachen
 - [ ] Lernfotos sammeln (Ziel erst mal 20–30 Fenster, verschiedene Bauarten, Licht, Hintergründe)
 - [ ] „Nochmal analysieren“ nach selbst Auslösen und für Galeriefotos (gründlicher, Gegenlicht ausgleichen)
 - [ ] Näher rangehen erlauben (ca. 1,5 m) und Teilfotos (oben/unten, Blatt immer drauf) zu einem Maß zusammenrechnen

@@ -1,5 +1,8 @@
 // Prüfstand: lässt den aktuellen Foto-Lotsen über alle Lernfotos laufen und vergleicht mit den echten Maßen.
-// Aufruf:  node pruefstand/pruefstand.js <Pfad zu foto-lotse-daten> [Ausgabeordner]
+// Aufruf:  node pruefstand/pruefstand.js <Pfad zu foto-lotse-daten> [Ausgabeordner] [--kunde | --kunde1]
+//   ohne Schalter: Bauart und Flügelanzahl aus der Wahrheit (zeigt, was die Erkennung kann)
+//   --kunde:  wie der Kunde ab v3.4: Bauart immer Holz (der Kunde wählt keine), Flügelanzahl wie beantwortet (= Wahrheit)
+//   --kunde1: wie die App bis v3.3: Bauart Holz, immer 1 Flügel
 // Braucht Playwright (Chromium). Die Fotos bleiben lokal, ins öffentliche Repo kommt nur dieser Code.
 // Echte Maße: fenster.json im Fensterordner, sonst pruefstand/nachtrag.json (für Ordner von vor dem Knopf „Fenster fertig“).
 'use strict';
@@ -7,8 +10,10 @@ const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 
-const DATEN = path.resolve(process.argv[2] || '../foto-lotse-daten');
-const AUS = path.resolve(process.argv[3] || '/tmp/pruefstand');
+const ARGS = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+const MODUS = process.argv.includes('--kunde1') ? 'kunde1' : process.argv.includes('--kunde') ? 'kunde' : 'wahrheit';
+const DATEN = path.resolve(ARGS[0] || '../foto-lotse-daten');
+const AUS = path.resolve(ARGS[1] || '/tmp/pruefstand');
 const LOTSE = path.resolve(__dirname, '..');
 const NACHTRAG = JSON.parse(fs.readFileSync(path.join(__dirname, 'nachtrag.json'), 'utf8'));
 
@@ -41,8 +46,8 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
     const w = wahrheit(ordner);
     if (w.ignorieren) continue;
     // Griff wie in der App nur bei 1 Flügel suchen (bei 2 Flügeln sitzt er in der Mitte, links/rechts wäre Zufall)
-    const nU = w.fluegelAnzahl || 1;
-    const opt = Object.assign({ griff: nU === 1, nU }, TYPEN[w.bauart] || TYPEN.holz);
+    const nU = MODUS === 'kunde1' ? 1 : w.fluegelAnzahl || 1;
+    const opt = Object.assign({ griff: nU === 1, nU }, MODUS === 'wahrheit' ? TYPEN[w.bauart] || TYPEN.holz : TYPEN.holz);
     const fotos = fs.readdirSync(path.join(DATEN, 'fenster', ordner)).filter((f) => /^(foto|lauf)-.*\.jpg$/.test(f)).sort();
     for (const foto of fotos) {
       const r = await page.evaluate(async ({ url, opt }) => {
@@ -106,7 +111,8 @@ const TYPEN = { kasten: { fs: 45, fu: 55, tiefe: 30 }, verbund: { fs: 50, fu: 60
   const gr = zeilen.filter((z) => z.griff.startsWith('richtig') || z.griff.startsWith('FALSCH'));
   const grRichtig = gr.filter((z) => z.griff.startsWith('richtig')).length, grSicher = gr.filter((z) => z.griff.includes('sicher'));
   const grSicherRichtig = grSicher.filter((z) => z.griff.startsWith('richtig')).length;
-  let md = '# Prüfstand Foto-Lotse\n\n' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + zeilen.length + ' Fotos aus ' +
+  let md = '# Prüfstand Foto-Lotse\n\n' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' +
+    { wahrheit: 'Bauart und Flügel aus der Wahrheit', kunde: 'wie der Kunde (Holz, Flügel wie beantwortet)', kunde1: 'wie die App bis v3.3 (Holz, 1 Flügel)' }[MODUS] + ' · ' + zeilen.length + ' Fotos aus ' +
     new Set(zeilen.map((z) => z.ordner)).size + ' Fenstern · **' + gut + ' von ' + mitMass + '** Fotos mit echtem Maß auf ±2 % genau, **' + gut5 + '** auf ±5 % (alte Suche v2: ' + gut5v2 + ')\n\n' +
     'Maß aus den Geraden (Ecken): Breite ' + med(zeilen.map((z) => z.fbL)) + ', Höhe ' + med(zeilen.map((z) => z.fhL)) + '\n\n' +
     'Mittlere Abweichung (Median über Fotos mit Maß): v3 Breite ' + med(zeilen.map((z) => z.fb)) + ', Höhe ' + med(zeilen.map((z) => z.fh)) +

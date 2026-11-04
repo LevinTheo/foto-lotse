@@ -193,6 +193,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .knopf--rand { background: transparent; border-color: var(--ink); color: var(--ink); min-height: 48px; }
 .knopf--klein { min-height: 48px; font-size: 16px; }
 .knopf--manuell { width: 100%; min-height: 56px; }
+.flu-frage { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--line); background: var(--surface-raised); }
+.flu-frage__titel { margin: 0; font-size: 18px; font-weight: 600; }
+.flu-frage__klein { margin: 0; font-size: 14px; color: var(--ink-muted); }
+.flu-frage__wahl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.flu-wahl { display: grid; justify-items: center; align-content: start; gap: 6px; padding: 14px 8px; min-height: 120px; font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 1px solid var(--line-strong); border-radius: 0; cursor: pointer; }
+.flu-wahl:hover { background: var(--surface-sunken); }
+.flu-wahl:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.flu-wahl small { font-weight: 400; font-size: 13px; color: var(--ink-muted); }
 .knopf--entw { min-height: 44px; font-size: 14px; border-width: 1px; border-style: dashed; opacity: 0.8; }
 .entw { display: grid; gap: 14px; padding: 16px; border: 1px dashed var(--line); background: var(--surface-raised); }
 .entw__titel { margin: 0; font-size: 18px; }
@@ -488,7 +496,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.3 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.4 · Test</span>
   </header>
 
   <div class="kopf">
@@ -515,8 +523,18 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     <span id="start-text">Analyse starten</span>
   </button>
 
+  <!-- Frage vor dem Start (Prüfung 4. Nov. 2026, Punkt 2): ohne sie lief jede Analyse mit 1 Flügel -->
+  <div class="flu-frage" id="flu-frage" role="group" aria-labelledby="flu-titel" hidden>
+    <p class="flu-frage__titel" id="flu-titel">Wie viele Flügel hat dein Fenster?</p>
+    <p class="flu-frage__klein">Flügel heißt der Teil, der sich öffnen lässt.</p>
+    <div class="flu-frage__wahl">
+      <button class="flu-wahl" id="flu-wahl-1" type="button"><span id="flu-bild-1"></span>1 Flügel</button>
+      <button class="flu-wahl" id="flu-wahl-2" type="button"><span id="flu-bild-2"></span>2 Flügel<small>Maßblatt auf die linke Scheibe</small></button>
+    </div>
+  </div>
+
   <button class="knopf knopf--rand knopf--manuell" id="manuell" type="button" aria-expanded="false" aria-controls="form">Manuelles Aufmaß</button>
-  <button class="knopf knopf--rand knopf--manuell knopf--entw" id="entw" type="button" aria-expanded="false" aria-controls="entw-feld">Entwickler: Lernfotos</button>
+  <button class="knopf knopf--rand knopf--manuell knopf--entw" id="entw" type="button" aria-expanded="false" aria-controls="entw-feld" hidden>Entwickler: Lernfotos</button>
 
   <!-- Entwickler: Lernfotos sammeln. Fotos plus echtes Maß gehen in ein privates GitHub-Repo, aus dem Claude sie zum Testen holt. -->
   <section class="entw" id="entw-feld" hidden>
@@ -617,7 +635,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       <label class="feld" for="f-h"><span class="feld__name">Höhe Flügel</span><span class="feld__eingabe"><input id="f-h" type="number" inputmode="numeric" min="40" max="250" value="124"><span class="feld__einheit">cm</span></span></label>
       <label class="feld" for="f-olh" id="feld-olh" hidden><span class="feld__name">Höhe Oberlicht-Flügel</span><span class="feld__eingabe"><input id="f-olh" type="number" inputmode="numeric" min="20" max="110" value="32"><span class="feld__einheit">cm</span></span></label>
     </div>
-    <label class="schalter" for="f-werte"><input type="checkbox" id="f-werte" checked> Messwerte in der Kamera zeigen (zum Testen)</label>
+    <label class="schalter" for="f-werte" id="f-werte-feld" hidden><input type="checkbox" id="f-werte" checked> Messwerte in der Kamera zeigen (zum Testen)</label>
     <p class="form__fehler" id="fehler" role="alert" hidden></p>
     <div class="form__knoepfe">
       <button class="knopf knopf--rand knopf--klein" type="submit">Übernehmen</button>
@@ -726,7 +744,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         </div>
       </div>
       <div class="k-pruefen__griff" id="p-griff" hidden>
-        <p>Auf welcher Seite ist der Griff?</p>
         <div class="k-pruefen__knoepfe k-pruefen__knoepfe--gleich">
           <button class="kbtn kbtn--haupt" id="p-griff-l" type="button">Links</button>
           <button class="kbtn kbtn--haupt" id="p-griff-r" type="button">Rechts</button>
@@ -758,6 +775,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     ecklager: '<path d="M12 5v31h31"/><path d="M17 5v26h26"/><rect x="8" y="31" width="9" height="11"/>',
     schere: '<path d="M12 43V12h31"/><path d="M17 43V17h26"/><rect x="8" y="6" width="9" height="11"/>',
     kipp: '<path d="M10 43h28"/><path d="M14 43V11h20v32"/><path d="M14 43l6-28h20l-6 28" stroke-dasharray="3 2.5"/>',
+    flu1: '<rect x="9" y="5" width="30" height="38"/><rect x="13" y="9" width="22" height="30"/><path d="M31 21v7"/>',
+    flu2: '<rect x="4" y="5" width="40" height="38"/><rect x="8" y="9" width="15" height="30"/><rect x="25" y="9" width="15" height="30"/><path d="M28 21v7"/>',
     aussen: '<path d="M5 43V9h38v34"/><rect x="16" y="17" width="16" height="19"/><rect x="19" y="20" width="10" height="11"/><path d="M14 38h20"/>'
   };
   function pikto(k, g) {
@@ -773,6 +792,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   // mass: 'blatt' = Flügel mit dem Maßblatt messen (Standard), 'hand' = selbst eingeben. gemessen: Maß kommt vom Maßblatt.
   // band: auf welcher Seite die Bänder sitzen (1 Flügel). Der Griff ist gegenüber. griffY: Höhe des Griffs als Anteil der Flügelhöhe.
   // Beides erkennt der Lotse auf dem ersten Foto (griffQuelle: 'erkannt', 'gefragt' oder 'annahme').
+  // Entwickler-Ansicht (Messwerte im Prüfdialog, Knopf „Lernfotos“): nur mit ?test oder ?entw in der Adresse oder wenn auf
+  // diesem Handy der Lernfoto-Zugang eingerichtet ist. Der Kunde sieht davon nichts (Prüfung 4. Nov. 2026, Punkt 7).
+  var ENTWICKLER = /[?&](test|entw)\b/.test(location.search);
+  try { var entwGemerkt = JSON.parse(localStorage.getItem('foto-lotse-entw') || 'null'); if (entwGemerkt && entwGemerkt.token) ENTWICKLER = true; } catch (e) {}
   var P = { typ: 'holz', nU: 1, ol: false, fb: 81, fh: 124, ofh: 32, mass: 'blatt', gemessen: false, band: 'links', griffY: 0.5, griffQuelle: 'annahme' }, MERK = 'foto-lotse-fenster';
   try {
     var gemerkt = JSON.parse(localStorage.getItem(MERK) || 'null');
@@ -3028,7 +3051,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     },
     uebung: { naeher: 'Geh näher ran', zurueck: 'Geh etwas zurück', passt: 'Passt. Halt still …' }
   };
-  var zeigeWerte = true;
+  var zeigeWerte = ENTWICKLER;
   function prozent(x) { return Math.round(x * 100) + ' %'; }
   function messwerte(z, s) {
     var blatt = blattSchritt(s), el = $('k-mess'), an = false;   // Livebild ohne Messwerte (zu viel Text, Levin 4. Nov. 2026)
@@ -3454,7 +3477,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           txt = warn ? 'Das Maßblatt misst ca. ' + b + ' × ' + h + ' cm, eingetippt ist ' + bp + ' × ' + P.fh + ' cm. Bitte nochmal nachmessen.'
             : 'Maßblatt passt zu deinem Maß: ca. ' + b + ' × ' + h + ' cm';
         }
-      } else if (blattModus()) { warn = true; txt = 'Maß nicht erkannt. Nochmal versuchen oder unter „Ändern“ selbst eintragen.'; }
+      } else if (blattModus()) { warn = true; txt = 'Maß nicht erkannt. Nochmal versuchen. Klappt es nicht, Kamera schließen und „Manuelles Aufmaß“ nehmen.'; }
     }
     pm.textContent = txt;
     pm.hidden = !txt;
@@ -3488,10 +3511,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
     // Ohne Maß (Maßblatt-Modus) oder unscharf trotz Wiederholung: der Kunde entscheidet. Sonst geht es von selbst weiter.
     var warten = (s.id === 'innen' && blattModus() && (!messung || messung.massSicher === false)) || (weich && k.modus !== 'uebung');
-    $('p-titel').textContent = frageGriff ? (k.griffVorschlag ? 'Griff ' + k.griffVorschlag + '?' : 'Eine Frage noch') : warten ? 'Gut geworden?' : 'Gespeichert';
+    // Griff: eine Frage, einmal gestellt (Titel). Darunter nur der Vorschlag, falls es einen gibt (Prüfung 4. Nov. 2026, Punkt 7).
+    $('p-titel').textContent = frageGriff ? 'Wo ist der Griff?' : warten ? 'Gut geworden?' : 'Gespeichert';
     $('p-frage').textContent = weich ? 'Das Foto ist etwas unscharf. Nochmal, oder so nehmen?' :
-      frageGriff ? (k.griffVorschlag ? 'Ich glaube, der Griff ist ' + k.griffVorschlag + '. Tipp auf die richtige Seite.' : 'Den Griff konnte ich auf dem Foto nicht sicher erkennen.') :
+      frageGriff ? (k.griffVorschlag ? 'Ich glaube ' + k.griffVorschlag + ' (hervorgehoben).' : '') :
       warten ? 'Ist es scharf und ist alles drauf, was in den Linien war?' : 'Scharf und vollständig. Es geht gleich weiter.';
+    $('p-frage').hidden = !$('p-frage').textContent;
     var werte = [];
     if (zeigeWerte) {
       if (sch) werte.push('Schärfe: Kanten ' + (sch.breite < 0 ? 'nicht messbar' : komma(sch.breite, 1) + ' px') + ' (senkrecht ' + komma(sch.senk, 1) +
@@ -3702,7 +3727,25 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }, { passive: false });
 
   /* ---------- Knöpfe ---------- */
-  $('start').addEventListener('click', function () { lageSensor(); oeffnen(ersterOffen(), this); });
+  // Vor dem ersten Foto fragt der Lotse nach der Flügelanzahl, beim Fortsetzen nicht mehr
+  function fluFrage(an) {
+    $('flu-frage').hidden = !an;
+    if (an) $('start').hidden = true;   // sonst stellt liste() den Startknopf wieder her
+    if (an) $('flu-wahl-1').focus();
+  }
+  $('flu-bild-1').innerHTML = pikto('flu1', 56); $('flu-bild-2').innerHTML = pikto('flu2', 56);
+  function fluGewaehlt(n) {
+    P.nU = n; P.band = 'links'; P.griffY = 0.5; P.griffQuelle = 'annahme';
+    merken(); G = geometrie(P); skizze(); formFuellen(); liste();
+    fluFrage(false);
+    lageSensor(); oeffnen(ersterOffen(), $('start'));
+  }
+  $('flu-wahl-1').addEventListener('click', function () { fluGewaehlt(1); });
+  $('flu-wahl-2').addEventListener('click', function () { fluGewaehlt(2); });
+  $('start').addEventListener('click', function () {
+    if (!Object.keys(fotos).length) { fluFrage(true); return; }
+    lageSensor(); oeffnen(ersterOffen(), this);
+  });
   $('fotos').addEventListener('click', function (e) {
     var b = e.target.closest('.foto');
     if (b) { lageSensor(); oeffnen(parseInt(b.getAttribute('data-i'), 10), b); }
@@ -3712,7 +3755,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     P.band = 'links'; P.griffY = 0.5; P.griffQuelle = 'annahme';
     G = geometrie(P); skizze(); liste();
   }
-  $('neu').addEventListener('click', function () { vonVorn(); lageSensor(); oeffnen(0, $('start')); });
+  $('neu').addEventListener('click', function () { vonVorn(); fluFrage(true); });
   $('k-zu').addEventListener('click', schliessen);
   $('k-ausloeser').addEventListener('click', ausloesen);
   $('k-skip').addEventListener('click', ueberspringen);
@@ -3764,6 +3807,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function entwMerken() { try { localStorage.setItem(ENTW_MERK, JSON.stringify({ repo: ENTW.repo, token: ENTW.token, mit: ENTW.mit })); } catch (e) {} }
   $('entw-repo').value = ENTW.repo; $('entw-token').value = ENTW.token; $('entw-mit').checked = ENTW.mit;
   $('entw-zugang').open = !ENTW.token;
+  $('entw').hidden = !ENTWICKLER;
+  $('f-werte-feld').hidden = !ENTWICKLER;
   $('entw').addEventListener('click', function () {
     var auf = $('entw-feld').hidden;
     $('entw-feld').hidden = !auf;

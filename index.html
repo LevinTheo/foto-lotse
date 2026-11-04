@@ -193,6 +193,18 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .knopf--rand { background: transparent; border-color: var(--ink); color: var(--ink); min-height: 48px; }
 .knopf--klein { min-height: 48px; font-size: 16px; }
 .knopf--manuell { width: 100%; min-height: 56px; }
+.knopf--entw { min-height: 44px; font-size: 14px; border-width: 1px; border-style: dashed; opacity: 0.8; }
+.entw { display: grid; gap: 14px; padding: 16px; border: 1px dashed var(--line); background: var(--surface-raised); }
+.entw__titel { margin: 0; font-size: 18px; }
+.entw__hinweis, .entw__klein { margin: 0; font-size: 13px; line-height: 1.4; color: var(--muted, inherit); }
+.entw select, .entw input[type=text], .entw input[type=password] { width: 100%; font: inherit; background: transparent; border: 0; color: inherit; }
+.entw__zugang { display: grid; gap: 10px; }
+.entw__zugang[open] > *:not(summary) { margin-top: 10px; }
+.entw__zugang summary { cursor: pointer; font-weight: 600; }
+.entw__knoepfe { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.entw__knoepfe .knopf { padding: 0 8px; font-size: 14px; }
+.entw__liste { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.entw__liste .fehler { color: #c0392b; }
 .knopf svg { flex: none; }
 
 .fertig { display: grid; gap: 12px; padding: 16px; background: var(--success-soft); color: var(--ink); }
@@ -499,6 +511,41 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   </button>
 
   <button class="knopf knopf--rand knopf--manuell" id="manuell" type="button" aria-expanded="false" aria-controls="form">Manuelles Aufmaß</button>
+  <button class="knopf knopf--rand knopf--manuell knopf--entw" id="entw" type="button" aria-expanded="false" aria-controls="entw-feld">Entwickler: Lernfotos</button>
+
+  <!-- Entwickler: Lernfotos sammeln. Fotos plus echtes Maß gehen in ein privates GitHub-Repo, aus dem Claude sie zum Testen holt. -->
+  <section class="entw" id="entw-feld" hidden>
+    <h2 class="entw__titel">Lernfotos</h2>
+    <p class="entw__hinweis">Nur für Levin. Jedes Foto geht mit dem echten Maß und dem, was der Lotse darin erkennt, in ein privates GitHub-Repo. Keine Personen fotografieren, Mieter vorher fragen.</p>
+    <details class="entw__zugang" id="entw-zugang">
+      <summary>Zugang (einmal einrichten)</summary>
+      <label class="feld"><span class="feld__name">Repo</span><span class="feld__eingabe"><input id="entw-repo" type="text" autocomplete="off" spellcheck="false"></span></label>
+      <label class="feld"><span class="feld__name">GitHub-Token</span><span class="feld__eingabe"><input id="entw-token" type="password" autocomplete="off" spellcheck="false"></span></label>
+      <p class="entw__klein">Bleibt nur auf diesem Handy gespeichert.</p>
+      <button class="knopf knopf--rand knopf--klein" id="entw-speichern" type="button">Zugang speichern</button>
+    </details>
+    <fieldset>
+      <legend>Dieses Fenster</legend>
+      <label class="feld"><span class="feld__name">Name</span><span class="feld__eingabe"><input id="entw-name" type="text" placeholder="z. B. Balkontür Küche"></span></label>
+      <div class="felder">
+        <label class="feld"><span class="feld__name">Flügel breit</span><span class="feld__eingabe"><input id="entw-b" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+        <label class="feld"><span class="feld__name">Flügel hoch</span><span class="feld__eingabe"><input id="entw-h" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
+      </div>
+      <label class="feld"><span class="feld__name">Bauart</span><span class="feld__eingabe"><select id="entw-typ"><option value="">?</option><option value="kasten">Kastenfenster</option><option value="verbund">Verbundfenster</option><option value="holz">Holzfenster</option><option value="kunststoff">Kunststofffenster</option><option value="alu">Alu</option></select></span></label>
+      <label class="feld"><span class="feld__name">Griff (von innen)</span><span class="feld__eingabe"><select id="entw-griff"><option value="">?</option><option value="links">links</option><option value="rechts">rechts</option><option value="mitte">Mitte (2 Flügel)</option></select></span></label>
+      <label class="feld"><span class="feld__name">Notiz</span><span class="feld__eingabe"><input id="entw-notiz" type="text" placeholder="Licht, Abstand, Besonderes"></span></label>
+    </fieldset>
+    <label class="schalter" for="entw-mit"><input type="checkbox" id="entw-mit"> Beim normalen Durchlauf („Analyse starten“) alle Fotos mit hochladen</label>
+    <div class="entw__knoepfe">
+      <button class="knopf knopf--haupt knopf--klein" id="entw-kamera" type="button">Fotos machen</button>
+      <button class="knopf knopf--rand knopf--klein" id="entw-galerie" type="button">Aus Galerie</button>
+      <button class="knopf knopf--rand knopf--klein" id="entw-neu" type="button">Neues Fenster</button>
+    </div>
+    <p class="entw__klein" id="entw-ordner"></p>
+    <ol class="entw__liste" id="entw-liste"></ol>
+  </section>
+  <input type="file" id="entw-datei-kamera" accept="image/*" capture="environment" hidden>
+  <input type="file" id="entw-datei-galerie" accept="image/*" multiple hidden>
 
   <div class="stueck" hidden>
     <span class="stueck__skizze" id="skizze"></span>
@@ -2918,14 +2965,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.griffErg = null;
     if (s.id === 'innen' && P.nU === 1) {
       var gr = messung && messung.griff;
-      if (gr && gr.sicher) k.griffErg = { band: gr.seite === 'l' ? 'rechts' : 'links', y: gr.y, quelle: 'erkannt' };
-      else frageGriff = true;
+      // Vorerst wird auch ein sicheres Ergebnis kurz bestätigt: An einer echten Balkontür mit unruhigem Hintergrund
+      // lag die Kantensuche daneben und die Griffsuche meldete trotzdem „sicher“ (siehe REGIE.md, 4. Nov. 2026)
+      k.griffVorschlag = gr && gr.sicher ? (gr.seite === 'l' ? 'links' : 'rechts') : null;
+      k.griffY = gr && gr.sicher ? gr.y : 0.5;
+      frageGriff = true;
     }
     // Ohne Maß (Maßblatt-Modus) oder unscharf trotz Wiederholung: der Kunde entscheidet. Sonst geht es von selbst weiter.
     var warten = (s.id === 'innen' && blattModus() && !messung) || (weich && k.modus !== 'uebung');
-    $('p-titel').textContent = frageGriff ? 'Eine Frage noch' : warten ? 'Gut geworden?' : 'Gespeichert';
+    $('p-titel').textContent = frageGriff ? (k.griffVorschlag ? 'Griff ' + k.griffVorschlag + '?' : 'Eine Frage noch') : warten ? 'Gut geworden?' : 'Gespeichert';
     $('p-frage').textContent = weich ? 'Das Foto ist etwas unscharf. Nochmal, oder so nehmen?' :
-      frageGriff ? 'Den Griff konnte ich auf dem Foto nicht sicher erkennen.' :
+      frageGriff ? (k.griffVorschlag ? 'Ich glaube, der Griff ist ' + k.griffVorschlag + '. Tipp auf die richtige Seite.' : 'Den Griff konnte ich auf dem Foto nicht sicher erkennen.') :
       warten ? 'Ist es scharf und ist alles drauf, was in den Linien war?' : 'Scharf und vollständig. Es geht gleich weiter.';
     var werte = [];
     if (zeigeWerte) {
@@ -2940,6 +2990,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('p-werte').textContent = werte.join('\n');
     $('p-werte').hidden = !werte.length;
     $('p-griff').hidden = !frageGriff;
+    $('p-griff-l').className = 'kbtn ' + (k.griffVorschlag === 'rechts' ? 'kbtn--zweit' : 'kbtn--haupt');
+    $('p-griff-r').className = 'kbtn ' + (k.griffVorschlag === 'links' ? 'kbtn--zweit' : 'kbtn--haupt');
     $('p-weiter').hidden = frageGriff;
     $('p-knoepfe').classList.toggle('k-pruefen__knoepfe--gleich', frageGriff);
     $('p-weiter').textContent = weich ? 'So nehmen' : naechster(k.i) < 0 ? 'Passt, fertig' : 'Passt, weiter';
@@ -2957,7 +3009,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     (frageGriff ? $('p-griff-r') : $('p-weiter')).focus();
   }
   function griffGewaehlt(seite) {
-    k.griffErg = { band: seite === 'links' ? 'rechts' : 'links', y: 0.5, quelle: 'gefragt' };
+    var passt = k.griffVorschlag === seite;
+    k.griffErg = { band: seite === 'links' ? 'rechts' : 'links', y: passt ? k.griffY : 0.5, quelle: passt ? 'erkannt' : 'gefragt' };
     weiter();
   }
   // Nächstes offenes Foto nach i, sonst ein offenes davor
@@ -2987,6 +3040,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     fotos[s.id] = { url: k.url, art: k.modus, karte: karte, unscharf: unscharf(k.schaerfe),
       schaerfe: k.schaerfe ? Math.round(k.schaerfe.breite * 10) / 10 : null,
       mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand), ecken: m.ecken } : null };
+    entwDurchlauf(k.url, s.id, m || (s.id === 'innen' ? k.messung : null));
     k.pruefen = false;
     $('k-pruefen').hidden = true;
     var n = naechster(k.i);
@@ -3180,6 +3234,148 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     massHinweis();
   }
   formFuellen();
+
+  /* ---------- Entwickler: Lernfotos ----------
+     Fotos (Original aus der Kamera-App oder Galerie) plus echtes Maß plus das, was der Lotse darin erkennt,
+     gehen über die GitHub-API in ein privates Repo. Pro Fenster ein Ordner: fenster/<Zeit>_<Name>/foto-01.jpg + foto-01.json.
+     Token und Repo bleiben nur in localStorage auf diesem Handy. Aus dem Repo holt Claude die Fotos zum Testen. */
+  var ENTW_MERK = 'foto-lotse-entw';
+  var ENTW = { repo: 'LevinTheo/foto-lotse-daten', token: '', mit: false, ordner: null, nr: 0 };
+  try { var em = JSON.parse(localStorage.getItem(ENTW_MERK) || 'null'); if (em) { ENTW.repo = em.repo || ENTW.repo; ENTW.token = em.token || ''; ENTW.mit = !!em.mit; } } catch (e) {}
+  function entwMerken() { try { localStorage.setItem(ENTW_MERK, JSON.stringify({ repo: ENTW.repo, token: ENTW.token, mit: ENTW.mit })); } catch (e) {} }
+  $('entw-repo').value = ENTW.repo; $('entw-token').value = ENTW.token; $('entw-mit').checked = ENTW.mit;
+  $('entw-zugang').open = !ENTW.token;
+  $('entw').addEventListener('click', function () {
+    var auf = $('entw-feld').hidden;
+    $('entw-feld').hidden = !auf;
+    this.setAttribute('aria-expanded', auf ? 'true' : 'false');
+  });
+  $('entw-speichern').addEventListener('click', function () {
+    ENTW.repo = $('entw-repo').value.trim(); ENTW.token = $('entw-token').value.trim(); entwMerken();
+    entwZeile('Zugang gespeichert. Prüfe …').then(function (li) {
+      fetch('https://api.github.com/repos/' + ENTW.repo, { headers: entwKopf() }).then(function (r) {
+        li.textContent = r.ok ? 'Zugang passt, Repo gefunden.' : 'Zugang klappt nicht (' + r.status + '). Repo-Name und Token prüfen.';
+        li.classList.toggle('fehler', !r.ok);
+        if (r.ok) $('entw-zugang').open = false;
+      }, function () { li.textContent = 'Keine Verbindung zu GitHub.'; li.classList.add('fehler'); });
+    });
+  });
+  $('entw-mit').addEventListener('change', function () { ENTW.mit = this.checked; entwMerken(); });
+  $('entw-neu').addEventListener('click', function () { ENTW.ordner = null; ENTW.nr = 0; $('entw-liste').innerHTML = ''; $('entw-ordner').textContent = 'Neues Fenster: Name und Maß oben eintragen, dann fotografieren.'; $('entw-name').focus(); });
+  $('entw-kamera').addEventListener('click', function () { $('entw-datei-kamera').value = ''; $('entw-datei-kamera').click(); });
+  $('entw-galerie').addEventListener('click', function () { $('entw-datei-galerie').value = ''; $('entw-datei-galerie').click(); });
+  ['entw-datei-kamera', 'entw-datei-galerie'].forEach(function (id) {
+    $(id).addEventListener('change', function () {
+      var dateien = Array.prototype.slice.call(this.files || []);
+      var kette = Promise.resolve();
+      dateien.forEach(function (d) { kette = kette.then(function () { return entwDatei(d, id === 'entw-datei-kamera' ? 'kamera-app' : 'galerie'); }); });
+    });
+  });
+  function entwKopf() { return { 'Authorization': 'Bearer ' + ENTW.token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }; }
+  function entwZeile(text) {
+    var li = document.createElement('li'); li.textContent = text;
+    $('entw-liste').insertBefore(li, $('entw-liste').firstChild);
+    return Promise.resolve(li);
+  }
+  function slug(s) { return (s || 'fenster').toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'fenster'; }
+  function zwei(n) { return (n < 10 ? '0' : '') + n; }
+  function entwOrdner() {
+    if (!ENTW.ordner) {
+      var d = new Date();
+      ENTW.ordner = 'fenster/' + d.getFullYear() + '-' + zwei(d.getMonth() + 1) + '-' + zwei(d.getDate()) + '_' + zwei(d.getHours()) + zwei(d.getMinutes()) + '_' + slug($('entw-name').value);
+      ENTW.nr = 0;
+      $('entw-ordner').textContent = 'Ordner: ' + ENTW.ordner;
+    }
+    return ENTW.ordner;
+  }
+  function entwFenster() {
+    return { name: $('entw-name').value.trim(), fluegelBreiteMm: +$('entw-b').value || null, fluegelHoeheMm: +$('entw-h').value || null,
+      bauart: $('entw-typ').value || null, griff: $('entw-griff').value || null, notiz: $('entw-notiz').value.trim() };
+  }
+  function b64VonBlob(blob) {
+    return new Promise(function (ja, nein) {
+      var r = new FileReader();
+      r.onload = function () { ja(String(r.result).split(',')[1]); };
+      r.onerror = nein;
+      r.readAsDataURL(blob);
+    });
+  }
+  function ghPut(pfad, b64, nachricht) {
+    return fetch('https://api.github.com/repos/' + ENTW.repo + '/contents/' + pfad.split('/').map(encodeURIComponent).join('/'), {
+      method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, entwKopf()),
+      body: JSON.stringify({ message: nachricht, content: b64 })
+    }).then(function (r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t.slice(0, 120)); }); return r; });
+  }
+  function textB64(s) { return btoa(unescape(encodeURIComponent(s))); }
+  // Was der Lotse im Foto erkennt (Maßblatt, Fenstermaß, Griff, Schärfe), als einfache Werte
+  function lotseSieht(img) {
+    var q = Math.min(1, 2576 / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
+    var cv = document.createElement('canvas');
+    cv.width = Math.round((img.naturalWidth || img.width) * q); cv.height = Math.round((img.naturalHeight || img.height) * q);
+    var c = cv.getContext('2d', { willReadFrequently: true });
+    c.drawImage(img, 0, 0, cv.width, cv.height);
+    var sch = schaerfeVon(cv), g = grauVon(c, cv.width, cv.height), opt = massOpt(false);
+    opt.griff = true;
+    return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt).then(function (r) {
+      var e = (r && r.erg) || {};
+      return { bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
+        ok: !!e.ok, grund: e.grund || '', fluegelMm: e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null, holzMm: e.roh && e.roh.holz ? e.roh.holz.map(Math.round) : null,
+        stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0] / q), Math.round(p[1] / q)]; }) : null,
+        griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ };
+    });
+  }
+  function entwBereit() {
+    if (ENTW.token && ENTW.repo) return true;
+    entwZeile('Erst den Zugang einrichten (oben).').then(function (li) { li.classList.add('fehler'); });
+    $('entw-zugang').open = true;
+    return false;
+  }
+  function entwDatei(datei, quelle) {
+    if (!entwBereit()) return Promise.resolve();
+    var ordner = entwOrdner(), nr = ++ENTW.nr, name = 'foto-' + zwei(nr), endung = /png$/i.test(datei.type) ? 'png' : 'jpg';
+    var li;
+    return entwZeile(name + ': wird ausgewertet …').then(function (l) {
+      li = l;
+      return new Promise(function (ja) {
+        var img = new Image();
+        img.onload = function () { ja(img); };
+        img.onerror = function () { ja(null); };
+        img.src = URL.createObjectURL(datei);
+      });
+    }).then(function (img) {
+      return (img ? lotseSieht(img) : Promise.resolve(null)).catch(function () { return null; });
+    }).then(function (sieht) {
+      li.textContent = name + ': lädt hoch …' + (sieht ? ' (Lotse: ' + sieht.marker + ' Marker' + (sieht.fluegelMm ? ', ' + sieht.fluegelMm.join(' × ') + ' mm' : '') + ')' : '');
+      var meta = { zeit: new Date().toISOString(), quelle: quelle, datei: { name: datei.name, typ: datei.type, bytes: datei.size },
+        fenster: entwFenster(), lotse: sieht, geraet: { ua: navigator.userAgent, bildschirm: screen.width + 'x' + screen.height + '@' + (window.devicePixelRatio || 1) },
+        version: 'foto-lotse ' + (document.lastModified || '') };
+      return b64VonBlob(datei).then(function (b64) {
+        return ghPut(ordner + '/' + name + '.' + endung, b64, 'Lernfoto ' + ordner + '/' + name);
+      }).then(function () {
+        return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Lernfoto-Daten ' + ordner + '/' + name);
+      }).then(function () {
+        li.textContent = name + ': hochgeladen ✓' + (sieht ? ' · Lotse: ' + sieht.marker + ' Marker' + (sieht.fluegelMm ? ', ' + sieht.fluegelMm.join(' × ') + ' mm' : ', kein Maß') : '');
+      });
+    }).catch(function (x) {
+      if (li) { li.textContent = name + ': Fehler beim Hochladen (' + (x && x.message ? x.message : x) + ')'; li.classList.add('fehler'); }
+    });
+  }
+  // Beim normalen Durchlauf: jedes übernommene Foto samt Messung mit hochladen (wenn eingeschaltet)
+  function entwDurchlauf(url, schrittId, messung) {
+    if (!ENTW.mit || !ENTW.token || !url) return;
+    var ordner = entwOrdner(), name = 'lauf-' + zwei(++ENTW.nr) + '-' + schrittId;
+    var meta = { zeit: new Date().toISOString(), quelle: 'durchlauf', schritt: schrittId, modus: k.modus, fenster: entwFenster(),
+      einstellung: { typ: P.typ, nU: P.nU, ol: P.ol, band: P.band, griffY: P.griffY, griffQuelle: P.griffQuelle },
+      schaerfe: k.schaerfe, messung: messung ? { breite: Math.round(messung.breite), hoehe: Math.round(messung.hoehe), abstand: Math.round(messung.abstand || 0),
+        ecken: messung.ecken, griff: messung.griff || null, stimmig: messung.sicher === undefined ? null : !!messung.sicher } : null,
+      geraet: { ua: navigator.userAgent } };
+    entwZeile(name + ': lädt hoch …').then(function (li) {
+      ghPut(ordner + '/' + name + '.jpg', url.split(',')[1], 'Durchlauf ' + ordner + '/' + name)
+        .then(function () { return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Durchlauf-Daten ' + ordner + '/' + name); })
+        .then(function () { li.textContent = name + ': hochgeladen ✓'; }, function (x) { li.textContent = name + ': Fehler (' + (x && x.message ? x.message : x) + ')'; li.classList.add('fehler'); });
+    });
+  }
+
   // Nur für Tests: mit ?test in der Adresse ist der Zustand von außen lesbar
   if (/[?&]test\b/.test(location.search)) window.__lotse = { k: k, MASS: MASS, P: function () { return P; }, G: function () { return G; }, fotos: function () { return fotos; },
     rechnen: massRechnen, fotoMessen: fotoMessen, schaerfeVon: schaerfeVon, setzeBand: function (b) { P.band = b; G = geometrie(P); skizze(); } };

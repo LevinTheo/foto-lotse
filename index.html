@@ -2099,6 +2099,97 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       breite: (Math.hypot(e[1][0] - e[0][0], e[1][1] - e[0][1]) + Math.hypot(e[2][0] - e[3][0], e[2][1] - e[3][1])) / 2,
       hoehe: (Math.hypot(e[3][0] - e[0][0], e[3][1] - e[0][1]) + Math.hypot(e[2][0] - e[1][0], e[2][1] - e[1][1])) / 2 };
   }
+  /* ---------- Ecken gegenseitig abgleichen (Levins Idee, 4. Nov. 2026) ----------
+     Alle vier Ecken eines Flügels sind gleich gebaut, nur gespiegelt (Glasleiste, Flügelholz, Fuge, Rahmen).
+     Jede Ecke wird als Bild-Schablone (140 × 140 mm um die Flügelecke, aus dem Kantenbild) herausgeschnitten,
+     passend gespiegelt und an den drei anderen Ecken angelegt: Wo passt sie am besten? Das sind 4 × 3 Abgleiche
+     (plus jede Ecke mit sich selbst). Je Ecke entscheidet die Mehrheit der Vorschläge. Eine Markise, ein Rollokasten
+     oder eine Fensterbank sehen nicht aus wie eine gespiegelte Fensterecke und fallen raus. */
+  function v3Kantenbild(E) {
+    var n = V3.W * V3.H, K = new Float32Array(n);
+    for (var i = 0; i < n; i++) K[i] = E.M[i] ? Math.min(1, (E.gx[i] + E.gy[i]) / 120) : 0;
+    return K;
+  }
+  function v3Eckabgleich(E, F) {
+    // In Runden nachsteuern: erst weit suchen, dann an den neuen Ecken neue Schablonen schneiden und enger suchen,
+    // bis sich keine Ecke mehr bewegt (Levin: „Ecken auf sich selbst legen und schauen, wo die Toleranzen entstehen“)
+    var K = v3Kantenbild(E), runden = [[60, 160, 2], [30, 30, 1], [10, 10, 1], [6, 6, 1], [6, 6, 1]], erg = null, verlauf = [];
+    for (var ru = 0; ru < runden.length; ru++) {
+      var neu = v3EckRunde(E, K, F, runden[ru][0], runden[ru][1], runden[ru][2]);
+      var Fn = [(neu.ecken[0][0] + neu.ecken[3][0]) / 2, (neu.ecken[0][1] + neu.ecken[1][1]) / 2, (neu.ecken[1][0] + neu.ecken[2][0]) / 2, (neu.ecken[2][1] + neu.ecken[3][1]) / 2];
+      var ok2 = function (a, b) { return neu.einig[a] >= 2 && neu.einig[b] >= 2; };
+      var Fx = [ok2(0, 3) ? Fn[0] : F[0], ok2(0, 1) ? Fn[1] : F[1], ok2(1, 2) ? Fn[2] : F[2], ok2(2, 3) ? Fn[3] : F[3]];
+      var bewegt = Math.max(Math.abs(Fx[0] - F[0]), Math.abs(Fx[1] - F[1]), Math.abs(Fx[2] - F[2]), Math.abs(Fx[3] - F[3]));
+      verlauf.push({ runde: ru + 1, bewegtMm: Math.round(bewegt * 10) / 10, einig: neu.einig, guete: neu.guete });
+      F = Fx; erg = neu;
+      if (ru >= 2 && bewegt < 1) break;
+    }
+    erg.F = F; erg.verlauf = verlauf;
+    return erg;
+  }
+  function v3EckRunde(E, K, F, suchX, suchY, schritt) {
+    var S = E.S, W = V3.W, Hh = V3.H, r = Math.round(70 / S);
+    // Ecken in Pixeln: OL, OR, UR, UL
+    var ecken = [[F[0], F[1]], [F[2], F[1]], [F[2], F[3]], [F[0], F[3]]].map(function (p) { return [Math.round((p[0] - V3.X0) / S), Math.round((p[1] - V3.Y0) / S)]; });
+    var rechts = [false, true, true, false], unten = [false, false, true, true];
+    function patch(e, spX, spY) {   // Schablone um Ecke e, gespiegelt nach spX/spY
+      var T = new Float32Array((2 * r + 1) * (2 * r + 1)), k = 0, su = 0, sq = 0;
+      for (var dy = -r; dy <= r; dy++) for (var dx = -r; dx <= r; dx++) {
+        var x = e[0] + (spX ? -dx : dx), y = e[1] + (spY ? -dy : dy);
+        var v = x >= 0 && y >= 0 && x < W && y < Hh ? K[y * W + x] : 0;
+        T[k++] = v; su += v; sq += v * v;
+      }
+      var n = T.length, mu = su / n, sd = Math.sqrt(Math.max(1e-9, sq / n - mu * mu));
+      return { T: T, mu: mu, sd: sd };
+    }
+    function ncc(tpl, cx, cy) {   // Ähnlichkeit (−1 bis 1) der Schablone mit dem Bild um (cx, cy), jedes 2. Pixel
+      var su = 0, sq = 0, st = 0, n = 0;
+      for (var dy = -r; dy <= r; dy += 2) for (var dx = -r; dx <= r; dx += 2) {
+        var x = cx + dx, y = cy + dy, v = x >= 0 && y >= 0 && x < W && y < Hh ? K[y * W + x] : 0, t = tpl.T[(dy + r) * (2 * r + 1) + dx + r];
+        su += v; sq += v * v; st += v * t; n++;
+      }
+      var mu = su / n, sd = Math.sqrt(Math.max(1e-9, sq / n - mu * mu));
+      // Mittel der Schablone auf demselben Gitter
+      var tm = 0, tq = 0;
+      for (dy = -r; dy <= r; dy += 2) for (dx = -r; dx <= r; dx += 2) { var tv = tpl.T[(dy + r) * (2 * r + 1) + dx + r]; tm += tv; tq += tv * tv; }
+      tm /= n; var ts = Math.sqrt(Math.max(1e-9, tq / n - tm * tm));
+      return (st / n - mu * tm) / (sd * ts);
+    }
+    var sx = Math.round(suchX / S), sy = Math.round(suchY / S), vorschlaege = [[], [], [], []];
+    for (var q = 0; q < 4; q++) {
+      for (var t = 0; t < 4; t++) {
+        var tpl = patch(ecken[q], rechts[q] !== rechts[t], unten[q] !== unten[t]), best = -2, bx = 0, by = 0;
+        if (q === t) { vorschlaege[t].push({ x: ecken[t][0], y: ecken[t][1], ncc: 1, quelle: q }); continue; }
+        for (var oy = -sy; oy <= sy; oy += schritt) for (var ox = -sx; ox <= sx; ox += schritt) {
+          var v = ncc(tpl, ecken[t][0] + ox, ecken[t][1] + oy);
+          if (v > best) { best = v; bx = ox; by = oy; }
+        }
+        // fein nachsuchen
+        var fx = bx, fy = by;
+        for (oy = by - 2; oy <= by + 2; oy++) for (ox = bx - 2; ox <= bx + 2; ox++) {
+          var v2 = ncc(tpl, ecken[t][0] + ox, ecken[t][1] + oy);
+          if (v2 > best) { best = v2; fx = ox; fy = oy; }
+        }
+        vorschlaege[t].push({ x: ecken[t][0] + fx, y: ecken[t][1] + fy, ncc: best, quelle: q });
+      }
+    }
+    // Je Ecke: Gruppe der Vorschläge, die beieinander liegen (±6 mm), mit der größten Summe an Ähnlichkeit gewinnt
+    var neu = [], einig = [], guete = [], tol = 6 / S;
+    for (t = 0; t < 4; t++) {
+      var vs = vorschlaege[t].filter(function (p) { return p.ncc > 0.3; }), bestG = null;
+      vs.forEach(function (a) {
+        var g = vs.filter(function (b) { return Math.abs(a.x - b.x) <= tol && Math.abs(a.y - b.y) <= tol; });
+        var w = g.reduce(function (z, b) { return z + b.ncc; }, 0);
+        if (!bestG || w > bestG.w) bestG = { g: g, w: w };
+      });
+      if (!bestG) { neu.push(ecken[t]); einig.push(0); guete.push(0); continue; }
+      var gw = bestG.w, mx = 0, my = 0;
+      bestG.g.forEach(function (b) { mx += b.x * b.ncc / gw; my += b.y * b.ncc / gw; });
+      neu.push([mx, my]); einig.push(bestG.g.length); guete.push(Math.round(gw / bestG.g.length * 100) / 100);
+    }
+    var mm = neu.map(function (p) { return [V3.X0 + p[0] * S, V3.Y0 + p[1] * S]; });
+    return { ecken: mm, einig: einig, guete: guete, vorschlaege: vorschlaege.map(function (v) { return v.map(function (p) { return [Math.round(V3.X0 + p.x * S), Math.round(V3.Y0 + p.y * S), Math.round(p.ncc * 100) / 100]; }); }) };
+  }
   function v3Mehrheit(laeufe) {
     if (!laeufe.length) return null;
     if (laeufe.length === 1) return laeufe[0];
@@ -2133,6 +2224,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung } };
     if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
     var F = z.fluegel, Gl = z.glas, D = lage.z, k2 = (D - (opt.tiefe || 0)) / D;
+    // Ecken-Abgleich: gebaut, aber vorerst aus (Schablonen enthalten noch den Hintergrund hinter dem Glas, Ecken sind
+    // nicht ganz gleich gebaut, Stulp bei 2 Flügeln). Zum Testen mit opt.eckabgleich = true einschalten.
+    if (opt.eckabgleich === true && E2) {
+      try {
+        var vorher = F.slice(), ea = v3Eckabgleich(E2, F);
+        F = ea.F;
+        erg.eckabgleich = { vorher: vorher.map(Math.round), nachher: F.map(Math.round), einig: ea.einig, guete: ea.guete, verlauf: ea.verlauf,
+          eckenMm: ea.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }), vorschlaege: ea.vorschlaege };
+      } catch (x) { erg.eckabgleich = null; }
+    }
     erg.roh = { ok: true, fluegel: F, glas: Gl, holz: [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]] };
     erg.fugen = z.fugen; erg.einig = z.einig;
     // Sicher nur, wenn sich an jeder Seite mindestens zwei der drei Durchgänge einig sind

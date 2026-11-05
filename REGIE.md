@@ -1,6 +1,6 @@
 # Foto-Lotse – Regiebericht
 
-Stand: 4. Nov. 2026 abends · Levin (Holtcraft) · **Version v3.8** (Levins Ecken-Idee in der Maß-Form: sicherste Seite als Vorlage für die Holzbreite)
+Stand: 4. Nov. 2026 abends · Levin (Holtcraft) · **Version v3.9** (grüner Rahmen im Livebild wieder da, jetzt aus v3)
 
 ## Versionen
 
@@ -8,7 +8,8 @@ Jeder Stand liegt auf GitHub. Zurückholen: Claude sagen „bau zurück auf vX�
 
 | Version | Wo | Was |
 | --- | --- | --- |
-| v3.8 | Branch `main` (aktuell), gesichert als `stand-v3.8` | wie v3.7, dazu Fuge an den unsicheren Seiten nur dort, wo die Holzbreite zur sichersten Seite passt |
+| v3.9 | Branch `main` (aktuell), gesichert als `stand-v3.9` | wie v3.8, dazu grüner Fensterrahmen im Livebild aus v3 (ein Raster), „Fenster gefunden. Halt still …“ |
+| v3.8 | Branch `stand-v3.8` | wie v3.7, dazu Fuge an den unsicheren Seiten nur dort, wo die Holzbreite zur sichersten Seite passt |
 | v3.7 | Branch `stand-v3.7` | wie v3.6, misst identisch; Grenzwerte mit Namen in `V3`, entfernt: Ecken-Abgleich, Holzbreiten-Abgleich, Spiegelprobe, alte Suche v2, Messwerte-Box im Livebild |
 | v3.6 | Branch `stand-v3.6` (enthält noch v2, Ecken-Abgleich und Spiegelprobe) | wie v3.5, Livebild ohne v2-Fensterumriss, Auslösen nur am Maßblatt |
 | v3.5 | Branch `stand-v3.5` | wie v3.4, dazu Glaskante oben/unten am Ende der seitlichen Glaskanten (Höhe) |
@@ -75,7 +76,7 @@ Die Flügel-Frage (v3.4) setzt `P.nU`: bei 2 Flügeln heißt der Tipp „auf die
 
 | Nr. | Foto | Was der Kunde sieht und tut | Auslösen |
 | --- | --- | --- | --- |
-| 1 | Ganzes Fenster von innen | Maßblatt mittig auf die Scheibe (bei 2 Flügeln die linke), ca. 3 m mittig davor. Hinweise wie „Geh 1 m zurück“, Ecken wie beim Ausweis-Scan und das Maßblatt umrandet, grün sobald alles passt (kein Fensterumriss, v3.6) | selbst |
+| 1 | Ganzes Fenster von innen | Maßblatt mittig auf die Scheibe (bei 2 Flügeln die linke), ca. 3 m mittig davor. Hinweise wie „Geh 1 m zurück“, Ecken wie beim Ausweis-Scan und das Maßblatt umrandet. Passt das Blatt, „Halt still, ich suche das Fenster …“, dann grüner Rahmen um den Flügel und „Fenster gefunden. Halt still …“ (v3.9) | selbst |
 | 2 | Griff | Text nennt die Seite („Der Griff ist rechts am Flügel“), kleine Karte zeigt die Stelle | Kunde |
 | 3 | Scherenlager oben | Obere Ecke an der Bandseite, Abdeckung in den Kasten | Kunde |
 | 4 | Ecklager unten | Untere Ecke an der Bandseite, Abdeckung in den Kasten | Kunde |
@@ -96,7 +97,7 @@ Alles rechnet auf dem Handy, nichts wird verschickt. Die schwere Rechnung läuft
 | Ecken abgleichen (Levins Idee, seit v3.7 entfernt) | Wählte oben/unten die Glaskante, deren Holz zur Seite passt | Wackeltest schlechter (Fuge oben/unten zu unsicher), war aus. Die Idee lebt in v3.5 weiter (Ecken am Ende der Seitenkanten). Code samt Bild-Schablonen-Versuch im Branch `stand-v3.6` | – |
 | Fenstermaß v3 (fertiges Foto) | Findet Glas und Flügel von der Holzseite her | 1. Foto mit dem Maßblatt auf die Glasebene entzerren (2 mm/px, Bereich 3,2 × 3,3 m ums Blatt). 2. Glaskante = Linie, die über die ganze Länge durchläuft und hinter der ein ruhiger Streifen beginnt (Holz). 3. Rahmenfarbe aus den Seiten, oben/unten nur gleiche Farbe (gegen Markise, Decke). 4. Schattenfuge 30–150 mm hinter der Glaskante, sonst Flügelholz je Bauart. Kante außerhalb des Fotos: kein Maß statt raten. Das Livebild misst nur das Blatt (v3.6) | `messenV3`, `v3Entzerren`, `v3Finden`, `v3Glaskante`, `v3Fuge`, `v3Bandfarbe` |
 | Maßblatt | Erkennt das Blatt | A4 hochkant, 4 ArUco-Marker 4×4 (Nr. 0–3, je 80 mm, 12 mm vom Rand). Aus den Markern: Maßstab, Abstand, Schräge, Stelle vor der Kamera (`fuss`). Bis `V3.aehnlichBis` (10°) Schräge reine Ähnlichkeit, sonst volle Perspektive. Das Livebild ruft `messen` mit `nurBlatt` auf, das fertige Foto geht an v3. Die alte Fenstersuche v2 (vom Blatt aus über die Scheibe) ist seit v3.7 entfernt, sie liegt im Branch `stand-v3.6` | `findeMarker`, `blattLage`, `messen` |
-| Führung im Livebild (v3.6) | „Geh 1 m zurück“, „Geh etwas nach rechts, mittig vors Fenster“, „Halt still“ | Etwa 3 Messungen pro Sekunde auf 1280 px, nur das Maßblatt (20–90 ms am Rechner). Löst selbst aus, wenn mind. 3 Marker zu sehen sind, der Abstand 2,5–3,5 m ist, die Kamera höchstens `versatz` (450 mm) seitlich neben dem Blatt steht (bei 2 Flügeln neben einer Stelle `versatzZwei` = 350 mm rechts davon) und Abstand und Stelle zwischen zwei Messungen ruhig sind (`stabil`, `stabilMm`). Bei 2,5–3,5 m passt ein Fenster bis ca. 2,7 m Breite ins Bild. Kein Fensterumriss mehr: die schnelle Suche v2 lag dafür meist daneben (Prüfung 6) | `massLive`, `deutenBlatt` |
+| Führung im Livebild (v3.6, Rahmen v3.9) | „Geh 1 m zurück“, „Geh etwas nach rechts, mittig vors Fenster“, „Halt still“ | Etwa 3 Messungen pro Sekunde auf 1280 px, nur das Maßblatt (20–90 ms am Rechner). Löst selbst aus, wenn mind. 3 Marker zu sehen sind, der Abstand 2,5–3,5 m ist, die Kamera höchstens `versatz` (450 mm) seitlich neben dem Blatt steht (bei 2 Flügeln neben einer Stelle `versatzZwei` = 350 mm rechts davon) und Abstand und Stelle zwischen zwei Messungen ruhig sind (`stabil`, `stabilMm`). Bei 2,5–3,5 m passt ein Fenster bis ca. 2,7 m Breite ins Bild. Seit v3.9: sobald das Blatt passt, misst jede Livemessung auch das Fenster mit v3 in einem Raster (`TOL.liveRaster` = 3 mm/px, am Rechner ca. 0,2 s bei 1280 px, nur mit Hintergrund-Thread). Zweimal hintereinander dasselbe Maß (`TOL.stabil`) = gefunden: grüner Rahmen, „Fenster gefunden. Halt still …“, Auslösen nach `TOL.halten`. Findet er in `TOL.rahmenWarten` (4 s) keins, löst er ohne Rahmen aus. Der alte Umriss aus v2 lag meist daneben (Prüfung 6) und ist weg | `massLive`, `deutenBlatt` |
 | Schärfe | Erkennt verwackelte oder falsch scharfgestellte Fotos | Bild auf 1600 px lange Seite, an den stärksten 1,5 % der Kanten Breite des Übergangs 10–90 % messen, senkrecht und waagerecht getrennt, der schlechtere Wert zählt | `schaerfe`, `kantenBreite`, `schaerfeVon` |
 | Griffsuche | Schlägt die Griffseite vor, Bänder gegenüber. Vorerst bestätigt der Kunde immer mit einem Tipp (Vorschlag hervorgehoben) | Flügelholz links und rechts in 9 Spalten abtasten, Abweichung vom Rest desselben Holzes plus Kanten, 12-cm-Fenster zwischen 22 % und 82 % der Höhe. Farbunabhängig. Sicher ab Verhältnis 1,35 und Wert 1,5 und nur bei stimmiger Messung, sonst eine Frage | `griffSuchen` |
 | Spiegelung | Legt Griff-, Scheren-, Ecklager-Foto auf die richtige Seite | `P.band` = Seite der Bänder; daraus Griff, Schere, Ecklager, Hilfslinien, Texte, Skizze | `geometrie`, `mx`, `mr`, `Lm`, `texteSetzen` |
@@ -118,7 +119,9 @@ Alle Grenzwerte stehen im Objekt `TOL` in `index.html`.
 | `abstand`, `abstandMin`, `abstandMax` | 3 m, 2,5 m, 3,5 m | Abstand beim ersten Foto |
 | `versatz` | 450 mm | So weit darf die Kamera seitlich neben dem Maßblatt stehen |
 | `versatzZwei` | 350 mm | Bei 2 Flügeln: so weit rechts vom Blatt liegt ungefähr die Fenstermitte |
-| `stabil`, `stabilMm` | 2,5 %, 40 mm | So weit dürfen Abstand und Stelle vor dem Blatt zwischen zwei Livemessungen springen |
+| `stabil`, `stabilMm` | 2,5 %, 40 mm | So weit dürfen Abstand und Stelle vor dem Blatt zwischen zwei Livemessungen springen (`stabil` auch: Fenstermaß für den grünen Rahmen) |
+| `liveRaster` | [3] | Raster (mm je Pixel) für v3 im Livebild |
+| `rahmenWarten` | 4000 ms | So lange sucht er im Livebild das Fenster, dann löst er ohne Rahmen aus |
 | `halten` | 800 ms | So lange muss alles passen, bis ausgelöst wird |
 | `neigungSeite`, `neigungKipp` | 10°, 20° | Ab da „Handy gerade halten“ bzw. „senkrecht halten“ |
 | `gegenprobe` | 8 % | Abweichung zum eingetippten Maß für „Bitte nachmessen“ |
@@ -152,6 +155,7 @@ Holzbreiten je Fenstertyp stehen in `TYPEN` (Prüfstand und Wackeltest lesen sie
 | 4. Nov. 2026 | v3.6: Livebild nur am Blatt (v3 unverändert) | 5 von 29 | 6,9 % | 4,1 % | 42 von 141 (±5 %: 84) |
 | 4. Nov. 2026 | v3.7: aufgeräumt | 5 von 29 | 6,9 % | 4,1 % | 42 von 141 (±5 %: 84), identisch |
 | 5. Nov. 2026 | v3.8: Holzbreite nach Vorlage (`V3.vorlage`) | 5 von 29 | **4,9 %** | **3,7 %** | **45 von 141** (±5 %: 84) |
+| 5. Nov. 2026 | v3.9: grüner Rahmen im Livebild (Messung des Fotos unverändert) | 5 von 29 | 4,9 % | 3,7 % | 45 von 141 (±5 %: 84), identisch |
 
 v3.3: Weniger „stabil“, weil Fotos, die vorher stur falsch lagen, jetzt richtig, aber mit ein paar mm Streuung liegen (Balkontür Foto 2: vorher 830–832 mm in allen Varianten, jetzt 783–792, echt 788).
 
@@ -163,6 +167,7 @@ Bis zum 4. Nov. abends war die 5. Variante („leicht weich“, `c.filter = 'blu
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 5. Nov. 2026 | v3.9 (Rahmen live) | 30 aus 8 Fenstern | 10 von 30 (±5 %: 17) | Identisch mit v3.8. Dazu v3 so, wie es im Livebild rechnet (1280 px, ein Raster 3 mm), an allen 30 Fotos: Median 226 ms, höchstens 419 ms am Rechner; ±5 % 10 von 30 (Raster 2,5 mm: 15, aber 334 ms). Bei den 5 Fotos, die im Abstand 2,5–3,5 m liegen (dort sucht er überhaupt): KiZi Holz 5 0,5 %, WZ 1 0,5 %, KiZi v3 1,2 %, KiZi v2 1 4,7 %, SZ 1 5,8 % |
 | 5. Nov. 2026 | v3.8 (Vorlage) | 30 aus 8 Fenstern | **10 von 30** (±5 %: **17**) | Median Breite 3,2 % (v3.7: 3,4), Höhe 1,8 % (1,7). Wie der Kunde ebenso 10 / 17 (Breite 3,4, Höhe 1,7 %). Je Foto (größerer der beiden Fehler): 7 besser, 6 schlechter. Neu auf ±2 %: Balkontür 2 (Höhe +4,8 → +1,7 %), SZ 1 (Breite −5,1 → 0,0 %), KiZi abends 1 (Breite −2,6 → −0,9 %); raus: KiZi v2 4 (−0,7 / 0,0 → +2,2 / +1,5 %). Sonst kleine Verschiebungen (KiZi Holz 5 Höhe −0,5 → +1,0 %, KiZi v2 2 +3,4 → +4,4 %). Selbsteinschätzung: sicher 19, davon 15 auf ±5 %. Varianten: unten +120 mm Spielraum → 5 / 15 (findet unten Heizkörper und Fensterbank, Höhe Median 4,4 %); Toleranz 10/15/20 mm und Bauart-Abstand 15/25/40 mm → 10–11 / 16–17; ohne Spiegeln danach 9 / 16 |
 | 5. Nov. 2026 | v3.7 + Lichtmaß Balkontür | 30 aus 8 Fenstern | 8 von 30 (±5 %: 16) | Erkennung unverändert. Neu im Prüfstand: Glas gegen Lichtmaß (jetzt bei 29 Fotos bekannt): Median Breite 3,3 %, Höhe 2,1 %. Balkontür frontal: Glas 681 × 1940 gegen 648 × 1883 (+5,1 / +3,0 %), Flügel aber nur +3,0 / +1,2 % → an der Tür sitzen die Glaskanten zu weit außen, der Maßstab stimmt |
 | 4. Nov. 2026 | v3.7 (aufgeräumt) | 30 aus 8 Fenstern | 8 von 30 (±5 %: 16) | Jede Zeile identisch mit v3.6 (Maß, Griff, Ecken, Selbsteinschätzung). Dabei gefunden: das Fenster für die Kantenenden muss in Pixeln bleiben (`endePx` 3), in mm (6 mm) hätte es bei 2,5 und 3 mm Raster anders gemessen. Getestet und aus (`V3.fuBauart`): unten das Flügelholz der Bauart (`opt.fu`, bei Kunststoff 70 statt 80 mm) erwarten → ±2 % 7 statt 8, ±5 % gleich, WZ 1 −0,2 → −1,4 %, WZ 2 −1,8 → −3,0 %. Bei Kunststoff ist das Holz unten offenbar breiter als `TYPEN.kunststoff.u` = 7 cm (Lichtmaß nachmessen) |
@@ -224,6 +229,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 5. Nov. 2026 | v3.9 | Grüner Rahmen im Livebild aus v3: passt das Blatt (`k.blattOkSeit`), rechnet `massLive` mit Farben und `opt.v3`, `opt.raster = TOL.liveRaster`; `e.rahmen`, wenn zwei Messungen hintereinander gleich sind (`k.rahmenAlt`); `deutenBlatt` gibt dann die Ecken mit, neuer Zustand „fensterSuchen“, nach `TOL.rahmenWarten` Auslösen ohne Rahmen. Anzeige v3.9 | Levin: der grüne Rahmen sagt dem Kunden „gefunden, still halten“, das ist das Beste am Lotsen | Prüfstand und Wackeltest identisch mit v3.8. Übung: zu nah „Geh ca. 1 m zurück“ → „Halt still …“ → nach ca. 1 s „Fenster gefunden. Halt still …“ mit Rahmen genau auf dem Flügel → Auslösen nach ca. 1,5 s; mit 2 Flügeln ebenso. Ablauf-Test 1 und 2 Flügel ohne Fehler |
 | 5. Nov. 2026 | v3.8 | Holzbreite nach Vorlage (`v3Vorlage`, `v3FugeIm`, Schalter `V3.vorlage`, `vorlageTol` 15, `vorlageUnten` 40, `vorlageBauart` 25 mm): sicherste Seite (links/oben/rechts, alle Durchgänge einig, Breite passt zur Bauart) ist die Vorlage, an den anderen Seiten zählt die Fuge nur im passenden Fenster. Spiegeln danach neu (`v3Spiegel`). `v3Finden` gibt seine Profile mit (`fd`). Prüfstand zeigt „Vorlage …“. Anzeige v3.8 | Levins Ecken-Idee in der Maß-Form (Auftrag 5. Nov.) | Prüfstand ±2 % **10 statt 8**, ±5 % **17 statt 16**; wie der Kunde ebenso. Wackeltest ±2 % **45 statt 42**, ±5 % 84 wie vorher, Fehler Median 3,7 statt 4,1 %, Streuung 4,9 statt 6,9 %. Je Foto 7 besser, 6 schlechter (Einzelheiten unter Prüfstand) |
 | 5. Nov. 2026 | (Lichtmaß) | Nachtrag: Lichtmaß Balkontür 648 × 1883 mm für 1217 und 1231. Prüfstand zeigt je Foto „Glas zu Lichtmaß“ und in der Kopfzeile den Median | Levin: Flügel minus 140 mm. Trennt bei der Tür falsche Kante von falschem Maßstab | siehe Prüfstand: Glaskanten an der Tür zu weit außen, Maßstab stimmt |
 | 4. Nov. 2026 | v3.7 (Ablauf-Test) | `pruefstand/uebung.js` ins Repo (bisher nur als Skript in `/tmp`), Abschnitt „Ablauf-Test“, Hinweis in `CLAUDE.md` | Prüfung 13: Ablauf-Test fehlte im Repo; jeder Chat soll den Kundenablauf gleich prüfen können | bestanden auf v3.7; gegen `stand-v3.3` meldet er die alten Fehler |
@@ -267,7 +273,7 @@ Aus der Prüfung vom 4. Nov. abends (Nummern wie dort, Reihenfolge = Empfehlung)
 - [x] **Flügelanzahl im Kundenablauf (Prüfung 2)** und **Entwickler-Dinge verstecken (Prüfung 7)** (v3.4, 4. Nov. 2026)
 - [x] **Höhe: Ende der Seitenkanten als Ecke (Prüfung 5)** (v3.5, 4. Nov. 2026: seitliche Glaskanten; die Fugen waren schlechter)
 - [x] **Livebild ohne v2-Umriss, Auslösen am Blatt (Prüfung 6)** (v3.6, 4. Nov. 2026)
-- [ ] v3 mit einem Raster live probieren (Prüfung 6, zweiter Teil): nur wenn es am Handy schnell genug ist; dann wieder ein Umriss, aber nur bei `massSicher`
+- [x] v3 mit einem Raster live (Prüfung 6, zweiter Teil): grüner Rahmen wieder da (v3.9, 5. Nov. 2026). Gezeigt wird er, wenn zwei Livemessungen gleich sind (`massSicher` braucht 2 Raster, das wäre doppelt so langsam). **Am Handy prüfen:** fühlt es sich flüssig an, kommt der Rahmen schnell genug?
 - [x] **Grenzwerte nach `V3`, `opt.fu` durchreichen, toten Code entfernen (Prüfung 9 und 10)** (v3.7, 4. Nov. 2026: identisch gemessen; `fuBauart` getestet, aus)
 - [ ] **Ebene aus den Flügelkanten statt nur vom Blatt (Prüfung 11)** – nicht die Spiegelprobe und nicht die Schablonen (Klarstellung 5. Nov.): gemeint ist, die Fensterebene wie früher in v2 (`fensterGenau`) aus den vier Flügelkanten (Fluchtpunkte, 2 m Basis) nachzubestimmen und das Blatt nur für den Maßstab zu nehmen. Hebel gemessen: bei WZ 1 macht allein die Wahl der Abbildung 6 % aus. Vermutung, 4–8 h, mit Prüfstand belegen
 - [x] **Levins Ecken-Idee in der Maß-Form (5. Nov., v3.8: Prüfstand 10 / 17 statt 8 / 16, Wackeltest ±2 % 45 statt 42):** Holzbreite Glaskante → Fuge ist links, rechts und oben gleich, unten gleich oder breiter (Tür mit Füllung). Die Seite, bei der alle Durchgänge einig sind und das Holz zur Bauart passt, ist die Vorlage; an den anderen Seiten die Fuge nur noch dort zulassen, wo die Breite zur Vorlage passt (unten mit Spielraum), erst wenn dort gar keine Kante ist, weiter weg suchen. Das ist nicht der alte `V3.abgleich` (der suchte oben/unten weiter frei und nahm die Seitenbreite nur als Bonus) und nicht die Bild-Schablonen. Nur behalten, wenn Prüfstand und Wackeltest besser werden als v3.7

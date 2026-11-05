@@ -496,7 +496,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.8 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.9 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1314,6 +1314,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     versatzZwei: 350,      // mm: bei 2 Flügeln klebt das Blatt links, die Fenstermitte liegt etwa so weit rechts davon
     stabil: 0.025,         // Livebild: Abstand zum Blatt darf zwischen zwei Messungen so weit springen (2,5 %) …
     stabilMm: 40,          // … und die Stelle vor dem Blatt so weit (mm), sonst „Halt still“
+    liveRaster: [3],       // Livebild: Fenster mit v3 in einem Raster (3 mm je Pixel) suchen, sobald das Blatt passt (am Rechner ca. 0,2 s)
+    rahmenWarten: 4000,    // ms: so lange sucht der Lotse das Fenster, wenn das Blatt passt; findet er keins, löst er trotzdem aus
     gegenprobe: 0.08,      // ab so viel Abweichung zur Eingabe kommt „Bitte nachmessen“
     blattPixel: 1280,      // lange Seite des Bildes für die Messung im Livebild
     blattTakt: 150,        // ms Pause zwischen zwei Messungen im Livebild
@@ -2510,7 +2512,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; clearTimeout(k.weiterUhr);
-    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0;
+    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
     if (k.modus === 'foto') fotoStart();
@@ -2553,7 +2555,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return { x: W * 0.03, y: oben, w: W * 0.94, h: Math.max(100, unten - oben) };
   }
   // Standbild zum Messen. f: Brennweite in Pixeln, angenommen Hauptkamera mit 24 mm Kleinbild (0,693 × lange Seite)
-  function liveBild(t) {
+  function liveBild(t, mitFarbe) {
     var lang = TOL.blattPixel, w, h, f, q;
     if (k.modus === 'kamera') {
       var v = $('video');
@@ -2572,17 +2574,21 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       f = 0.693 * Math.max(w, h);
     } else return null;
     var sx = W / w, sy = H / h;
-    return { g: grauVon(mctx, w, h), w: w, h: h, f: f, schirm: function (p) { return [p[0] * sx, p[1] * sy]; } };
+    return { g: grauVon(mctx, w, h), rgb: mitFarbe ? rgbVon(mctx, w, h) : null, w: w, h: h, f: f, schirm: function (p) { return [p[0] * sx, p[1] * sy]; } };
   }
   function massLive(t) {
     var takt = arbeiter === false ? 600 : TOL.blattTakt;   // ohne Hintergrund-Thread seltener, sonst ruckelt es
     if (k.massLaeuft || k.gemacht || performance.now() - k.massZeit < takt) return;
-    var b = liveBild(t);
+    // Passt das Blatt (Abstand, Stelle), sucht der Lotse im Livebild auch das Fenster (v3, ein Raster) für den grünen Rahmen.
+    // Ohne Hintergrund-Thread nicht: das würde die Kamera ruckeln lassen.
+    var mitFenster = !!k.blattOkSeit && arbeiter !== false;
+    var b = liveBild(t, mitFenster);
     if (!b) return;
     k.massLaeuft = true;
     var gen = k.massGen;
-    var opt = massOpt(k.modus === 'uebung'); opt.nurBlatt = true;
-    massRechnen(b.g, b.w, b.h, b.f, opt).then(function (r) {
+    var opt = massOpt(k.modus === 'uebung');
+    if (mitFenster) { opt.v3 = true; opt.raster = TOL.liveRaster; } else opt.nurBlatt = true;
+    massRechnen(b.g, b.w, b.h, b.f, opt, b.rgb).then(function (r) {
       if (gen !== k.massGen) return;
       k.massLaeuft = false;
       k.massZeit = performance.now();
@@ -2592,6 +2598,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       // Ruhig = Abstand und Stelle vor dem Blatt springen zwischen zwei Messungen kaum
       e.stabil = !!(e.lage && alt && alt.lage && Math.abs(e.lage.z - alt.lage.z) < TOL.stabil * e.lage.z &&
         Math.hypot(e.lage.fuss[0] - alt.lage.fuss[0], e.lage.fuss[1] - alt.lage.fuss[1]) < TOL.stabilMm);
+      // Grüner Rahmen (v3.9): das Fenster gilt als gefunden, wenn v3 zweimal hintereinander dasselbe Maß liefert
+      var ra = k.rahmenAlt;
+      e.rahmen = !!(mitFenster && e.ok && ra && Math.abs(e.breite - ra.breite) < TOL.stabil * e.breite && Math.abs(e.hoehe - ra.hoehe) < TOL.stabil * e.hoehe);
+      if (mitFenster) k.rahmenAlt = e.ok ? { breite: e.breite, hoehe: e.hoehe } : null;
       k.mass = e;
     });
   }
@@ -2614,19 +2624,25 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (!e.ok) return { art: 'fotoOhneFenster' };
       return { art: 'passt', ecken: e.ecken.map(e.schirm) };
     }
-    // Livebild (v3.6, Prüfung 6): ausgelöst wird nur am Maßblatt. Die schnelle Fenstersuche (v2) lag im Livebild meist daneben
-    // (Prüfstand: auf 8 von 9 frontalen Fotos 10–138 % falsch), deshalb kein Fensterumriss und keine Hinweise aus falschen Ecken.
-    // Geprüft wird: Blatt zu sehen (mind. 3 Marker), Abstand 2,5–3,5 m, mittig davor, ruhig. Bei 2,5–3,5 m passt ein Fenster bis
-    // ca. 2,7 m Breite ins Bild. Das Maß kommt danach vom fertigen Foto (v3).
-    if (!e || jetzt - e.zeit > 2500 || !e.lage || e.lage.anzahl < 3) return { art: e && e.marker ? 'blattTeil' : 'blattSuchen' };
+    // Livebild: erst das Maßblatt (v3.6): zu sehen (mind. 3 Marker), Abstand 2,5–3,5 m, mittig davor. Bei 2,5–3,5 m passt ein
+    // Fenster bis ca. 2,7 m Breite ins Bild. Passt das Blatt, sucht der Lotse das Fenster mit v3 (v3.9, ein Raster) und zeigt den
+    // grünen Rahmen, sobald er zweimal hintereinander gleich liegt; dann „Fenster gefunden. Halt still …“ und Auslösen.
+    // Findet er in TOL.rahmenWarten kein Fenster, löst er ohne Rahmen aus; das Maß kommt ohnehin vom fertigen Foto (3 Raster).
+    // (Die alte schnelle Suche v2 lag im Livebild auf 8 von 9 frontalen Fotos 10–138 % daneben und ist deshalb weg.)
+    var blattWeg = function (z) { k.blattOkSeit = 0; k.rahmenAlt = null; return z; };
+    if (!e || jetzt - e.zeit > 2500 || !e.lage || e.lage.anzahl < 3) return blattWeg({ art: e && e.marker ? 'blattTeil' : 'blattSuchen' });
     var war = k.letzteArt === 'passt', z = e.lage.z / 1000;
     var zMin = TOL.abstandMin - (war ? 0.15 : 0), zMax = TOL.abstandMax + (war ? 0.15 : 0);
-    if (z < zMin) return { art: 'zurueckM', m: z };
-    if (z > zMax) return { art: 'naeherM', m: z };
+    if (z < zMin) return blattWeg({ art: 'zurueckM', m: z });
+    if (z > zMax) return blattWeg({ art: 'naeherM', m: z });
     // Wo steht die Kamera vor dem Blatt? fuss = Stelle auf der Scheibe genau vor der Kamera (mm, Blattkoordinaten)
     var v = e.lage.fuss[0] - MASS.MB.b / 2 - (P.nU === 2 ? TOL.versatzZwei : 0);
-    if (Math.abs(v) > TOL.versatz + (war ? 100 : 0)) return { art: v > 0 ? 'mitteLinks' : 'mitteRechts' };
-    if (!e.stabil && !war) return { art: 'halten' };
+    if (Math.abs(v) > TOL.versatz + (war ? 100 : 0)) return blattWeg({ art: v > 0 ? 'mitteLinks' : 'mitteRechts' });
+    if (!k.blattOkSeit) k.blattOkSeit = jetzt;
+    var ecken = e.rahmen && e.ecken ? e.ecken.map(e.schirm) : null;
+    if (!e.stabil && !war) return { art: 'halten', ecken: ecken };
+    if (ecken) return { art: 'passt', ecken: ecken };
+    if (arbeiter !== false && jetzt - k.blattOkSeit < TOL.rahmenWarten) return { art: 'fensterSuchen' };
     return { art: 'passt' };
   }
   function blattText(z) {
@@ -2636,10 +2652,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       case 'zurueckM': return 'Geh ' + meterText(TOL.abstand - z.m) + ' zurück';
       case 'naeherM': return 'Geh ' + meterText(z.m - TOL.abstand) + ' näher ran';
       case 'halten': return 'Halt still …';
+      case 'fensterSuchen': return 'Halt still, ich suche das Fenster …';
       case 'fotoMessen': return 'Foto wird gemessen …';
       case 'fotoOhneBlatt': return 'Kein Maßblatt erkannt. Selbst auslösen oder anderes Foto.';
       case 'fotoOhneFenster': return 'Fensterkanten nicht erkannt. Selbst auslösen oder anderes Foto.';
-      case 'passt': return k.modus === 'foto' ? 'Gemessen. Einen Moment …' : 'Passt. Halt still …';
+      case 'passt': return k.modus === 'foto' ? 'Gemessen. Einen Moment …' : z.ecken ? 'Fenster gefunden. Halt still …' : 'Passt. Halt still …';
     }
     return null;
   }
@@ -2666,9 +2683,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     c.setTransform(DPR, 0, 0, DPR, 0, 0);
     c.clearRect(0, 0, W, H);
     var frisch = !!e && (k.modus === 'foto' || performance.now() - e.zeit < 2500);
-    // Fensterumriss nur beim Galeriefoto (dort misst v3 das fertige Foto). Im Livebild gibt es keinen (v3.6): Ecken wie beim
-    // Ausweis-Scan und das erkannte Maßblatt, grün sobald alles passt.
-    var fenster = k.modus === 'foto' && frisch && e.ok ? (z.ecken || e.ecken.map(e.schirm)) : null;
+    // Fensterumriss: beim Galeriefoto aus der Messung des Fotos, im Livebild nur, wenn v3 das Fenster zweimal gleich gefunden hat
+    // (v3.9). Vorher Ecken wie beim Ausweis-Scan und das erkannte Maßblatt.
+    var fenster = k.modus === 'foto' ? (frisch && e.ok ? (z.ecken || e.ecken.map(e.schirm)) : null) : (frisch && z.ecken ? z.ecken : null);
     c.lineCap = 'square'; c.lineJoin = 'miter'; c.globalAlpha = 1;
     if (fenster) {
       c.fillStyle = 'rgba(6, 12, 9, 0.38)';

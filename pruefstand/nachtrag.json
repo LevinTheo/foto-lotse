@@ -5,7 +5,10 @@
     "fluegelHoeheMm": 2023,
     "bauart": "kunststoff",
     "griff": "rechts",
-    "notiz": "nachgetragen, Fotos 1 frontal ca. 1,9 m, 2 schräg links, 3 oben nah, 4 unten nah, 5 schräg rechts"
+    "notiz": "nachgetragen, Fotos 1 frontal ca. 1,9 m, 2 schräg links, 3 oben nah, 4 unten nah, 5 schräg rechts",
+    "rahmenInnenBreiteMm": 648,
+    "rahmenInnenHoeheMm": 1883,
+    "notizLichtmass": "Lichtmaß nachgetragen 5. Nov. 2026 von Levin: Flügel 788 × 2023 minus 140 mm in Breite und Höhe"
   },
   "2026-11-04_1603_fenster": {
     "ignorieren": true,
@@ -34,5 +37,10 @@
   "2026-11-04_1331_fenster": {
     "name": "KiZi Holz (Mittag)",
     "notiz": "dasselbe Fenster wie 1650 und 1734"
+  },
+  "2026-11-04_1231_fenster": {
+    "rahmenInnenBreiteMm": 648,
+    "rahmenInnenHoeheMm": 1883,
+    "notizLichtmass": "Lichtmaß nachgetragen 5. Nov. 2026 von Levin: Flügel 788 × 2023 minus 140 mm in Breite und Höhe"
   }
 }

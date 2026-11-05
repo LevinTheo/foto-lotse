@@ -117,7 +117,7 @@ function wahrheit(ordner) {
         // Mehrere Maßblätter (v3.14): je Flügel gegen das eine echte Maß (Levin misst einen Flügel; gleich große Flügel angenommen)
         blaetter: r.fluegel ? r.blaetter + ' Blätter, ' + r.anordnung + ': ' + r.fluegel.map((q) => 'Blatt ' + q.blatt + ' ' + (q.ok ? q.b + '×' + q.h +
           (fuerBlatt(w, q.blatt).fluegelBreiteMm ? ' (' + pz1((q.b - fuerBlatt(w, q.blatt).fluegelBreiteMm) / fuerBlatt(w, q.blatt).fluegelBreiteMm) + ' / ' + pz1((q.h - fuerBlatt(w, q.blatt).fluegelHoeheMm) / fuerBlatt(w, q.blatt).fluegelHoeheMm) + ')' : '') + (q.sicher ? '' : ' unsicher') : 'kein Maß')).join(' · ') +
-          (r.gesamt ? ' · zusammen ' + r.gesamt.join('×') : '') : '' });
+          (r.gesamt ? ' · zusammen ' + r.gesamt.join('×') + (w.gesamtBreiteMm ? ' (echt ' + w.gesamtBreiteMm + (w.gesamtHoeheMm ? '×' + w.gesamtHoeheMm : '') + ': ' + pz1((r.gesamt[0] - w.gesamtBreiteMm) / w.gesamtBreiteMm) + ')' : '') : '') : '' });
       process.stdout.write('.');
     }
   }

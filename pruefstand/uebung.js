@@ -1,10 +1,11 @@
 // Ablauf-Test: spielt den Übungsmodus mit Playwright ganz durch, wie ein Kunde am Handy (iPhone-Ansicht).
 // Aufruf: node pruefstand/uebung.js [Pfad zum Lotsen, Standard: dieses Repo] [--bilder <Ordner>]
-// Prüft: Startseite ohne Entwickler-Sachen, Frage „1 oder 2 Flügel?“, Livebild mit „Geh … zurück“ und „Fenster gefunden“ (grüner
-// Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ (bei 1 Flügel einmal Nein → nochmal, dann Ja), alle Fotos bis
-// „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine Fehler in der Konsole.
-// Läuft einmal mit 1 Flügel und einmal mit „Mehrere Flügel“ (v3.14: die Übung zeichnet dann 2 Flügel mit Blatt 1 und Blatt 2; geprüft
-// wird „2 Flügel gefunden“, die Frage nach den grünen Rahmen und „2 Flügel nebeneinander“), dauert ca. 1 Minute.
+// Prüft: Startseite ohne Entwickler-Sachen, Frage „Wie viele Flügel?“ (1–4), Livebild mit „Blatt … erkannt“ (grüner Rahmen ums Blatt,
+// v3.17), „Geh … zurück“ und „… gefunden“ (grüner Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ bei jedem Flügel-Foto (bei 1 Flügel
+// einmal Nein → nochmal, dann Ja), alle Fotos bis „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine
+// Fehler in der Konsole.
+// Läuft mit 1, 2 und 4 Flügeln. Ab 2 Flügeln Flügel für Flügel (v3.17): je Flügel ein Foto („Flügel 1 von 2“), die Übung zeichnet auf
+// jeden Flügel ein eigenes Blatt; zum Schluss „Alle 2 Flügel zusammen“ mit „Gemessen: 2 Flügel nebeneinander“. Dauert ca. 2 Minuten.
 // Mit --bilder legt es Bildschirmfotos ab.
 // Ergebnis in REGIE.md unter „Ablauf-Test“ eintragen.
 // Braucht Playwright mit Chromium. Ohne Kamera (http, headless) startet der Lotse von selbst den Übungsmodus.
@@ -43,53 +44,61 @@ async function durchlauf(browser, nU, fehler, notizen) {
   await page.click('#manuell');
   if (BILDER) await page.screenshot({ path: path.join(BILDER, 'start.png') });
 
-  // 2. Analyse starten → Frage nach den Flügeln (1 / Mehrere)
+  // 2. Analyse starten → Frage nach den Flügeln (1, 2, 3, 4)
   await page.click('#start');
   pruef(await sichtbar(page, '#flu-frage'), 'Frage „Wie viele Flügel?“ kommt nicht');
   if (BILDER && nU === 1) await page.screenshot({ path: path.join(BILDER, 'frage.png') });
-  await page.click('#flu-wahl-' + nU);   // 2 = „Mehrere Flügel“
+  await page.click('#flu-wahl-' + nU);
   await page.waitForSelector('#kamera:not([hidden])');
   // Übungsmodus: Erklärkarte wegtippen
   await page.waitForTimeout(500);
   if (await sichtbar(page, '#k-karte')) await page.click('#k-karte-ok');
 
+  // Status mitlesen, bis eine Bedingung erfüllt ist
+  const warteStatus = async (re, ms) => { for (let t = 0; t < ms / 100; t++) { const st = await page.textContent('#k-status'); if (re.test(st)) return st; await page.waitForTimeout(100); } return null; };
+
   // 3. Alle Fotos: „Zeig’s mir“ fährt das Bild in die Linien, der Lotse löst selbst aus
   const titel = [];
-  for (let n = 0; n < 8; n++) {
+  let fluegelFotos = 0, gesamtFoto = false;
+  for (let n = 0; n < 14; n++) {
     if (!(await sichtbar(page, '#kamera'))) break;
     const schritt = await page.textContent('#k-titel');
     const tipp = await page.textContent('#k-tipp');
+    const istFluegel = /^Flügel \d von \d$/.test(schritt), istGesamt = /^Alle \d Flügel zusammen$/.test(schritt);
+    const mitBlatt = istFluegel || (nU === 1 && n === 0);
     if (n === 0) {
-      pruef(nU === 2 ? /auf jeden Flügel/.test(tipp) : /auf die Scheibe/.test(tipp), 'Tipp beim ersten Foto passt nicht zur Flügelzahl: ' + tipp);
-      // Die Übung beginnt zu nah (1,8 m): das Livebild muss zurückschicken, nur nach dem Maßblatt
-      await page.waitForTimeout(1500);
-      const st = await page.textContent('#k-status');
-      pruef(/zurück/.test(st), 'Livebild schickt beim ersten Foto nicht zurück: „' + st + '“');
+      pruef(nU > 1 ? /auf jeden Flügel/.test(tipp) && schritt === 'Flügel 1 von ' + nU : /auf die Scheibe/.test(tipp), 'Erstes Foto passt nicht zur Flügelzahl: ' + schritt + ' / ' + tipp);
       if (BILDER) await page.screenshot({ path: path.join(BILDER, 'live-' + nU + '.png') });
+    }
+    if (mitBlatt) {
+      // Erst das Blatt lesen: grüner Rahmen ums Blatt, „Blatt … erkannt“ (die Übung beginnt nah am Blatt)
+      const gel = await warteStatus(/Blatt \d erkannt/, 5000);
+      pruef(!!gel, schritt + ': kein „Blatt … erkannt“');
+      if (BILDER && n === 0) await page.screenshot({ path: path.join(BILDER, 'blatt-' + nU + '.png') });
+      if (n === 0) pruef(!!(await warteStatus(/zurück/, 4000)), 'Livebild schickt beim ersten Foto nicht zurück: „' + await page.textContent('#k-status') + '“');
     }
     if (await sichtbar(page, '#k-skip')) { titel.push(schritt + ' (übersprungen)'); await page.click('#k-skip'); continue; }
     await page.click('#k-zeig');
-    // Auf den Prüfdialog warten; beim ganzen Fenster mitlesen, ob „Fenster gefunden“ (grüner Rahmen) kam
+    // Auf den Prüfdialog warten; mitlesen, ob „… gefunden“ (grüner Rahmen) bzw. „Alle … Maßblätter im Bild“ kam
     const ausgeloest = async () => {
-      let gefunden = false, zwei = false;
+      let gefunden = false, alle = false;
       for (let t = 0; t < 300; t++) {
-        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden, zwei };
+        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden, alle };
         const st = await page.textContent('#k-status');
         if (/gefunden/.test(st)) gefunden = true;
-        if (/2 Flügel gefunden/.test(st)) zwei = true;
+        if (/Alle \d Maßblätter im Bild/.test(st)) alle = true;
         await page.waitForTimeout(100);
       }
-      return { ok: false, gefunden, zwei };
+      return { ok: false, gefunden, alle };
     };
     let a = await ausgeloest();
     if (!a.ok) { pruef(false, 'Foto „' + schritt + '“ löst nicht aus'); break; }
-    if (n === 0) {
-      pruef(a.gefunden, 'kein „Fenster gefunden“ (grüner Rahmen) vor dem Auslösen');
-      if (nU === 2) pruef(a.zwei, 'kein „2 Flügel gefunden“ (zwei Maßblätter) vor dem Auslösen');
-      pruef(await sichtbar(page, '#p-rahmen') && (nU === 2 ? /grünen Rahmen genau auf den Kanten der Flügel/ : /grüne Rahmen genau auf der Kante/).test(await page.textContent('#p-titel')),
-        'Frage nach dem grünen Rahmen fehlt oder passt nicht zur Flügelzahl: ' + await page.textContent('#p-titel'));
-      if (nU === 2) pruef(/Gemessen: 2 Flügel nebeneinander/.test(await page.textContent('#p-mass')), 'Maß nennt nicht „2 Flügel nebeneinander“: ' + await page.textContent('#p-mass'));
-      if (BILDER) await page.screenshot({ path: path.join(BILDER, 'rahmen-' + nU + '.png') });
+    if (mitBlatt) {
+      pruef(a.gefunden, schritt + ': kein „… gefunden“ (grüner Rahmen) vor dem Auslösen');
+      pruef(await sichtbar(page, '#p-rahmen') && /grüne Rahmen genau auf der Kante/.test(await page.textContent('#p-titel')),
+        schritt + ': Frage nach dem grünen Rahmen fehlt oder passt nicht: ' + await page.textContent('#p-titel'));
+      if (istFluegel) pruef(/Gemessen: Flügel \d \(Blatt \d\) ca\./.test(await page.textContent('#p-mass')), schritt + ': Maß nennt Flügel und Blatt nicht: ' + await page.textContent('#p-mass'));
+      if (BILDER && (n === 0 || istFluegel)) await page.screenshot({ path: path.join(BILDER, 'rahmen-' + nU + '-' + n + '.png') });
       if (nU === 1) {
         // Einmal Nein: Dialog zu, gleiches Foto nochmal, der Lotse muss wieder auslösen
         await page.click('#p-rahmen-nein');
@@ -101,6 +110,15 @@ async function durchlauf(browser, nU, fehler, notizen) {
       }
       await page.click('#p-rahmen-ja');
       await page.waitForTimeout(200);
+      if (istFluegel) fluegelFotos++;
+    }
+    if (istGesamt) {
+      gesamtFoto = true;
+      pruef(a.alle, 'Gesamtfoto: kein „Alle ' + nU + ' Maßblätter im Bild“');
+      pruef(fluegelFotos === nU, 'Gesamtfoto kommt vor allen Flügel-Fotos (' + fluegelFotos + ' von ' + nU + ')');
+      pruef(!(await sichtbar(page, '#p-rahmen')), 'Gesamtfoto fragt nach dem grünen Rahmen');
+      pruef(new RegExp('Gemessen: ' + nU + ' Flügel nebeneinander').test(await page.textContent('#p-mass')), 'Gesamtfoto nennt nicht „' + nU + ' Flügel nebeneinander“: ' + await page.textContent('#p-mass'));
+      if (BILDER) await page.screenshot({ path: path.join(BILDER, 'gesamt-' + nU + '.png') });
     }
     const pt = await page.textContent('#p-titel'), pf = (await sichtbar(page, '#p-frage')) ? await page.textContent('#p-frage') : '';
     const mass = (await sichtbar(page, '#p-mass')) ? await page.textContent('#p-mass') : '';
@@ -109,20 +127,21 @@ async function durchlauf(browser, nU, fehler, notizen) {
     if (BILDER && n === 0) await page.screenshot({ path: path.join(BILDER, 'pruefen-' + nU + '.png') });
     pruef(!werte, 'Messwerte (Entwickler) im Prüfdialog sichtbar');
     if (await sichtbar(page, '#p-griff')) {
-      pruef(nU === 1, 'Griff-Frage bei mehreren Flügeln nebeneinander');
+      pruef(nU === 1, 'Griff-Frage bei mehreren Flügeln nebeneinander (' + schritt + ')');
       pruef(!/Griff/.test(pf), 'Griff-Frage doppelt gestellt: ' + pt + ' / ' + pf);
       await page.click('#p-griff-r');
     } else {
-      if (n === 0) pruef(nU === 2, 'keine Griff-Frage bei 1 Flügel');
+      if (n === 0) pruef(nU > 1, 'keine Griff-Frage bei 1 Flügel');
       if (await sichtbar(page, '#p-weiter')) await page.click('#p-weiter');
     }
     await page.waitForSelector('#k-pruefen', { state: 'hidden', timeout: 10000 }).catch(() => pruef(false, 'Prüfdialog geht nicht weiter'));
     await page.waitForTimeout(300);
   }
+  pruef(nU === 1 ? !gesamtFoto && fluegelFotos === 0 : gesamtFoto && fluegelFotos === nU, 'Flügel-Fotos / Gesamtfoto: ' + fluegelFotos + ' / ' + gesamtFoto);
   pruef(await sichtbar(page, '#fertig'), 'Am Ende fehlt „Alle Pflichtfotos sind da“');
   const st = await page.evaluate(() => JSON.parse(localStorage.getItem('foto-lotse-fenster') || '{}'));
   pruef(st.nU === nU, 'Flügelanzahl nicht übernommen (gemerkt: ' + st.nU + ')');
-  pruef(!!st.mehr === (nU === 2), '„Mehrere Flügel“ nicht gemerkt');
+  pruef(!!st.mehr === (nU > 1) && st.flZahl === nU, 'Mehrere Flügel / Zahl nicht gemerkt (' + st.mehr + ', ' + st.flZahl + ')');
   notizen.push(nU + ' Flügel: ' + titel.length + ' Schritte\n  ' + titel.join('\n  '));
 
   // 4. Mit ?test: Entwickler-Knopf und Messwerte da
@@ -135,12 +154,12 @@ async function durchlauf(browser, nU, fehler, notizen) {
   if (BILDER) fs.mkdirSync(BILDER, { recursive: true });
   const browser = await chromium.launch();
   const fehler = [], notizen = [];
-  for (const nU of [1, 2]) {
+  for (const nU of [1, 2, 4]) {
     try { await durchlauf(browser, nU, fehler, notizen); }
     catch (e) { fehler.push(nU + ' Flügel: abgebrochen (' + String(e.message).split('\n')[0] + ')'); }
   }
   await browser.close();
   console.log(notizen.join('\n'));
-  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nAblauf-Test bestanden: 1 Flügel und „Mehrere“ (2 Blätter), keine Fehler.');
+  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nAblauf-Test bestanden: 1, 2 und 4 Flügel (Flügel für Flügel mit Gesamtfoto), keine Fehler.');
   process.exit(fehler.length ? 1 : 0);
 })();

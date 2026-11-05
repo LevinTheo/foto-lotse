@@ -497,7 +497,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.14 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.15 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1655,13 +1655,22 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var alle = findeMarker(g, w, h), bl = [];
     // Mehrere Maßblätter (v3.14): jedes Blatt mit mind. 2 Markern bekommt seine eigene Lage. Hauptblatt = das mit den meisten
     // Markern (bei Gleichstand die kleinere Nummer); es gibt Abstand und Stelle vor der Kamera. Mit einem Blatt wie bisher.
-    blaetter(alle).forEach(function (b) { var l = blattLage(b.marker, w, h, f); if (l) bl.push({ nr: b.nr, marker: b.marker.length, lage: l }); });
+    // Ausrichtung (v3.15): Messraster an den Kanten vom Fenster ausrichten, nicht am Blatt (schief, quer, auf dem Kopf geklebt).
+    // Im Livebild nur fürs Blatt (nurBlatt) reicht die Vierteldrehung (damit „links/rechts“ stimmt), die Schräge kostet Rechenzeit.
+    blaetter(alle).forEach(function (b) {
+      var l = blattLage(b.marker, w, h, f);
+      // Livebild: die Schräge des Blatts gegen das Fenster ändert sich nicht, sie wird einmal bestimmt und dann mitgegeben (opt.ausrFest)
+      var fest = opt.ausrFest && typeof opt.ausrFest[b.nr] === 'number' ? opt.ausrFest[b.nr] : null;
+      if (l) bl.push({ nr: b.nr, marker: b.marker.length, lage: blattAusrichten(l, g, w, h, !!opt.nurBlatt || !rgb, false, fest) });
+    });
     if (!bl.length) return { marker: alle.length, ok: false, grund: 'blatt' };
     bl.sort(function (a, b) { return b.marker - a.marker || a.nr - b.nr; });
     var haupt = bl[0], lage = haupt.lage, Hi = inv3(lage.H);
     var info = bl.map(function (b) {
       var p = abb(b.lage.Hvoll, MB.b / 2, MB.h / 2), c = b === haupt ? [MB.b / 2, MB.h / 2] : (Hi ? abb(Hi, p[0], p[1]) : null);
-      return { nr: b.nr, blatt: b.nr + 1, marker: b.marker, H: b.lage.H, z: b.lage.z, mitte: c ? [Math.round(c[0]), Math.round(c[1])] : null };
+      return { nr: b.nr, blatt: b.nr + 1, marker: b.marker, H: b.lage.Hblatt || b.lage.H, z: b.lage.z, mitte: c ? [Math.round(c[0]), Math.round(c[1])] : null,
+        drehung: b.lage.drehung ? Math.round(b.lage.drehung * 10) / 10 : 0,
+        ausrPhi: b.lage.ausrichtung && typeof b.lage.ausrichtung.gedreht === 'number' ? b.lage.ausrichtung.gedreht : null };
     });
     // Livebild (v3.6): nur das Blatt (Abstand, Lage), kein Fenster
     if (opt.nurBlatt) return { marker: haupt.marker, lage: lage, blaetter: info, ok: false, grund: 'nurBlatt' };
@@ -1677,6 +1686,108 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     marker.forEach(function (m) { var nr = Math.floor(m.id / 4); (gr[nr] = gr[nr] || []).push(m); });
     return Object.keys(gr).map(Number).sort(function (a, b) { return a - b; })
       .filter(function (nr) { return gr[nr].length >= 2; }).map(function (nr) { return { nr: nr, marker: gr[nr] }; });
+  }
+  /* Ausrichtung am Fenster (v3.15). Bisher war das Messraster am Blatt ausgerichtet: klebte das Blatt nur 3° schief, lag auch das
+     Fenster im Raster 3° schief, und die Suche nach geraden Kanten fand nichts Richtiges (Test 5. Nov.: 12 bis 115 % daneben).
+     Jetzt: 1. Schräge des Fensters gegen das Blatt aus allen kräftigen Kanten außerhalb des Blatts (Richtungs-Histogramm, dann fein
+     über die Schärfe der Kanten-Projektion: lange gerade Kanten stehen genau dann als scharfe Spitzen, wenn das Raster parallel liegt).
+     2. Vierteldrehung so, dass „unten“ im Raster auch im Foto unten ist (Blatt quer oder auf dem Kopf). Gedreht wird um die Blattmitte,
+     Maßstab und Ebene bleiben, nur die Richtung im Raster ändert sich. */
+  function v3Ausrichtung(g, w, h, Hm, schnell) {
+    // schnell (Livebild): gröberes Raster und Schritte, das Ergebnis zählt dort nur für den grünen Rahmen
+    var S = schnell ? 1.5 * V3.ausrRaster : V3.ausrRaster, X0 = V3.X0, Y0 = V3.Y0, W = Math.round(3210 / S), Hh = Math.round(3300 / S), n = W * Hh, u, v, i;
+    var Y = new Float32Array(n), M = new Uint8Array(n);
+    for (v = 0; v < Hh; v++) for (u = 0; u < W; u++) {
+      var p = abb(Hm, X0 + u * S, Y0 + v * S), q = bilinear(g, w, h, p[0], p[1]);
+      if (q >= 0) { Y[v * W + u] = q; M[v * W + u] = 1; }
+    }
+    var hist = new Float64Array(360), px = [], py = [], pw = [], pa = [];
+    for (v = 1; v < Hh - 1; v++) for (u = 1; u < W - 1; u++) {
+      i = v * W + u;
+      if (!(M[i - W - 1] && M[i - W + 1] && M[i + W - 1] && M[i + W + 1])) continue;
+      var mx = X0 + u * S, my = Y0 + v * S;
+      if (mx > -25 && mx < MB.b + 25 && my > -25 && my < MB.h + 25) continue;   // das Blatt selbst zählt nicht
+      var gx = (Y[i - W + 1] + 2 * Y[i + 1] + Y[i + W + 1]) - (Y[i - W - 1] + 2 * Y[i - 1] + Y[i + W - 1]);
+      var gy = (Y[i + W - 1] + 2 * Y[i + W] + Y[i + W + 1]) - (Y[i - W - 1] + 2 * Y[i - W] + Y[i - W + 1]);
+      var st = Math.abs(gx) + Math.abs(gy);
+      if (st < V3.ausrKante) continue;
+      var a = Math.atan2(gy, gx) * 180 / Math.PI, fa = ((a % 90) + 135) % 90 - 45;   // auf −45 … 45° gefaltet
+      hist[Math.min(359, Math.floor((fa + 45) * 4))] += st;
+      px.push(mx); py.push(my); pw.push(st); pa.push(a);
+    }
+    if (px.length < 200) return null;
+    // Grob: Spitze im geglätteten Histogramm (0,25°-Fächer, ±0,5° geglättet, ringförmig)
+    var best = -1, bi = 0, summe = 0;
+    for (i = 0; i < 360; i++) {
+      var sm = 0;
+      for (var d = -2; d <= 2; d++) sm += hist[(i + d + 360) % 360] * (3 - Math.abs(d));
+      summe += sm;
+      if (sm > best) { best = sm; bi = i; }
+    }
+    var phi0 = bi / 4 - 45 + 0.125, guete = best / (summe / 360);
+    // Fein: Schärfe der Projektion, ±2,5° um die grobe Richtung in 0,05°-Schritten. Senkrechte Kanten (Gradient quer) auf die
+    // gedrehte x-Achse, waagerechte auf die y-Achse; Summe der Quadrate der Fächer (4 mm): je schärfer, desto paralleler.
+    // Getrennt nach vier Teilen (senkrechte Kanten links / rechts vom Blatt, waagerechte oben / unten): klebt nur das Blatt schief,
+    // zeigen alle vier dieselbe Richtung. Kommt die Schräge aus der Perspektive (vom kleinen Blatt nicht genau getroffen, Fenster
+    // im Raster ein Trapez), sind sie sich uneins; dann hilft Drehen nicht (Prüfstand 5. Nov.).
+    var cx = MB.b / 2, cy = MB.h / 2, NB = 1000, OFF = 500, fach = [new Float64Array(NB), new Float64Array(NB), new Float64Array(NB), new Float64Array(NB)];
+    var schritt = schnell ? 2 : 1, dw = schnell ? 0.1 : 0.05, best4 = [-1, -1, -1, -1], tp = [phi0, phi0, phi0, phi0], bestF = -1, phi = phi0;
+    for (var t = -Math.round(2.5 / dw); t <= Math.round(2.5 / dw); t++) {
+      var ph = phi0 + t * dw, c = Math.cos(ph * Math.PI / 180), sn = Math.sin(ph * Math.PI / 180), q, kk;
+      for (q = 0; q < 4; q++) fach[q].fill(0);
+      for (i = 0; i < px.length; i += schritt) {
+        var da = ((pa[i] - ph) % 180 + 360) % 180, dx = px[i] - cx, dy = py[i] - cy;
+        if (da < 10 || da > 170) { kk = Math.round((c * dx + sn * dy) / S) + OFF; if (kk >= 0 && kk < NB) fach[dx < 0 ? 0 : 1][kk] += pw[i]; }
+        else if (da > 80 && da < 100) { kk = Math.round((-sn * dx + c * dy) / S) + OFF; if (kk >= 0 && kk < NB) fach[dy < 0 ? 2 : 3][kk] += pw[i]; }
+      }
+      var ges = 0;
+      for (q = 0; q < 4; q++) {
+        var sq = 0, fq = fach[q];
+        for (kk = 0; kk < NB; kk++) sq += fq[kk] * fq[kk];
+        if (sq > best4[q]) { best4[q] = sq; tp[q] = ph; }
+        ges += sq;
+      }
+      if (ges > bestF) { bestF = ges; phi = ph; }
+    }
+    var einig = tp.filter(function (x) { return Math.abs(x - phi) <= V3.ausrEinig; }).length;
+    return { phi: phi, grob: phi0, guete: guete, punkte: px.length, teile: tp, einig: einig };
+  }
+  // Lage eines Blatts am Fenster ausrichten: Drehung psi (Grad) um die Blattmitte, Blattkoordinaten = A · Rasterkoordinaten
+  function blattAusrichten(lage, g, w, h, nurViertel, schnell, fest) {
+    var phi = 0, aus = null;
+    if (!nurViertel && V3.ausrichten && typeof fest === 'number') phi = fest;
+    else if (!nurViertel && V3.ausrichten) {
+      try { aus = v3Ausrichtung(g, w, h, lage.Hvoll || lage.H, schnell); } catch (x) { aus = null; }
+      // Drehen nur, wenn die Schräge deutlich ist und die Teile sich einig sind (sonst eher Perspektive als schiefes Blatt):
+      // 3 von 4 Teilen nah an der Gesamtrichtung, oder ab V3.ausrSicher die senkrechten Kanten links und rechts genau gleich
+      // (die liegen sicher in der Fensterebene; waagerecht stören oft Fensterbank und Gardinenschiene, die davor liegen)
+      var ab = aus ? Math.abs(aus.phi) : 0, tl = aus ? aus.teile : null;
+      if (aus && ab <= V3.ausrMax && ab >= V3.ausrAb && (aus.einig >= 3 ||
+        (ab >= V3.ausrSicher && Math.abs(tl[0] - aus.phi) <= V3.ausrSeiten && Math.abs(tl[1] - aus.phi) <= V3.ausrSeiten))) phi = aus.phi;
+    }
+    // Vierteldrehung: welche Richtung im Raster zeigt im Foto nach unten?
+    var cx = MB.b / 2, cy = MB.h / 2, Hm = lage.Hvoll || lage.H, p0 = abb(Hm, cx, cy), k = 0, bestS = -2;
+    for (var q = 0; q < 4; q++) {
+      var ps = (q * 90 + phi) * Math.PI / 180, p1 = abb(Hm, cx - 100 * Math.sin(ps), cy + 100 * Math.cos(ps));
+      var sc = (p1[1] - p0[1]) / (Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) || 1);
+      if (sc > bestS) { bestS = sc; k = q; }
+    }
+    var psi = k * 90 + phi;
+    lage.ausrichtung = typeof fest === 'number' && !nurViertel && V3.ausrichten ? { fest: true, gedreht: phi, viertel: k } : aus ? { phi: Math.round(aus.phi * 100) / 100, grob: aus.grob, guete: Math.round(aus.guete * 10) / 10, punkte: aus.punkte, viertel: k,
+      teile: aus.teile.map(function (x) { return Math.round(x * 100) / 100; }), einig: aus.einig, gedreht: Math.round(phi * 100) / 100 } : { viertel: k };
+    if (!psi) return lage;
+    var r = psi * Math.PI / 180, c = Math.cos(r), sn = Math.sin(r);
+    var A = [[c, -sn, cx - c * cx + sn * cy], [sn, c, cy - sn * cx - c * cy], [0, 0, 1]];
+    var Ai = [[c, sn, cx - c * cx - sn * cy], [-sn, c, cy + sn * cx - c * cy], [0, 0, 1]];
+    var ecken = [[0, 0], [MB.b, 0], [MB.b, MB.h], [0, MB.h]].map(function (p) { return abb(Ai, p[0], p[1]); });
+    var xs = ecken.map(function (p) { return p[0]; }), ys = ecken.map(function (p) { return p[1]; });
+    var neu = {};
+    for (var key in lage) neu[key] = lage[key];
+    neu.Hblatt = lage.H; neu.H = mal3(lage.H, A); neu.Hvoll = lage.Hvoll ? mal3(lage.Hvoll, A) : null;
+    neu.fuss = lage.fuss ? abb(Ai, lage.fuss[0], lage.fuss[1]) : lage.fuss;
+    neu.blattBox = [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)];
+    neu.drehung = psi;
+    return neu;
   }
   // Werte in Gruppen teilen, wo zwischen zwei Nachbarn mehr als „luecke“ liegt (Spalten bzw. Reihen der Flügel)
   function gruppenZahl(werte, luecke) {
@@ -1776,7 +1887,18 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     vorlageBauart: 25,        // mm: die Vorlage-Seite muss so nah an der Holzbreite der Bauart liegen
     vorlageSpiegeln: true,    // danach noch links ↔ rechts spiegeln (ohne: ±2 % 9 statt 10)
     // Mehrere Maßblätter (v3.14)
-    blattLuecke: 250 };       // mm: liegen zwei Blattmitten weiter auseinander, sitzen sie in verschiedenen Spalten bzw. Reihen
+    blattLuecke: 250,         // mm: liegen zwei Blattmitten weiter auseinander, sitzen sie in verschiedenen Spalten bzw. Reihen
+    // Ausrichtung am Fenster statt am Blatt (v3.15): das Blatt darf schief, quer oder auf dem Kopf kleben
+    ausrichten: true,         // Schalter
+    ausrRaster: 4,            // mm je Pixel für die Suche nach der Fensterrichtung
+    ausrKante: 60,            // Mindeststärke einer Kante (Sobel) für die Richtung
+    ausrMax: 20,              // Grad: so schief darf ein Blatt höchstens kleben (darüber zählt nur die Vierteldrehung)
+    ausrEinig: 1.2,           // Grad: so nah müssen 3 der 4 Teilrichtungen (senkrechte Kanten links/rechts, waagerechte oben/unten) an der Gesamtrichtung liegen
+    ausrSicher: 1.5,          // Grad: ab dieser Schräge reicht es auch, wenn links und rechts …
+    ausrSeiten: 0.6,          // … auf so viel Grad mit der Gesamtrichtung übereinstimmen
+    ausrAb: 1.3,              // Grad: kleinere Schräge wird nicht ausgeglichen (bei geraden Blättern misst er sonst je nach Foto
+                              // −1,2 … +0,9° aus der Perspektive, und schon 0,1° Drehung lässt unsichere Fotos springen; Prüfstand 5. Nov.)
+    blatt: [0, 0, 210, 297] };   // Blattrand im Messraster (mm), von messenV3 je Blatt gesetzt
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
     var S = V3.S, W = V3.W, Hh = V3.H, n = W * Hh;
@@ -1964,12 +2086,13 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function v3Finden(E, fs, nU, fu) {
     var fuU = V3.fuBauart && fu ? fu : fs + 10;   // erwartetes Flügelholz unten
-    var yt = -150, yb = 447, xl = -150, xr = 360, ref = null, l, r, o, u, Pv, Ph;
+    // Blattrand im (ggf. am Fenster ausgerichteten) Raster: aufrecht 0…210 × 0…297 mm, gedreht oder schief etwas anders (v3.15)
+    var bb = V3.blatt, yt = bb[1] - 150, yb = bb[3] + 150, xl = bb[0] - 150, xr = bb[2] + 150, ref = null, l, r, o, u, Pv, Ph;
     for (var runde = 0; runde < 3; runde++) {
       Pv = v3Profil(E, true, yt + 40, yb - 40);
       (function (a, b) {
-        l = v3Glaskante(Pv, v3px(-10, V3.X0), -1, v3px(-1500, V3.X0), function (i) { return v3Bandfarbe(E, true, i, -1, a, b); }, ref);
-        r = v3Glaskante(Pv, v3px(220, V3.X0), 1, v3px(1700, V3.X0), function (i) { return v3Bandfarbe(E, true, i, 1, a, b); }, ref);
+        l = v3Glaskante(Pv, v3px(bb[0] - 10, V3.X0), -1, v3px(-1500, V3.X0), function (i) { return v3Bandfarbe(E, true, i, -1, a, b); }, ref);
+        r = v3Glaskante(Pv, v3px(bb[2] + 10, V3.X0), 1, v3px(1700, V3.X0), function (i) { return v3Bandfarbe(E, true, i, 1, a, b); }, ref);
       })(yt + 40, yb - 40);
       if (!l || !r) return null;
       xl = v3mm(l.i, V3.X0); xr = v3mm(r.i, V3.X0);
@@ -1979,8 +2102,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       }
       Ph = v3Profil(E, false, xl + 40, xr - 40);
       (function (a, b) {
-        o = v3Glaskante(Ph, v3px(-10, V3.Y0), -1, v3px(-1500, V3.Y0), function (i) { return v3Bandfarbe(E, false, i, -1, a, b); }, ref);
-        u = v3Glaskante(Ph, v3px(307, V3.Y0), 1, v3px(1790, V3.Y0), function (i) { return v3Bandfarbe(E, false, i, 1, a, b); }, ref);
+        o = v3Glaskante(Ph, v3px(bb[1] - 10, V3.Y0), -1, v3px(-1500, V3.Y0), function (i) { return v3Bandfarbe(E, false, i, -1, a, b); }, ref);
+        u = v3Glaskante(Ph, v3px(bb[3] + 10, V3.Y0), 1, v3px(1790, V3.Y0), function (i) { return v3Bandfarbe(E, false, i, 1, a, b); }, ref);
       })(xl + 40, xr - 40);
       if (!o || !u) return null;
       yt = v3mm(o.i, V3.Y0); yb = v3mm(u.i, V3.Y0);
@@ -2131,6 +2254,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function messenV3(g, w, h, f, lage, opt, rgb, marker) {
     var Hm = lage.Hvoll || lage.H;
+    V3.blatt = lage.blattBox || [0, 0, MB.b, MB.h];   // wo das Blatt im (ausgerichteten) Raster liegt (v3.15)
     // Dreimal suchen (2, 2,5 und 3 mm je Pixel); je Seite zählt die Kante, auf die sich die meisten Durchgänge einigen.
     // So kippt das Maß nicht, nur weil ein Handy das Bild minimal anders verkleinert (Wackeltest 4. Nov. 2026).
     var laeufe = [], E2 = null;
@@ -2148,7 +2272,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var spiegelSeite = laeufe.length >= 2 && sp[0] !== '-' && sp.every(function (x) { return x === sp[0]; }) ? sp[0] : null;
     if (spiegelSeite) laeufe.forEach(function (q) { if (q.spiegel && q.spiegel.seite === spiegelSeite) { q.fluegel = q.fluegel.slice(); q.fluegel[q.spiegel.i] = q.spiegel.wert; } });
     var z = v3Mehrheit(laeufe);
-    var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung } };
+    var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung },
+      ausrichtung: lage.ausrichtung || null, drehung: lage.drehung || 0 };
     if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
     var F = z.fluegel, Gl = z.glas, D = lage.z, k2 = (D - (opt.tiefe || 0)) / D;
     erg.roh = { ok: true, fluegel: F, glas: Gl, holz: [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]] };
@@ -2315,7 +2440,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   /*MASS-ENDE*/
     // _v3: Innereien für Prüfstand-Skripte (pruefstand/nahfern.js), die App selbst braucht sie nicht
-    return { _v3: { V3: V3, raster: v3Raster, entzerren: v3Entzerren, finden: v3Finden }, messen: messen, findeMarker: findeMarker, blattLage: blattLage, schaerfe: schaerfe, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
+    return { _v3: { V3: V3, raster: v3Raster, entzerren: v3Entzerren, finden: v3Finden, ausrichtung: v3Ausrichtung }, messen: messen, findeMarker: findeMarker, blattLage: blattLage, schaerfe: schaerfe, homographie: homographie, abb: abb, mal3: mal3, MB: MB, MARKER_BITS: MARKER_BITS, markerEcken: markerEcken };
   }
   var MASS = massModul();
   var arbeiter = null, auftragNr = 0, auftraege = {};
@@ -2616,7 +2741,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; k.rahmenJa = false; k.rahmenNein = 0; clearTimeout(k.weiterUhr);
-    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null;
+    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
     if (k.modus === 'foto') fotoStart();
@@ -2691,7 +2816,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.massLaeuft = true;
     var gen = k.massGen;
     var opt = massOpt(k.modus === 'uebung');
-    if (mitFenster) { opt.v3 = true; opt.raster = TOL.liveRaster; } else opt.nurBlatt = true;
+    if (mitFenster) { opt.v3 = true; opt.raster = TOL.liveRaster; opt.ausrFest = k.ausrFest || null; } else opt.nurBlatt = true;
     massRechnen(b.g, b.w, b.h, b.f, opt, b.rgb).then(function (r) {
       if (gen !== k.massGen) return;
       k.massLaeuft = false;
@@ -2710,6 +2835,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         return a[0] === q[0] && q[1] > 0 && a[1] > 0 && Math.abs(q[1] - a[1]) < TOL.stabil * q[1] && Math.abs(q[2] - a[2]) < TOL.stabil * q[2];
       }));
       if (mitFenster) k.rahmenAlt = neu;
+      // Schräge der Blätter gegen das Fenster (v3.15) einmal bestimmen und für die nächsten Livemessungen merken
+      if (mitFenster && e.blaetter) e.blaetter.forEach(function (b) {
+        if (typeof b.ausrPhi === 'number') { k.ausrFest = k.ausrFest || {}; if (typeof k.ausrFest[b.nr] !== 'number') k.ausrFest[b.nr] = b.ausrPhi; }
+      });
       k.mass = e;
     });
   }
@@ -2737,7 +2866,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // grünen Rahmen, sobald er zweimal hintereinander gleich liegt; dann „Fenster gefunden. Halt still …“ und Auslösen.
     // Findet er in TOL.rahmenWarten kein Fenster, löst er ohne Rahmen aus; das Maß kommt ohnehin vom fertigen Foto (3 Raster).
     // (Die alte schnelle Suche v2 lag im Livebild auf 8 von 9 frontalen Fotos 10–138 % daneben und ist deshalb weg.)
-    var blattWeg = function (z) { k.blattOkSeit = 0; k.rahmenAlt = null; return z; };
+    var blattWeg = function (z) { k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; return z; };
     if (!e || jetzt - e.zeit > 2500 || !e.lage || e.lage.anzahl < 3) return blattWeg({ art: e && e.marker ? 'blattTeil' : 'blattSuchen' });
     var war = k.letzteArt === 'passt', z = e.lage.z / 1000;
     var zMin = TOL.abstandMin - (war ? 0.15 : 0), zMax = TOL.abstandMax + (war ? 0.15 : 0);
@@ -3445,7 +3574,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     entwDurchlauf(k.url, 'innen-rahmen-falsch', k.messung, { rahmenAufFluegel: false, nein: k.rahmenNein });
     nochmal();
     // Rahmen neu suchen lassen, sonst bleibt der alte stehen und der Lotse löst nicht wieder aus
-    k.blattOkSeit = 0; k.rahmenAlt = null; if (k.mass) k.mass.rahmen = false;
+    k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; if (k.mass) k.mass.rahmen = false;
     k.warteBis = performance.now() + 2500;
     k.warteText = 'Danke. Nochmal: ca. 3 m mittig vors Fenster, das ganze Fenster ins Bild.';
   }

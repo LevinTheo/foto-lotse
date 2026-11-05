@@ -83,6 +83,7 @@ function wahrheit(ordner) {
         return { glMm, holz, gesp: (e.spiegelVorschlag || '') + (e.gespiegelt ? ' → ' + e.gespiegelt : '') + (e.amEnde && /[ou]/.test(e.amEnde) ? ' · Ende ' + e.amEnde : '') + (e.vorlage ? ' · Vorlage ' + e.vorlage.seite + ' ' + e.vorlage.breite + ' (' + e.vorlage.geaendert + ')' : ''), geoF: gf ? { w: gf.winkel, d: gf.diagonalenMm, dd: gf.diagonalenDiffMm, b: gf.breiteMm, h: gf.hoeheMm } : null, geoG: gg ? { w: gg.winkel, dd: gg.diagonalenDiffMm } : null,
           sicherM: e.massSicher, marker: e.marker, abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null,
           hoehe: e.ok ? Math.round(e.hoehe) : null, stimmig: e.sicher, griff: e.griff ? { seite: e.griff.seite, sicher: e.griff.sicher } : null, ms,
+          ausr: e.ausrichtung || null, drehung: e.drehung || 0,
           blaetter: e.blaetter ? e.blaetter.length : null, anordnung: e.anordnung || null, gesamt: e.gesamt ? [Math.round(e.gesamt.breite), Math.round(e.gesamt.hoehe)] : null,
           fluegel: e.fluegel ? e.fluegel.map((q) => ({ blatt: q.blatt, ok: q.ok, b: q.ok ? Math.round(q.breite) : null, h: q.ok ? Math.round(q.hoehe) : null, sicher: q.massSicher })) : null,
           bild: k.toDataURL('image/jpeg', 0.7) };
@@ -96,7 +97,7 @@ function wahrheit(ordner) {
         geo: r.geoF ? r.geoF.w.map((x) => x.toFixed(1)).join('/') + '° · Diag Δ ' + r.geoF.dd + ' mm' : '–',
         geoGlas: r.geoG ? r.geoG.w.map((x) => x.toFixed(1)).join('/') + '° · Δ ' + r.geoG.dd + ' mm' : '–',
         fbL: r.geoF && w.fluegelBreiteMm ? (r.geoF.b - w.fluegelBreiteMm) / w.fluegelBreiteMm : null, fhL: r.geoF && w.fluegelHoeheMm ? (r.geoF.h - w.fluegelHoeheMm) / w.fluegelHoeheMm : null,
-        gesp: r.gesp || '', marker: r.marker, glas: r.glMm, holz: r.holz,
+        gesp: (r.gesp || '') + (r.drehung ? ' · gedreht ' + (Math.round(r.drehung * 10) / 10) + '°' : ''), marker: r.marker, ausr: r.ausr, glas: r.glMm, holz: r.holz,
         rahmen: w.rahmenSichtbarSeitenMm ? [w.rahmenSichtbarSeitenMm.links, w.rahmenSichtbarSeitenMm.oben, w.rahmenSichtbarSeitenMm.rechts, w.rahmenSichtbarSeitenMm.unten] : w.rahmenSichtbarMm ? [w.rahmenSichtbarMm, w.rahmenSichtbarMm, w.rahmenSichtbarMm, w.rahmenSichtbarMm] : null, licht: w.rahmenInnenBreiteMm ? [w.rahmenInnenBreiteMm, w.rahmenInnenHoeheMm] : null,
         gb: r.glMm && w.rahmenInnenBreiteMm ? (r.glMm[0] - w.rahmenInnenBreiteMm) / w.rahmenInnenBreiteMm : null, gh: r.glMm && w.rahmenInnenHoeheMm ? (r.glMm[1] - w.rahmenInnenHoeheMm) / w.rahmenInnenHoeheMm : null, abstand: r.abstand, stimmig: r.stimmig,
         griff: r.griff ? (r.griff.seite === griffEcht ? 'richtig' : griffEcht ? 'FALSCH' : r.griff.seite) + (r.griff.sicher ? ' (sicher)' : '') : '–', ms: r.ms,

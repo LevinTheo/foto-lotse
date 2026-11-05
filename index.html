@@ -214,6 +214,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .entw__vorschau { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 10px; }
 .entw__vorschau img { width: 110px; height: auto; flex: none; border: 1px solid var(--line); }
 .entw__rahmen { display: grid; gap: 8px; margin-bottom: 6px; }
+.entw__fluegel { display: grid; gap: 10px; margin-bottom: 6px; }
+.entw__fluegel fieldset { margin: 0; padding: 8px 10px 10px; border: 1px solid var(--line); }
+.entw__fluegel legend { font-weight: 600; font-size: 15px; padding: 0 4px; }
+.k-rechts { justify-self: end; display: grid; justify-items: end; gap: 4px; }
 .entw__wahl { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; }
 .entw__wahl .feld__name { flex-basis: 100%; }
 .knopf svg { flex: none; }
@@ -497,7 +501,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.17 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.18 · Test</span>
   </header>
 
   <div class="kopf">
@@ -553,13 +557,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     <fieldset>
       <legend>Dieses Fenster (erst ausfüllen, dann fotografieren)</legend>
       <label class="feld"><span class="feld__name">Name</span><span class="feld__eingabe"><input id="entw-name" type="text" placeholder="z. B. Balkontür Küche"></span></label>
-      <div class="felder">
+      <label class="feld"><span class="feld__name">Flügel</span><span class="feld__eingabe"><select id="entw-nu"><option value="">?</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></span></label>
+      <!-- 1 Flügel: diese Felder. Ab 2 Flügeln (v3.18): je Flügel ein eigener Block, benannt nach seinem Maßblatt (entw-fluegel) -->
+      <div class="felder" id="entw-ein">
         <label class="feld"><span class="feld__name">Flügel breit</span><span class="feld__eingabe"><input id="entw-b" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Flügel hoch</span><span class="feld__eingabe"><input id="entw-h" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Rahmen innen breit</span><span class="feld__eingabe"><input id="entw-rib" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="feld"><span class="feld__name">Rahmen innen hoch</span><span class="feld__eingabe"><input id="entw-rih" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
-        <label class="feld"><span class="feld__name">Flügel</span><span class="feld__eingabe"><select id="entw-nu"><option value="">?</option><option value="1">1</option><option value="2">2</option><option value="3">3 oder mehr</option></select></span></label>
       </div>
+      <div class="entw__fluegel" id="entw-fluegel" hidden></div>
       <!-- Rahmen sichtbar = Flügelrahmen von der Glaskante bis zur Fuge. Meist rundum gleich; nur wenn nicht, Haken setzen und je Seite eintragen -->
       <div class="entw__rahmen">
         <label class="feld" id="entw-rb-feld"><span class="feld__name">Rahmen sichtbar breit (Glaskante bis Fuge)</span><span class="feld__eingabe"><input id="entw-rb" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
@@ -571,8 +577,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           <label class="feld"><span class="feld__name">Rahmen unten</span><span class="feld__eingabe"><input id="entw-rb-u" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         </div>
       </div>
-      <!-- Diagonalen am Flügel: meist gleich lang; nur wenn nicht (Verzug), Haken setzen und beide eintragen -->
-      <div class="entw__rahmen">
+      <!-- Diagonalen am Flügel: meist gleich lang; nur wenn nicht (Verzug), Haken setzen und beide eintragen. Ab 2 Flügeln je Flügel oben (v3.18) -->
+      <div class="entw__rahmen" id="entw-diag">
         <label class="feld" id="entw-d-feld"><span class="feld__name">Diagonale Flügel (beide gleich)</span><span class="feld__eingabe"><input id="entw-d" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>
         <label class="schalter" for="entw-d-ungleich"><input type="checkbox" id="entw-d-ungleich"> Diagonalen ungleich</label>
         <div class="felder" id="entw-d-zwei" hidden>
@@ -723,7 +729,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           <button class="k-text" id="k-zeig" type="button" hidden>Zeig’s mir</button>
         </div>
         <button class="ausloeser" id="k-ausloeser" type="button" aria-label="Foto machen"><span></span></button>
-        <button class="k-text" id="k-skip" type="button" hidden>Überspringen</button>
+        <div class="k-rechts">
+          <button class="k-text" id="k-skip" type="button" hidden>Überspringen</button>
+          <!-- Nur für Levin (v3.18): mitten in der Analyse in die Lernfotos wechseln, alle Fotos dieses Durchlaufs gehen mit -->
+          <button class="k-text" id="k-lern" type="button" hidden>Lernmodus</button>
+        </div>
       </div>
     </div>
 
@@ -779,7 +789,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <button class="kbtn kbtn--zweit" id="p-nochmal" type="button">Nochmal</button>
         <button class="kbtn kbtn--haupt" id="p-weiter" type="button">Passt, weiter</button>
       </div>
-      <button class="kbtn kbtn--zweit p-lernfoto" id="p-lernfoto" type="button" hidden>In Lernfotos übernehmen (Entwickler)</button>
+      <button class="kbtn kbtn--zweit p-lernfoto" id="p-lernfoto" type="button" hidden>In den Lernmodus, alle Fotos mitnehmen (Entwickler)</button>
     </div>
   </div>
 </div>
@@ -2860,6 +2870,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       : 'Klappt es nicht? Fenster in die Linien und selbst auf den Auslöser tippen.';
     tippZeigen(!blatt, 6000);
     $('k-skip').hidden = s.pflicht;
+    // Lernmodus (v3.18): nur für Levin und erst, wenn dieser Durchlauf schon Fotos hat
+    $('k-lern').hidden = !(ENTWICKLER && SCHRITTE.some(function (q) { return fotos[q.id] && fotos[q.id].url; }));
     $('k-ort').hidden = true;
     miniZeigen();
     chips();
@@ -3769,7 +3781,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (ja) { k.rahmenJa = true; pruefen.apply(null, k.pruefArgs); return; }
     // Nein: dieses Foto für Levin markieren (Durchlauf-Daten) und nochmal fotografieren
     k.rahmenNein = (k.rahmenNein || 0) + 1;
-    entwDurchlauf(k.url, 'innen-rahmen-falsch', k.messung, { rahmenAufFluegel: false, nein: k.rahmenNein });
+    entwDurchlauf(k.url, SCHRITTE[k.i].id + '-rahmen-falsch', k.messung, { rahmenAufFluegel: false, nein: k.rahmenNein });
     nochmal();
     // Rahmen neu suchen lassen, sonst bleibt der alte stehen und der Lotse löst nicht wieder aus
     k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; if (k.mass) k.mass.rahmen = false;
@@ -3825,7 +3837,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         anordnung: m.anordnung || null, blattNr: blattNr, blatt: blattNr === null ? null : blattNr + 1, rel: rel, sicher: m.massSicher !== false,
         griff: s.fl && m.griff ? m.griff : null } : null,
       rahmen: fluegelSchritt(s) && m ? { aufFluegel: !!k.rahmenJa, vorherNein: k.rahmenNein || 0 } : null };
-    entwDurchlauf(k.url, s.id, m || (messSchritt(s) ? k.messung : null), fluegelSchritt(s) && k.rahmenJa ? { rahmenAufFluegel: true, vorherNein: k.rahmenNein || 0 } : null);
+    // Für den Lernmodus (v3.18): volle Messung, Kundenantwort und Blatt bleiben am Foto (nur im Speicher, nichts wird gespeichert)
+    var fo = fotos[s.id];
+    fo.messung = m || (messSchritt(s) ? k.messung : null);
+    fo.kunde = fluegelSchritt(s) && k.rahmenJa ? { rahmenAufFluegel: true, vorherNein: k.rahmenNein || 0 } : null;
+    fo.blattNr = typeof k.blattNr === 'number' ? k.blattNr : blattNr;
+    fo.hoch = entwDurchlauf(k.url, s.id, fo.messung, fo.kunde, { blattNr: fo.blattNr });
     k.pruefen = false;
     $('k-pruefen').hidden = true;
     var n = naechster(k.i);
@@ -4145,11 +4162,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var entwFertigGewarnt = false;
   $('entw-neu').addEventListener('click', function () {
     if (!ENTW.ordner || !ENTW.nr) { entwZeile('Noch keine Fotos für dieses Fenster.'); return; }
-    var f = entwFenster();
-    if ((!f.fluegelBreiteMm || !f.fluegelHoeheMm) && !entwFertigGewarnt) {
+    var f = entwFenster(), fehlt = f.fluegelJeBlatt ? f.fluegelJeBlatt.filter(function (w) { return !w.breiteMm || !w.hoeheMm; }) : null;
+    if (((!f.fluegelBreiteMm || !f.fluegelHoeheMm) || (fehlt && fehlt.length)) && !entwFertigGewarnt) {
       entwFertigGewarnt = true;
-      entwZeile('Das echte Maß fehlt noch. Oben eintragen und nochmal „Fenster fertig“ tippen (oder ohne Maß nochmal tippen).').then(function (li) { li.classList.add('fehler'); });
-      $('entw-b').focus();
+      entwZeile(fehlt && fehlt.length ? 'Bei Blatt ' + fehlt.map(function (w) { return w.blatt; }).join(', ') + ' fehlt noch das echte Maß. Oben eintragen und nochmal „Fenster fertig“ tippen (oder ohne nochmal tippen).'
+        : 'Das echte Maß fehlt noch. Oben eintragen und nochmal „Fenster fertig“ tippen (oder ohne Maß nochmal tippen).').then(function (li) { li.classList.add('fehler'); });
+      (fehlt && fehlt.length ? $('entw-f' + fehlt[0].blatt + '-b') : $('entw-b')).focus();
       return;
     }
     if (!entwBereit()) return;
@@ -4161,6 +4179,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         ['entw-name', 'entw-b', 'entw-h', 'entw-rib', 'entw-rih', 'entw-rb', 'entw-rb-l', 'entw-rb-r', 'entw-rb-o', 'entw-rb-u', 'entw-d', 'entw-d1', 'entw-d2', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
         $('entw-rb-ungleich').checked = false; rahmenUngleich(); $('entw-d-ungleich').checked = false; diagUngleich();
         $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = ''; $('entw-hinter').value = ''; $('entw-licht').value = '';
+        $('entw-fluegel').innerHTML = ''; fluegelFelder(1);
         Array.prototype.forEach.call(document.querySelectorAll('#entw-dran input'), function (c) { c.checked = false; });
         $('entw-liste').innerHTML = '';
         $('entw-ordner').textContent = 'Gespeichert ✓ (' + meta.fotos + ' Fotos in ' + ordner + '). Nächstes Fenster: erst Name und Maß, dann Fotos.';
@@ -4220,12 +4239,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   $('entw-d-ungleich').addEventListener('change', diagUngleich);
   function entwFenster() {
-    return { name: $('entw-name').value.trim(), fluegelBreiteMm: +$('entw-b').value || null, fluegelHoeheMm: +$('entw-h').value || null,
-      rahmenInnenBreiteMm: +$('entw-rib').value || null, rahmenInnenHoeheMm: +$('entw-rih').value || null,
+    // Ab 2 Flügeln (v3.18): Maße je Flügel nach Blatt (fluegelJeBlatt); die Einzelwerte bekommen den ersten Flügel mit Maß,
+    // damit ältere Auswertungen (Prüfstand) weiter etwas zum Vergleichen haben
+    var je = +$('entw-nu').value >= 2 ? fluegelWerte() : null, erster = je ? je.filter(function (w) { return w.breiteMm && w.hoeheMm; })[0] || je[0] || {} : null;
+    return { name: $('entw-name').value.trim(), fluegelBreiteMm: je ? erster.breiteMm || null : +$('entw-b').value || null, fluegelHoeheMm: je ? erster.hoeheMm || null : +$('entw-h').value || null,
+      rahmenInnenBreiteMm: je ? erster.lichtBreiteMm || null : +$('entw-rib').value || null, rahmenInnenHoeheMm: je ? erster.lichtHoeheMm || null : +$('entw-rih').value || null,
+      fluegelJeBlatt: je,
       rahmenSichtbarMm: $('entw-rb-ungleich').checked ? null : +$('entw-rb').value || null,
       rahmenSichtbarGleich: !$('entw-rb-ungleich').checked, rahmenSichtbarSeitenMm: rahmenSeiten(),
       fluegelAnzahl: +$('entw-nu').value || null,
-      diagonalenMm: diagonalen(), diagonalenGleich: !$('entw-d-ungleich').checked,
+      diagonalenMm: je ? null : diagonalen(), diagonalenGleich: !$('entw-d-ungleich').checked,
       amFenster: Array.prototype.filter.call(document.querySelectorAll('#entw-dran input'), function (c) { return c.checked; }).map(function (c) { return c.value; }),
       hintergrund: $('entw-hinter').value || null, licht: $('entw-licht').value || null,
       bauart: $('entw-typ').value || null, griff: $('entw-griff').value || null, notiz: $('entw-notiz').value.trim() };
@@ -4280,10 +4303,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     opt.griff = true; opt.v3 = true;
     var bauart = $('entw-typ').value;
     if (TYPEN[bauart]) { opt.fs = TYPEN[bauart].s * 10; opt.fu = TYPEN[bauart].u * 10; opt.tiefe = TYPEN[bauart].tiefe; }
-    if (+$('entw-nu').value === 1 || +$('entw-nu').value === 2) opt.nU = +$('entw-nu').value;   // Vorschau mit der eingetragenen Flügelanzahl
+    if (+$('entw-nu').value >= 1) opt.nU = +$('entw-nu').value;   // Vorschau mit der eingetragenen Flügelanzahl
     return massRechnen(g, cv.width, cv.height, 0.693 * Math.max(cv.width, cv.height), opt, rgbVon(c, cv.width, cv.height)).then(function (r) {
       var e = (r && r.erg) || {};
-      return { geometrie: e.geometrie || null, einigLaeufe: e.einig || null, version: e.version || null, massSicher: e.massSicher === undefined ? null : e.massSicher, einig: e.einig || null, cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
+      return { blatt: e.fluegel ? null : e.blaetter && e.blaetter[0] ? e.blaetter[0].blatt : null,   // v3.18: welches Blatt (ein Blatt im Foto)
+        geometrie: e.geometrie || null, einigLaeufe: e.einig || null, version: e.version || null, massSicher: e.massSicher === undefined ? null : e.massSicher, einig: e.einig || null, cv: cv, original: (img.naturalWidth || img.width) + 'x' + (img.naturalHeight || img.height), bild: cv.width + 'x' + cv.height, ms: r ? r.ms : null, marker: e.marker || 0, abstandMm: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null,
         ok: !!e.ok, grund: e.grund || '', fluegelMm: e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null, holzMm: e.roh && e.roh.holz ? e.roh.holz.map(Math.round) : null,
         stimmig: e.sicher === undefined ? null : !!e.sicher, ecken: e.ecken ? e.ecken.map(function (p) { return [Math.round(p[0]), Math.round(p[1])]; }) : null,
         griff: e.griff || null, schaerfe: sch, fenstertypEingestellt: P.typ,
@@ -4316,13 +4340,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     else if (!sieht.fluegelMm) text = 'Lotse: Maßblatt (' + sieht.marker + ' Marker), aber kein Fenster';
     else {
       text = 'Lotse ' + sieht.fluegelMm.join(' × ') + ' mm' + (sieht.massSicher === false ? ' (unsicher)' : '');
+      // Vergleich mit dem echten Maß, ab 2 Flügeln je Blatt (v3.18)
+      var p = function (x) { return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(0) + ' %'; };
+      var vergleich = function (mm, blatt) {
+        var e = wahrheitBlatt(w, blatt);
+        if (!mm || !e) return '';
+        var pb = (mm[0] - e[0]) / e[0] * 100, ph = (mm[1] - e[1]) / e[1] * 100;
+        return ' (echt ' + e[0] + ' × ' + e[1] + ' · ' + p(pb) + ' / ' + p(ph) + (Math.abs(pb) <= 2 && Math.abs(ph) <= 2 ? ' ✓' : '') + ')';
+      };
       if (sieht.fluegelListe) text = 'Lotse ' + sieht.blaetter.length + ' Blätter, ' + ({ nebeneinander: 'nebeneinander', uebereinander: 'übereinander' }[sieht.anordnung] || sieht.anordnung) + ': ' +
-        sieht.fluegelListe.map(function (q) { return q.fluegelMm ? q.fluegelMm.join(' × ') : 'kein Flügel'; }).join(' · ') + ' mm' + (sieht.massSicher === false ? ' (unsicher)' : '') + (sieht.fluegelListe.length > 1 ? ' (verglichen: der erste)' : '');
-      if (w.fluegelBreiteMm && w.fluegelHoeheMm) {
-        var pb = (sieht.fluegelMm[0] - w.fluegelBreiteMm) / w.fluegelBreiteMm * 100, ph = (sieht.fluegelMm[1] - w.fluegelHoeheMm) / w.fluegelHoeheMm * 100;
-        var p = function (x) { return (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(0) + ' %'; };
-        text += ', echt ' + w.fluegelBreiteMm + ' × ' + w.fluegelHoeheMm + ' · ' + p(pb) + ' / ' + p(ph) + (Math.abs(pb) <= 2 && Math.abs(ph) <= 2 ? ' ✓' : '');
-      }
+        sieht.fluegelListe.map(function (q) { return 'Blatt ' + q.blatt + ' ' + (q.fluegelMm ? q.fluegelMm.join(' × ') + ' mm' + vergleich(q.fluegelMm, q.blatt) : 'kein Flügel'); }).join(' · ') + (sieht.massSicher === false ? ' (unsicher)' : '');
+      else text += (sieht.blatt ? ' (Blatt ' + sieht.blatt + ')' : '') + vergleich(sieht.fluegelMm, sieht.blatt);
     }
     li._sieht = sieht;
     var alt = li.querySelector('.entw__vorschau'); if (alt) { if (!url) { var ai = alt.querySelector('img'); url = ai ? ai.src : null; } alt.remove(); }
@@ -4333,29 +4361,83 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var t = document.createElement('span'); t.textContent = text; d.appendChild(t);
     li.appendChild(d);
   }
-  ['entw-b', 'entw-h'].forEach(function (id) {
-    $(id).addEventListener('input', function () {
-      Array.prototype.forEach.call(document.querySelectorAll('#entw-liste li'), function (li) { if (li._sieht !== undefined) entwVorschau(li, null, li._sieht); });
-    });
+  // Vorschau neu, sobald ein echtes Maß eingetragen wird (auch in den Feldern je Flügel, v3.18)
+  $('entw-feld').addEventListener('input', function (e) {
+    if (!/^entw-(b|h|f\d-b|f\d-h)$/.test(e.target.id || '')) return;
+    Array.prototype.forEach.call(document.querySelectorAll('#entw-liste li'), function (li) { if (li._sieht !== undefined) entwVorschau(li, null, li._sieht); });
   });
-  // Aus der Analyse: das gerade gemachte Foto als erstes Lernfoto eines neuen Fensters übernehmen
-  function inLernfotos() {
-    if (!k.url) return;
+  /* Lernmodus aus der Analyse (v3.18, Levins Wunsch 5. Nov.): Nach den Mess-Fotos (Flügel für Flügel, Gesamtfoto) jederzeit in die
+     Lernfotos wechseln, im Livebild unten rechts („Lernmodus“) oder im Prüfdialog. Alle Fotos dieses Durchlaufs (auch das gerade
+     geprüfte) gehen mit ihren Messdaten und ihrem Blatt in einen Lernfoto-Ordner, das Formular bekommt je Flügel eigene Felder (nach
+     Blattnummer). Danach weitere Fotos machen (der Lotse erkennt das Blatt in jedem Foto) und die echten Maße eintragen. */
+  function lernmodus() {
     clearTimeout(k.weiterUhr);
-    var m = k.messung, extra = { schritt: SCHRITTE[k.i].id, modus: k.modus, schaerfe: k.schaerfe ? k.schaerfe.breite : null,
-      gemessen: m ? { version: m.version || 'v2', breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand || 0),
-        massSicher: m.massSicher === undefined ? null : m.massSicher, geometrie: m.geometrie || null } : null };
-    var url = k.url;
+    var liste = [];
+    SCHRITTE.forEach(function (s) {
+      var f = fotos[s.id];
+      if (f && f.url && !f.hoch) liste.push({ url: f.url, id: s.id, messung: f.messung || null, kunde: f.kunde || null, blattNr: typeof f.blattNr === 'number' ? f.blattNr : null, modus: f.art, schaerfe: f.schaerfe, f: f });
+    });
+    // Das Foto im Prüfdialog ist noch nicht übernommen: es gehört mit dazu
+    if (k.pruefen && k.url) liste.push({ url: k.url, id: SCHRITTE[k.i].id, messung: k.messung, kunde: null, blattNr: typeof k.blattNr === 'number' ? k.blattNr : null,
+      modus: k.modus, schaerfe: k.schaerfe ? Math.round(k.schaerfe.breite * 10) / 10 : null, f: null });
+    var schonHoch = SCHRITTE.some(function (s) { return fotos[s.id] && fotos[s.id].hoch; });
+    // Blätter der Flügel (Nr. ab 0), in der Reihenfolge der Flügel-Fotos
+    var blaetter = [];
+    liste.concat(SCHRITTE.map(function (s) { return fotos[s.id] && fotos[s.id].hoch ? { blattNr: fotos[s.id].blattNr, id: s.id } : null; }).filter(Boolean))
+      .forEach(function (q) { if (/^fl\d$/.test(q.id) && typeof q.blattNr === 'number' && blaetter.indexOf(q.blattNr) < 0) blaetter.push(q.blattNr); });
+    var n = P.mehr ? P.flZahl : 1;
     schliessen();
     $('entw-feld').hidden = false; $('entw').setAttribute('aria-expanded', 'true');
-    ENTW.ordner = null; ENTW.nr = 0; $('entw-liste').innerHTML = '';
-    $('entw-ordner').textContent = 'Foto aus der Analyse übernommen. Jetzt Name und Maß eintragen, dann die weiteren Fotos (links, rechts, nah).';
+    // Neuer Ordner, außer der Durchlauf liegt schon (mit „alle Fotos mit hochladen“) in einem
+    if (!schonHoch) { ENTW.ordner = null; ENTW.nr = 0; $('entw-liste').innerHTML = ''; }
+    $('entw-nu').value = String(n);
+    fluegelFelder(n, blaetter);
+    if (!entwBereit()) return;
+    liste.forEach(function (q) {
+      if (entwDurchlauf(q.url, q.id, q.messung, q.kunde, { immer: true, blattNr: q.blattNr, modus: q.modus, schaerfe: q.schaerfe }) && q.f) q.f.hoch = true;
+    });
+    $('entw-ordner').textContent = 'Lernmodus: ' + liste.length + ' Fotos aus der Analyse übernommen' + (ENTW.ordner ? ' (' + ENTW.ordner + ')' : '') +
+      '. Jetzt Name und echte Maße je Flügel eintragen, dann weitere Fotos (links, rechts, nah). Zum Schluss „Fenster fertig“.';
     $('entw-feld').scrollIntoView({ behavior: RUHIG ? 'auto' : 'smooth', block: 'start' });
-    fetch(url).then(function (r) { return r.blob(); }).then(function (bl) {
-      entwDatei(new File([bl], 'analyse-' + extra.schritt + '.jpg', { type: 'image/jpeg' }), 'analyse', extra);
+    $('entw-name').focus();
+  }
+  $('k-lern').addEventListener('click', lernmodus);
+  $('p-lernfoto').addEventListener('click', lernmodus);
+  /* Felder je Flügel (v3.18): ab 2 Flügeln ein Block je Flügel, benannt nach seinem Maßblatt (aus den Flügel-Fotos, sonst Blatt 1, 2, …).
+     Bei 1 Flügel die bisherigen Einzelfelder. Schon eingetragene Werte bleiben beim Umbauen stehen. */
+  function fluegelFelder(n, blaetter) {
+    var box = $('entw-fluegel'), alt = fluegelWerte();
+    n = Math.max(1, Math.min(4, +n || 1));
+    $('entw-ein').hidden = n >= 2; box.hidden = n < 2; $('entw-diag').hidden = n >= 2;
+    if (n < 2) { box.innerHTML = ''; return; }
+    var nrs = (blaetter || []).slice(0, n);
+    for (var j = 0; nrs.length < n; j++) if (nrs.indexOf(j) < 0) nrs.push(j);
+    var feld = function (id, name) { return '<label class="feld"><span class="feld__name">' + name + '</span><span class="feld__eingabe"><input id="' + id + '" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>'; };
+    box.innerHTML = nrs.map(function (nr, i) {
+      var b = nr + 1, p = 'entw-f' + b + '-';
+      return '<fieldset data-blatt="' + b + '"><legend>Flügel ' + (i + 1) + ' (mit Blatt ' + b + ')</legend><div class="felder">' +
+        feld(p + 'b', 'Flügel breit') + feld(p + 'h', 'Flügel hoch') + feld(p + 'rib', 'Rahmen innen breit') + feld(p + 'rih', 'Rahmen innen hoch') +
+        feld(p + 'd', 'Diagonale (beide gleich)') + '</div></fieldset>';
+    }).join('');
+    alt.forEach(function (w) {
+      var p = 'entw-f' + w.blatt + '-';
+      if (!$(p + 'b')) return;
+      $(p + 'b').value = w.breiteMm || ''; $(p + 'h').value = w.hoeheMm || ''; $(p + 'rib').value = w.lichtBreiteMm || ''; $(p + 'rih').value = w.lichtHoeheMm || ''; $(p + 'd').value = w.diagonaleMm || '';
     });
   }
-  $('p-lernfoto').addEventListener('click', inLernfotos);
+  // Echte Maße je Flügel aus den Blöcken: [{ blatt, breiteMm, hoeheMm, lichtBreiteMm, lichtHoeheMm, diagonaleMm }]
+  function fluegelWerte() {
+    return Array.prototype.map.call(document.querySelectorAll('#entw-fluegel fieldset'), function (fs) {
+      var b = +fs.getAttribute('data-blatt'), p = 'entw-f' + b + '-', v = function (x) { return +$(p + x).value || null; };
+      return { blatt: b, breiteMm: v('b'), hoeheMm: v('h'), lichtBreiteMm: v('rib'), lichtHoeheMm: v('rih'), diagonaleMm: v('d') };
+    });
+  }
+  $('entw-nu').addEventListener('change', function () { fluegelFelder(this.value, fluegelWerte().map(function (w) { return w.blatt - 1; })); });
+  // Das echte Maß für ein Foto mit diesem Blatt (Nr. ab 1): je Flügel, sonst die Einzelfelder
+  function wahrheitBlatt(w, blatt) {
+    var q = (w.fluegelJeBlatt || []).filter(function (x) { return x.blatt === blatt && x.breiteMm && x.hoeheMm; })[0];
+    return q ? [q.breiteMm, q.hoeheMm] : w.fluegelBreiteMm && w.fluegelHoeheMm ? [w.fluegelBreiteMm, w.fluegelHoeheMm] : null;
+  }
   function entwBereit() {
     if (ENTW.token && ENTW.repo) return true;
     entwZeile('Erst den Zugang einrichten (oben).').then(function (li) { li.classList.add('fehler'); });
@@ -4398,17 +4480,20 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     });
   }
   // Beim normalen Durchlauf: jedes übernommene Foto samt Messung mit hochladen (wenn eingeschaltet)
-  function entwDurchlauf(url, schrittId, messung, kunde) {
-    if (!ENTW.mit || !ENTW.token || !url) return;
+  // zusatz (v3.18): { immer: auch ohne „alle Fotos mit hochladen“ (Lernmodus), blattNr, modus, schaerfe des Fotos }. Gibt true zurück,
+  // wenn das Foto hochgeladen wird.
+  function entwDurchlauf(url, schrittId, messung, kunde, zusatz) {
+    zusatz = zusatz || {};
+    if (!(ENTW.mit || zusatz.immer) || !ENTW.token || !url) return false;
     var ordner = entwOrdner(), name = 'lauf-' + zwei(++ENTW.nr) + '-' + schrittId;
-    var meta = { zeit: new Date().toISOString(), quelle: 'durchlauf', schritt: schrittId, modus: k.modus, fenster: entwFenster(),
+    var meta = { zeit: new Date().toISOString(), quelle: zusatz.immer ? 'durchlauf-lernmodus' : 'durchlauf', schritt: schrittId, modus: zusatz.modus || k.modus, fenster: entwFenster(),
       einstellung: { typ: P.typ, nU: P.nU, ol: P.ol, band: P.band, griffY: P.griffY, griffQuelle: P.griffQuelle },
-      schaerfe: k.schaerfe, messung: messung ? { breite: Math.round(messung.breite), hoehe: Math.round(messung.hoehe), abstand: Math.round(messung.abstand || 0),
+      schaerfe: 'schaerfe' in zusatz ? zusatz.schaerfe : k.schaerfe, messung: messung ? { breite: Math.round(messung.breite), hoehe: Math.round(messung.hoehe), abstand: Math.round(messung.abstand || 0),
         ecken: messung.ecken, griff: messung.griff || null, stimmig: messung.sicher === undefined ? null : !!messung.sicher,
         massSicher: messung.massSicher === undefined ? null : messung.massSicher, geometrie: messung.geometrie || null, version: messung.version || 'v2' } : null,
       kunde: kunde || null, geraet: { ua: navigator.userAgent },
       // Flügel für Flügel (v3.17): welches Blatt dieses Flügel-Foto hatte, und beim Gesamtfoto wie die Flügel liegen
-      blatt: typeof k.blattNr === 'number' ? k.blattNr + 1 : null, flZahl: P.mehr ? P.flZahl : 1,
+      blatt: 'blattNr' in zusatz ? (typeof zusatz.blattNr === 'number' ? zusatz.blattNr + 1 : null) : typeof k.blattNr === 'number' ? k.blattNr + 1 : null, flZahl: P.mehr ? P.flZahl : 1,
       anordnung: messung && messung.anordnung || null,
       fluegel: messung && messung.fluegel ? messung.fluegel.map(function (q) { return { blatt: q.blatt, ok: !!q.ok, breite: q.breite ? Math.round(q.breite) : null, hoehe: q.hoehe ? Math.round(q.hoehe) : null, mitte: q.mitte || null }; }) : null };
     entwZeile(name + ': lädt hoch …').then(function (li) {
@@ -4416,6 +4501,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         .then(function () { return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Durchlauf-Daten ' + ordner + '/' + name); })
         .then(function () { li.textContent = name + ': hochgeladen ✓'; }, function (x) { li.textContent = name + ': Fehler (' + (x && x.message ? x.message : x) + ')'; li.classList.add('fehler'); });
     });
+    return true;
   }
 
   // Nur für Tests: mit ?test in der Adresse ist der Zustand von außen lesbar

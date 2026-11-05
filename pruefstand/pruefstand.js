@@ -17,6 +17,13 @@ const AUS = path.resolve(ARGS[1] || '/tmp/pruefstand');
 const LOTSE = path.resolve(__dirname, '..');
 const NACHTRAG = JSON.parse(fs.readFileSync(path.join(__dirname, 'nachtrag.json'), 'utf8'));
 
+// Ab 2 Flügeln (v3.18) kann fenster.json je Blatt ein eigenes echtes Maß haben (fluegelJeBlatt). Für ein Foto zählt dann das Maß
+// des Flügels, dessen Blatt der Lotse gemessen hat; sonst wie bisher das eine Maß.
+function fuerBlatt(w, blatt) {
+  const q = (w.fluegelJeBlatt || []).find((x) => x.blatt === blatt && x.breiteMm && x.hoeheMm);
+  if (!q) return w;
+  return Object.assign({}, w, { fluegelBreiteMm: q.breiteMm, fluegelHoeheMm: q.hoeheMm, rahmenInnenBreiteMm: q.lichtBreiteMm || null, rahmenInnenHoeheMm: q.lichtHoeheMm || null, blattWahrheit: blatt });
+}
 const pz1 = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' %');
 function wahrheit(ordner) {
   const f = path.join(DATEN, 'fenster', ordner, 'fenster.json');
@@ -84,26 +91,28 @@ function wahrheit(ordner) {
           sicherM: e.massSicher, marker: e.marker, abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null,
           hoehe: e.ok ? Math.round(e.hoehe) : null, stimmig: e.sicher, griff: e.griff ? { seite: e.griff.seite, sicher: e.griff.sicher } : null, ms,
           ausr: e.ausrichtung || null, drehung: e.drehung || 0,
+          blatt: e.fluegel ? ((e.fluegel.find((q) => q.ok) || {}).blatt || null) : e.blaetter && e.blaetter[0] ? e.blaetter[0].blatt : null,
           blaetter: e.blaetter ? e.blaetter.length : null, anordnung: e.anordnung || null, gesamt: e.gesamt ? [Math.round(e.gesamt.breite), Math.round(e.gesamt.hoehe)] : null,
           fluegel: e.fluegel ? e.fluegel.map((q) => ({ blatt: q.blatt, ok: q.ok, b: q.ok ? Math.round(q.breite) : null, h: q.ok ? Math.round(q.hoehe) : null, sicher: q.massSicher })) : null,
           bild: k.toDataURL('image/jpeg', 0.7) };
       }, { url: 'http://lotse.test/_daten/fenster/' + ordner + '/' + foto, opt });
+      const wf = fuerBlatt(w, r.blatt);
       fs.writeFileSync(path.join(AUS, ordner + '__' + foto), Buffer.from(r.bild.split(',')[1], 'base64'));
-      const fb = r.breite && w.fluegelBreiteMm ? (r.breite - w.fluegelBreiteMm) / w.fluegelBreiteMm : null;
-      const fh = r.hoehe && w.fluegelHoeheMm ? (r.hoehe - w.fluegelHoeheMm) / w.fluegelHoeheMm : null;
-      const griffEcht = w.griff === 'links' ? 'l' : w.griff === 'rechts' ? 'r' : null;
-      zeilen.push({ ordner, name: w.name || '', foto, echt: w.fluegelBreiteMm ? w.fluegelBreiteMm + ' × ' + w.fluegelHoeheMm : '?',
+      const fb = r.breite && wf.fluegelBreiteMm ? (r.breite - wf.fluegelBreiteMm) / wf.fluegelBreiteMm : null;
+      const fh = r.hoehe && wf.fluegelHoeheMm ? (r.hoehe - wf.fluegelHoeheMm) / wf.fluegelHoeheMm : null;
+      const griffEcht = wf.griff === 'links' ? 'l' : wf.griff === 'rechts' ? 'r' : null;
+      zeilen.push({ ordner, name: wf.name || '', foto, echt: wf.fluegelBreiteMm ? wf.fluegelBreiteMm + ' × ' + wf.fluegelHoeheMm : '?',
         lotse: r.ok ? r.breite + ' × ' + r.hoehe + (r.sicherM === false ? ' (unsicher)' : '') : 'kein Maß', fb, fh, sicherM: r.sicherM,
         geo: r.geoF ? r.geoF.w.map((x) => x.toFixed(1)).join('/') + '° · Diag Δ ' + r.geoF.dd + ' mm' : '–',
         geoGlas: r.geoG ? r.geoG.w.map((x) => x.toFixed(1)).join('/') + '° · Δ ' + r.geoG.dd + ' mm' : '–',
-        fbL: r.geoF && w.fluegelBreiteMm ? (r.geoF.b - w.fluegelBreiteMm) / w.fluegelBreiteMm : null, fhL: r.geoF && w.fluegelHoeheMm ? (r.geoF.h - w.fluegelHoeheMm) / w.fluegelHoeheMm : null,
+        fbL: r.geoF && wf.fluegelBreiteMm ? (r.geoF.b - wf.fluegelBreiteMm) / wf.fluegelBreiteMm : null, fhL: r.geoF && wf.fluegelHoeheMm ? (r.geoF.h - wf.fluegelHoeheMm) / wf.fluegelHoeheMm : null,
         gesp: (r.gesp || '') + (r.drehung ? ' · gedreht ' + (Math.round(r.drehung * 10) / 10) + '°' : ''), marker: r.marker, ausr: r.ausr, glas: r.glMm, holz: r.holz,
-        rahmen: w.rahmenSichtbarSeitenMm ? [w.rahmenSichtbarSeitenMm.links, w.rahmenSichtbarSeitenMm.oben, w.rahmenSichtbarSeitenMm.rechts, w.rahmenSichtbarSeitenMm.unten] : w.rahmenSichtbarMm ? [w.rahmenSichtbarMm, w.rahmenSichtbarMm, w.rahmenSichtbarMm, w.rahmenSichtbarMm] : null, licht: w.rahmenInnenBreiteMm ? [w.rahmenInnenBreiteMm, w.rahmenInnenHoeheMm] : null,
-        gb: r.glMm && w.rahmenInnenBreiteMm ? (r.glMm[0] - w.rahmenInnenBreiteMm) / w.rahmenInnenBreiteMm : null, gh: r.glMm && w.rahmenInnenHoeheMm ? (r.glMm[1] - w.rahmenInnenHoeheMm) / w.rahmenInnenHoeheMm : null, abstand: r.abstand, stimmig: r.stimmig,
+        rahmen: wf.rahmenSichtbarSeitenMm ? [wf.rahmenSichtbarSeitenMm.links, wf.rahmenSichtbarSeitenMm.oben, wf.rahmenSichtbarSeitenMm.rechts, wf.rahmenSichtbarSeitenMm.unten] : wf.rahmenSichtbarMm ? [wf.rahmenSichtbarMm, wf.rahmenSichtbarMm, wf.rahmenSichtbarMm, wf.rahmenSichtbarMm] : null, licht: wf.rahmenInnenBreiteMm ? [wf.rahmenInnenBreiteMm, wf.rahmenInnenHoeheMm] : null,
+        gb: r.glMm && wf.rahmenInnenBreiteMm ? (r.glMm[0] - wf.rahmenInnenBreiteMm) / wf.rahmenInnenBreiteMm : null, gh: r.glMm && wf.rahmenInnenHoeheMm ? (r.glMm[1] - wf.rahmenInnenHoeheMm) / wf.rahmenInnenHoeheMm : null, abstand: r.abstand, stimmig: r.stimmig,
         griff: r.griff ? (r.griff.seite === griffEcht ? 'richtig' : griffEcht ? 'FALSCH' : r.griff.seite) + (r.griff.sicher ? ' (sicher)' : '') : '–', ms: r.ms,
         // Mehrere Maßblätter (v3.14): je Flügel gegen das eine echte Maß (Levin misst einen Flügel; gleich große Flügel angenommen)
         blaetter: r.fluegel ? r.blaetter + ' Blätter, ' + r.anordnung + ': ' + r.fluegel.map((q) => 'Blatt ' + q.blatt + ' ' + (q.ok ? q.b + '×' + q.h +
-          (w.fluegelBreiteMm ? ' (' + pz1((q.b - w.fluegelBreiteMm) / w.fluegelBreiteMm) + ' / ' + pz1((q.h - w.fluegelHoeheMm) / w.fluegelHoeheMm) + ')' : '') + (q.sicher ? '' : ' unsicher') : 'kein Maß')).join(' · ') +
+          (fuerBlatt(w, q.blatt).fluegelBreiteMm ? ' (' + pz1((q.b - fuerBlatt(w, q.blatt).fluegelBreiteMm) / fuerBlatt(w, q.blatt).fluegelBreiteMm) + ' / ' + pz1((q.h - fuerBlatt(w, q.blatt).fluegelHoeheMm) / fuerBlatt(w, q.blatt).fluegelHoeheMm) + ')' : '') + (q.sicher ? '' : ' unsicher') : 'kein Maß')).join(' · ') +
           (r.gesamt ? ' · zusammen ' + r.gesamt.join('×') : '') : '' });
       process.stdout.write('.');
     }

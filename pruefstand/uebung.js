@@ -77,6 +77,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
       if (BILDER && n === 0) await page.screenshot({ path: path.join(BILDER, 'blatt-' + nU + '.png') });
       if (n === 0) pruef(!!(await warteStatus(/zurück/, 4000)), 'Livebild schickt beim ersten Foto nicht zurück: „' + await page.textContent('#k-status') + '“');
     }
+    pruef(!(await sichtbar(page, '#k-lern')), 'Knopf „Lernmodus“ ist für den Kunden sichtbar (' + schritt + ')');
     if (await sichtbar(page, '#k-skip')) { titel.push(schritt + ' (übersprungen)'); await page.click('#k-skip'); continue; }
     await page.click('#k-zeig');
     // Auf den Prüfdialog warten; mitlesen, ob „… gefunden“ (grüner Rahmen) bzw. „Alle … Maßblätter im Bild“ kam

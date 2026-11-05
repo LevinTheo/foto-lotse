@@ -1,0 +1,109 @@
+// Lernmodus-Test (v3.18): spielt als Levin (?entw, Lernfoto-Zugang gespeichert) den Übungsmodus mit 2 Flügeln bis zum Griff, wechselt
+// unten rechts mit „Lernmodus“ in die Lernfotos und prüft:
+//   - der Knopf erscheint erst, wenn der Durchlauf Fotos hat
+//   - alle Fotos des Durchlaufs (Flügel 1, Flügel 2, Gesamtfoto) gehen hoch, je Foto mit dem richtigen Blatt
+//   - das Formular hat Felder je Flügel („Flügel 1 (mit Blatt 1)“, „Flügel 2 (mit Blatt 2)“)
+//   - „Fenster fertig“ schreibt fenster.json mit fluegelJeBlatt
+// GitHub wird nachgestellt: nichts geht ins echte Repo.
+// Aufruf: node pruefstand/lernmodus.js [Pfad zum Lotsen]   (Playwright mit Chromium, ca. 1 Minute)
+'use strict';
+const fs = require('fs'), path = require('path');
+const { chromium, devices } = require('playwright');
+const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
+
+(async () => {
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext(Object.assign({}, devices['iPhone 13'], { reducedMotion: 'reduce' }));
+  await ctx.addInitScript(() => {
+    if (!sessionStorage.getItem('zugang')) {
+      localStorage.setItem('foto-lotse-entw', JSON.stringify({ repo: 'test/foto-lotse-daten', token: 'test', mit: false }));
+      sessionStorage.setItem('zugang', '1');
+    }
+  });
+  const page = await ctx.newPage();
+  const fehler = [], hoch = {};
+  const pruef = (ok, text) => { if (!ok) fehler.push(text); };
+  page.on('pageerror', (e) => fehler.push('Seite: ' + e.message));
+  page.on('console', (m) => { if (m.type() === 'error') fehler.push('Konsole: ' + m.text()); });
+  await page.route('http://lotse.test/**', (route) => {
+    const u = new URL(route.request().url()), p = path.join(LOTSE, decodeURIComponent(u.pathname));
+    if (!fs.existsSync(p) || fs.statSync(p).isDirectory()) return route.fulfill({ status: 404, body: '' });
+    const typ = p.endsWith('.html') ? 'text/html' : p.endsWith('.js') ? 'text/javascript' : p.endsWith('.json') ? 'application/json' : 'application/octet-stream';
+    route.fulfill({ status: 200, body: fs.readFileSync(p), contentType: typ });
+  });
+  // Nachgestellte GitHub-Gegenstelle: merkt sich jede hochgeladene Datei
+  await page.route('https://api.github.com/**', (route) => {
+    const req = route.request();
+    if (req.method() === 'PUT') {
+      const pfad = decodeURIComponent(new URL(req.url()).pathname.split('/contents/')[1] || '');
+      hoch[pfad] = JSON.parse(req.postData() || '{}').content || '';
+      return route.fulfill({ status: 201, contentType: 'application/json', body: '{}' });
+    }
+    return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+  });
+  const sichtbar = (sel) => page.isVisible(sel).catch(() => false);
+  const warteStatus = async (re, ms) => { for (let t = 0; t < ms / 100; t++) { if (re.test(await page.textContent('#k-status'))) return true; await page.waitForTimeout(100); } return false; };
+  const json = (pfad) => JSON.parse(Buffer.from(hoch[pfad], 'base64').toString('utf8'));
+
+  await page.goto('http://lotse.test/index.html?entw');
+  await page.click('#start');
+  await page.click('#flu-wahl-2');
+  await page.waitForSelector('#kamera:not([hidden])');
+  await page.waitForTimeout(500);
+  if (await sichtbar('#k-karte')) await page.click('#k-karte-ok');
+
+  // Flügel 1, Flügel 2, Gesamtfoto wie ein Kunde
+  for (let n = 0; n < 3; n++) {
+    const schritt = await page.textContent('#k-titel');
+    pruef(n === 0 ? !(await sichtbar('#k-lern')) : await sichtbar('#k-lern'), schritt + ': Knopf „Lernmodus“ ' + (n === 0 ? 'schon vor dem ersten Foto da' : 'fehlt'));
+    if (/^Flügel/.test(schritt)) pruef(await warteStatus(/Blatt \d erkannt/, 5000), schritt + ': kein „Blatt … erkannt“');
+    await page.click('#k-zeig');
+    await page.waitForSelector('#k-pruefen:not([hidden])', { timeout: 30000 }).catch(() => pruef(false, schritt + ': löst nicht aus'));
+    if (await sichtbar('#p-rahmen')) await page.click('#p-rahmen-ja');
+    await page.waitForTimeout(200);
+    if (await sichtbar('#p-weiter')) await page.click('#p-weiter');
+    await page.waitForSelector('#k-pruefen', { state: 'hidden', timeout: 10000 }).catch(() => pruef(false, schritt + ': Prüfdialog geht nicht weiter'));
+    await page.waitForTimeout(300);
+  }
+  pruef((await page.textContent('#k-titel')) === 'Der Griff', 'nach dem Gesamtfoto nicht beim Griff: ' + await page.textContent('#k-titel'));
+  pruef(await sichtbar('#k-lern'), 'beim Griff fehlt „Lernmodus“');
+  await page.click('#k-lern');
+
+  // Lernfotos: Formular mit Feldern je Flügel, alle Fotos hochgeladen
+  pruef(await sichtbar('#entw-feld'), 'Lernfotos gehen nicht auf');
+  pruef(!(await sichtbar('#kamera')), 'Kamera bleibt offen');
+  pruef((await page.inputValue('#entw-nu')) === '2', 'Flügelanzahl im Formular nicht 2');
+  const legenden = await page.$$eval('#entw-fluegel legend', (l) => l.map((x) => x.textContent));
+  pruef(legenden.join(' | ') === 'Flügel 1 (mit Blatt 1) | Flügel 2 (mit Blatt 2)', 'Felder je Flügel: ' + legenden.join(' | '));
+  pruef(!(await sichtbar('#entw-b')), 'Einzelfeld „Flügel breit“ trotz 2 Flügeln sichtbar');
+  for (let t = 0; t < 100 && Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).length < 3; t++) await page.waitForTimeout(100);
+  const lauf = Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).sort();
+  pruef(lauf.length === 3 && Object.keys(hoch).filter((p) => /lauf-.*\.jpg$/.test(p)).length === 3, 'hochgeladen: ' + Object.keys(hoch).join(', '));
+  const daten = lauf.map(json);
+  const fl = daten.filter((d) => /^fl\d$/.test(d.schritt)), ges = daten.find((d) => d.schritt === 'innen');
+  pruef(fl.length === 2 && fl.map((d) => d.blatt).sort().join() === '1,2', 'Flügel-Fotos mit Blatt: ' + fl.map((d) => d.schritt + '=' + d.blatt).join(', '));
+  pruef(fl.every((d) => d.quelle === 'durchlauf-lernmodus' && d.messung && d.messung.breite > 300), 'Flügel-Fotos ohne Messung oder falsche Quelle');
+  pruef(!!ges && ges.anordnung === 'nebeneinander' && ges.fluegel && ges.fluegel.length === 2, 'Gesamtfoto ohne Anordnung / Flügel: ' + JSON.stringify(ges && { a: ges.anordnung, f: ges.fluegel }));
+  const ordner = lauf[0].split('/').slice(0, 2).join('/');
+
+  // Echte Maße je Flügel eintragen, Fenster fertig
+  await page.fill('#entw-name', 'Testfenster');
+  await page.fill('#entw-f1-b', '450'); await page.fill('#entw-f1-h', '1240'); await page.fill('#entw-f1-rib', '320');
+  await page.fill('#entw-f2-b', '451'); await page.fill('#entw-f2-h', '1239');
+  await page.click('#entw-neu');
+  for (let t = 0; t < 100 && !hoch[ordner + '/fenster.json']; t++) await page.waitForTimeout(100);
+  pruef(!!hoch[ordner + '/fenster.json'], 'fenster.json fehlt (Ordner ' + ordner + ')');
+  if (hoch[ordner + '/fenster.json']) {
+    const f = json(ordner + '/fenster.json').fenster;
+    pruef(f.fluegelAnzahl === 2, 'fluegelAnzahl ' + f.fluegelAnzahl);
+    pruef(f.fluegelJeBlatt && f.fluegelJeBlatt.length === 2 && f.fluegelJeBlatt[0].blatt === 1 && f.fluegelJeBlatt[0].breiteMm === 450 && f.fluegelJeBlatt[0].lichtBreiteMm === 320 &&
+      f.fluegelJeBlatt[1].blatt === 2 && f.fluegelJeBlatt[1].hoeheMm === 1239, 'fluegelJeBlatt: ' + JSON.stringify(f.fluegelJeBlatt));
+    pruef(f.fluegelBreiteMm === 450 && f.fluegelHoeheMm === 1240 && f.name === 'Testfenster', 'Einzelwerte: ' + f.fluegelBreiteMm + ' × ' + f.fluegelHoeheMm + ', ' + f.name);
+  }
+  await page.waitForFunction(() => /Gespeichert/.test(document.getElementById('entw-ordner').textContent), null, { timeout: 5000 }).catch(() => pruef(false, 'kein „Gespeichert ✓“ nach „Fenster fertig“'));
+  pruef(!(await sichtbar('#entw-fluegel')) && (await page.$$('#entw-fluegel fieldset')).length === 0, 'Felder je Flügel nach „Fenster fertig“ nicht geleert');
+  await browser.close();
+  console.log('Hochgeladen: ' + Object.keys(hoch).sort().join(', '));
+  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: 3 Fotos mit Blatt übernommen, Felder je Flügel, fenster.json mit fluegelJeBlatt.');
+  process.exit(fehler.length ? 1 : 0);
+})();

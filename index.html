@@ -497,7 +497,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.15 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.16 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1898,6 +1898,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     ausrSeiten: 0.6,          // … auf so viel Grad mit der Gesamtrichtung übereinstimmen
     ausrAb: 1.3,              // Grad: kleinere Schräge wird nicht ausgeglichen (bei geraden Blättern misst er sonst je nach Foto
                               // −1,2 … +0,9° aus der Perspektive, und schon 0,1° Drehung lässt unsichere Fotos springen; Prüfstand 5. Nov.)
+    // Ebene aus den Glaskanten statt nur vom Blatt (Prüfung 11, v3.16): Trapez im entzerrten Bild ausgleichen, dann neu messen.
+    // Aus: bei gleichen Kanten ändert die Korrektur das Glasmaß kaum (Median 2,4 → 2,3 % gegen Lichtmaß), die neue Suche wählt aber
+    // oft andere Kanten (Prüfstand ±2 % 8 statt 13, ±5 % 19 statt 22; 15 Fotos besser, 16 schlechter). Siehe REGIE, Prüfstand 5. Nov.
+    ebene: false,             // Schalter
+    ebeneMax: 0.15,           // größere Schräge (Maßstab ändert sich um mehr als 15 % je Meter) gilt als falsche Kante, nicht als Ebene
+    ebeneRunden: 1,           // so oft nachstellen und neu messen
     blatt: [0, 0, 210, 297] };   // Blattrand im Messraster (mm), von messenV3 je Blatt gesetzt
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
@@ -2252,9 +2258,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     v3Raster(2);
     return { seite: 'lorU'[best.seite], breite: Math.round(best.breite), geaendert: geaendert };
   }
-  function messenV3(g, w, h, f, lage, opt, rgb, marker) {
-    var Hm = lage.Hvoll || lage.H;
-    V3.blatt = lage.blattBox || [0, 0, MB.b, MB.h];   // wo das Blatt im (ausgerichteten) Raster liegt (v3.15)
+  // Alle Durchgänge (Raster 2, 2,5 und 3 mm) mit einer Abbildung Hm, danach Vorlage, Spiegeln und Mehrheit
+  function v3Alle(g, w, h, Hm, opt, rgb) {
     // Dreimal suchen (2, 2,5 und 3 mm je Pixel); je Seite zählt die Kante, auf die sich die meisten Durchgänge einigen.
     // So kippt das Maß nicht, nur weil ein Handy das Bild minimal anders verkleinert (Wackeltest 4. Nov. 2026).
     var laeufe = [], E2 = null;
@@ -2271,9 +2276,67 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var sp = laeufe.map(function (q) { return q.spiegel ? q.spiegel.seite : '-'; });
     var spiegelSeite = laeufe.length >= 2 && sp[0] !== '-' && sp.every(function (x) { return x === sp[0]; }) ? sp[0] : null;
     if (spiegelSeite) laeufe.forEach(function (q) { if (q.spiegel && q.spiegel.seite === spiegelSeite) { q.fluegel = q.fluegel.slice(); q.fluegel[q.spiegel.i] = q.spiegel.wert; } });
-    var z = v3Mehrheit(laeufe);
+    return { laeufe: laeufe, E2: E2, vorlage: vorlage, sp: sp, spiegelSeite: spiegelSeite, z: v3Mehrheit(laeufe) };
+  }
+  /* ---------- Ebene aus den Fensterkanten (Prüfung 11) ----------
+     Das kleine Maßblatt (21 × 30 cm) legt Maßstab und Lage gut fest, die Schräge der Fensterebene aber nur ungenau: ein halbes
+     Pixel an den Markern genügt, und das entzerrte Fenster wird zum Trapez (Lernfotos: Glas oben bis 4 % breiter oder schmaler
+     als unten, links bis 6 % höher oder niedriger als rechts). Ein Fenster ist aber ein Rechteck: die seitlichen Glaskanten
+     laufen parallel, oben und unten auch. Wo sie sich im entzerrten Bild schneiden (Fluchtpunkte), ist in Wahrheit „unendlich
+     weit weg“. Die Gerade durch beide Fluchtpunkte wird nach unendlich geschoben; am Blatt selbst bleibt alles, wie es war
+     (Maßstab, Drehung, Lage, per Ausgleich über das Blatt). Gibt die Korrektur C zurück (alte Rasterkoordinaten → neue). */
+  function v3Ebene(E, R) {
+    var L = v3Gerade(E, true, R[0], R[1], R[3]), Rr = v3Gerade(E, true, R[2], R[1], R[3]);
+    var O = v3Gerade(E, false, R[1], R[0], R[2]), U = v3Gerade(E, false, R[3], R[0], R[2]);
+    if (!L || !Rr || !O || !U) return null;
+    var kreuz = function (a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; };
+    // senkrecht: x = steig·y + ab → Gerade (1, −steig, −ab); waagerecht: y = steig·x + ab → (−steig, 1, −ab)
+    var v1 = kreuz([1, -L.steig, -L.ab], [1, -Rr.steig, -Rr.ab]), v2 = kreuz([-O.steig, 1, -O.ab], [-U.steig, 1, -U.ab]);
+    var bb = V3.blatt, c = [(bb[0] + bb[2]) / 2, (bb[1] + bb[3]) / 2], l = kreuz(v1, v2), n = l[0] * c[0] + l[1] * c[1] + l[2];
+    if (!(Math.abs(n) > 1e-12)) return null;
+    l = l.map(function (x) { return x / n; });   // so ist der Nenner an der Blattmitte 1
+    var proM = Math.hypot(l[0], l[1]) * 1000;   // so viel ändert sich der Maßstab je Meter (0,03 = 3 %)
+    var info = { proM: Math.round(proM * 10000) / 100, richtung: Math.round(Math.atan2(l[1], l[0]) * 180 / Math.PI),
+      streuung: [L.rest, O.rest, Rr.rest, U.rest].map(function (x) { return Math.round(x * 10) / 10; }), punkte: [L.n, O.n, Rr.n, U.n],
+      steig: [L.steig, O.steig, Rr.steig, U.steig].map(function (x) { return Math.round(x * 1e5) / 1e5; }), glas: R.map(Math.round) };
+    if (proM > V3.ebeneMax) { info.zuGross = true; return { C: null, info: info }; }
+    var C0 = [[1, 0, 0], [0, 1, 0], [l[0], l[1], l[2]]];
+    // Am Blatt soll alles bleiben: Affinität A so, dass A(C0(p)) ≈ p auf einem Gitter über dem Blatt (kleinste Quadrate)
+    var M = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], bx = [0, 0, 0], by = [0, 0, 0];
+    for (var i = 0; i <= 4; i++) for (var j = 0; j <= 4; j++) {
+      var p = [bb[0] + (bb[2] - bb[0]) * i / 4, bb[1] + (bb[3] - bb[1]) * j / 4], q = abb(C0, p[0], p[1]), z = [q[0], q[1], 1];
+      for (var a = 0; a < 3; a++) { for (var b = 0; b < 3; b++) M[a][b] += z[a] * z[b]; bx[a] += z[a] * p[0]; by[a] += z[a] * p[1]; }
+    }
+    var ax = loese(M, bx), ay = loese(M, by);
+    if (!ax || !ay) return null;
+    var C = mal3([ax, ay, [0, 0, 1]], C0);
+    // Glas aus den vier Geraden: Ecken vorher und nach der Korrektur (gleiche Kanten, nur andere Ebene)
+    var e = [v3Schnitt(L, O), v3Schnitt(Rr, O), v3Schnitt(Rr, U), v3Schnitt(L, U)], e2 = e.map(function (p) { return abb(C, p[0], p[1]); });
+    var bh = function (k) { return [Math.round((Math.hypot(k[1][0] - k[0][0], k[1][1] - k[0][1]) + Math.hypot(k[2][0] - k[3][0], k[2][1] - k[3][1])) / 2),
+      Math.round((Math.hypot(k[3][0] - k[0][0], k[3][1] - k[0][1]) + Math.hypot(k[2][0] - k[1][0], k[2][1] - k[1][1])) / 2)]; };
+    info.glasVorher = bh(e); info.glasNachher = bh(e2);
+    return { C: C, info: info };
+  }
+  function messenV3(g, w, h, f, lage, opt, rgb, marker) {
+    var Hm = lage.Hvoll || lage.H;
+    V3.blatt = lage.blattBox || [0, 0, MB.b, MB.h];   // wo das Blatt im (ausgerichteten) Raster liegt (v3.15)
+    var alle = v3Alle(g, w, h, Hm, opt, rgb), ebene = null;
+    // Prüfung 11: Ebene an den Glaskanten nachstellen und noch einmal messen (nur am fertigen Foto, das Livebild hat kein Raster 2)
+    for (var runde = 0; V3.ebene && runde < V3.ebeneRunden && alle.z && alle.E2; runde++) {
+      var eb = null;
+      try { eb = v3Ebene(alle.E2, alle.z.glas); } catch (x) { eb = null; }
+      if (!eb) break;
+      ebene = ebene || []; ebene.push(eb.info);
+      if (!eb.C) break;
+      var Ci = inv3(eb.C), Hm2 = Ci ? mal3(Hm, Ci) : null;
+      if (!Hm2) break;
+      var alle2 = v3Alle(g, w, h, Hm2, opt, rgb);
+      if (!alle2.z) { eb.info.ohneMass = true; break; }
+      alle = alle2; Hm = Hm2; eb.info.angewendet = true;
+    }
+    var laeufe = alle.laeufe, E2 = alle.E2, vorlage = alle.vorlage, sp = alle.sp, spiegelSeite = alle.spiegelSeite, z = alle.z;
     var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung },
-      ausrichtung: lage.ausrichtung || null, drehung: lage.drehung || 0 };
+      ausrichtung: lage.ausrichtung || null, drehung: lage.drehung || 0, ebene: ebene };
     if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
     var F = z.fluegel, Gl = z.glas, D = lage.z, k2 = (D - (opt.tiefe || 0)) / D;
     erg.roh = { ok: true, fluegel: F, glas: Gl, holz: [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]] };

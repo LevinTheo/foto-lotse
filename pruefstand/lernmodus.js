@@ -86,6 +86,7 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   // Ablaufprotokoll (v3.18): Hinweise mit Zeit, Blatt gelesen, wie ausgelöst, Livemessungen
   pruef(fl.every((d) => d.ablauf && d.ablauf.hinweise.length >= 3 && d.ablauf.blattGelesen >= 0 && /^(rahmen|ohneRahmen)$/.test(d.ablauf.ausloeser) && d.ablauf.live.n > 0 && d.ablauf.blatt === d.blatt),
     'Ablaufprotokoll der Flügel-Fotos fehlt oder unvollständig: ' + JSON.stringify(fl.map((d) => d.ablauf && { gelesen: d.ablauf.blattGelesen, ausl: d.ablauf.ausloeser, live: d.ablauf.live, h: d.ablauf.hinweise.length })));
+  pruef(fl.every((d) => d.ablauf.kamera && d.ablauf.kamera.modus === 'uebung' && typeof d.ablauf.kamera.takePhoto === 'boolean' && d.ablauf.kamera.foto && d.ablauf.kamera.foto[0] > 300), 'Kamera-Angaben im Ablauf fehlen: ' + JSON.stringify(fl[0] && fl[0].ablauf && fl[0].ablauf.kamera));
   pruef(!!ges && ges.ablauf && ges.ablauf.ausloeser === 'gesamt', 'Ablaufprotokoll Gesamtfoto: ' + JSON.stringify(ges && ges.ablauf && ges.ablauf.ausloeser));
   if (fl[0] && fl[0].ablauf) console.log('Ablauf Flügel 1: ' + fl[0].ablauf.hinweise.map((h) => h[0] + ' ms ' + h[1]).join(' → ') + ' · ausgelöst ' + fl[0].ablauf.ausgeloest + ' ms (' + fl[0].ablauf.ausloeser + '), ' + fl[0].ablauf.live.n + ' Livemessungen, Mittel ' + fl[0].ablauf.live.msMittel + ' ms');
   pruef(!!ges && ges.anordnung === 'nebeneinander' && ges.fluegel && ges.fluegel.length === 2, 'Gesamtfoto ohne Anordnung / Flügel: ' + JSON.stringify(ges && { a: ges.anordnung, f: ges.fluegel }));

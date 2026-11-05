@@ -5,6 +5,8 @@
 const fs = require('fs'), path = require('path'); const { chromium } = require('playwright');
 const DATEN = process.argv[2] || '/home/claude/foto-lotse-daten', LOTSE = process.argv[3] || path.join(__dirname, '..');
 const NT = JSON.parse(fs.readFileSync(path.join(LOTSE, 'pruefstand/nachtrag.json'), 'utf8'));
+// Ab 2 Flügeln (v3.18) kann es ein echtes Maß je Blatt geben (fluegelJeBlatt); verglichen wird mit dem Flügel, dessen Blatt gemessen wurde
+const echt = (w, blatt) => { const q = (w.fluegelJeBlatt || []).find((x) => x.blatt === blatt && x.breiteMm && x.hoeheMm); return q ? [q.breiteMm, q.hoeheMm] : [w.fluegelBreiteMm, w.fluegelHoeheMm]; };
 (async () => { const b = await chromium.launch(); const p = await b.newPage();
   await p.route('http://lotse.test/**', (route) => { const u = new URL(route.request().url());
     const f = u.pathname.startsWith('/_daten/') ? path.join(DATEN, decodeURIComponent(u.pathname.slice(8))) : path.join(LOTSE, decodeURIComponent(u.pathname));
@@ -45,15 +47,17 @@ const NT = JSON.parse(fs.readFileSync(path.join(LOTSE, 'pruefstand/nachtrag.json
           const g = new Uint8Array(w * h), rgb = new Uint8Array(w * h * 3);
           for (let i = 0, j = 0; i < g.length; i++, j += 4) { g[i] = (77 * d[j] + 150 * d[j + 1] + 29 * d[j + 2]) >> 8; rgb[3 * i] = d[j]; rgb[3 * i + 1] = d[j + 1]; rgb[3 * i + 2] = d[j + 2]; }
           const e = L.MASS.messen(g, w, h, 0.693 * Math.max(w, h), opt, false, rgb);
-          return e.ok ? [Math.round(e.breite), Math.round(e.hoehe)] : null;
+          const blatt = e.fluegel ? ((e.fluegel.find((q) => q.ok) || {}).blatt || null) : e.blaetter && e.blaetter[0] ? e.blaetter[0].blatt : null;
+          return e.ok ? [Math.round(e.breite), Math.round(e.hoehe), blatt] : null;
         }
         return [await variante(1, 0, 0), await variante(0.9, 0, 0), await variante(0.75, 0, 0), await variante(1, 0.7, 0), await variante(1, 0, 1)];
       }, { url: 'http://lotse.test/_daten/fenster/' + o + '/' + f, opt });
       const ok = r.filter(Boolean);
       const sb = ok.length ? Math.max(...ok.map(x => x[0])) - Math.min(...ok.map(x => x[0])) : null, sh = ok.length ? Math.max(...ok.map(x => x[1])) - Math.min(...ok.map(x => x[1])) : null;
-      if (ok.length) spreads.push(Math.max(sb / w.fluegelBreiteMm, sh / w.fluegelHoeheMm));
-      r.forEach(x => { if (x) fehler.push(Math.max(Math.abs(x[0] - w.fluegelBreiteMm) / w.fluegelBreiteMm, Math.abs(x[1] - w.fluegelHoeheMm) / w.fluegelHoeheMm)); });
-      zeilen.push(`${(w.name || o).padEnd(22)} ${f}  echt ${w.fluegelBreiteMm}x${w.fluegelHoeheMm}  ` + r.map(x => x ? x.join('x') : '—').join('  ') + `  | Streuung B ${sb} H ${sh}  (${ok.length}/5)`);
+      const e0 = echt(w, ok.length ? ok[0][2] : null);
+      if (ok.length) spreads.push(Math.max(sb / e0[0], sh / e0[1]));
+      r.forEach(x => { if (x) { const e = echt(w, x[2]); fehler.push(Math.max(Math.abs(x[0] - e[0]) / e[0], Math.abs(x[1] - e[1]) / e[1])); } });
+      zeilen.push(`${(w.name || o).padEnd(22)} ${f}  echt ${e0.join('x')}  ` + r.map(x => x ? x.slice(0, 2).join('x') + (w.fluegelJeBlatt && x[2] ? ' (Bl ' + x[2] + ')' : '') : '—').join('  ') + `  | Streuung B ${sb} H ${sh}  (${ok.length}/5)`);
       process.stderr.write('.');
     }
   }

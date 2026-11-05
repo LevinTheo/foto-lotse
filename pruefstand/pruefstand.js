@@ -58,6 +58,10 @@ function wahrheit(ordner) {
     const opt = Object.assign({ griff: nU === 1, nU }, MODUS === 'wahrheit' ? TYPEN[w.bauart] || TYPEN.holz : TYPEN.holz);
     const fotos = fs.readdirSync(path.join(DATEN, 'fenster', ordner)).filter((f) => /^(foto|lauf)-.*\.jpg$/.test(f)).sort();
     for (const foto of fotos) {
+      // Flügel-Foto aus der Analyse (v3.17, lauf-…-fl1): die App hat nur das gelesene Blatt gemessen, der Prüfstand auch
+      const fj = path.join(DATEN, 'fenster', ordner, foto.replace(/\.jpg$/, '.json'));
+      const lauf = /^lauf-/.test(foto) && fs.existsSync(fj) ? JSON.parse(fs.readFileSync(fj, 'utf8')) : null;
+      const optFoto = lauf && /^fl\d$/.test(lauf.schritt || '') && lauf.blatt ? Object.assign({}, opt, { blattNr: lauf.blatt - 1 }) : opt;
       const r = await page.evaluate(async ({ url, opt }) => {
         const L = window.__lotse, img = new Image(); img.src = url; await img.decode();
         const q = Math.min(1, 2576 / Math.max(img.naturalWidth, img.naturalHeight));
@@ -95,7 +99,7 @@ function wahrheit(ordner) {
           blaetter: e.blaetter ? e.blaetter.length : null, anordnung: e.anordnung || null, gesamt: e.gesamt ? [Math.round(e.gesamt.breite), Math.round(e.gesamt.hoehe)] : null,
           fluegel: e.fluegel ? e.fluegel.map((q) => ({ blatt: q.blatt, ok: q.ok, b: q.ok ? Math.round(q.breite) : null, h: q.ok ? Math.round(q.hoehe) : null, sicher: q.massSicher })) : null,
           bild: k.toDataURL('image/jpeg', 0.7) };
-      }, { url: 'http://lotse.test/_daten/fenster/' + ordner + '/' + foto, opt });
+      }, { url: 'http://lotse.test/_daten/fenster/' + ordner + '/' + foto, opt: optFoto });
       const wf = fuerBlatt(w, r.blatt);
       fs.writeFileSync(path.join(AUS, ordner + '__' + foto), Buffer.from(r.bild.split(',')[1], 'base64'));
       const fb = r.breite && wf.fluegelBreiteMm ? (r.breite - wf.fluegelBreiteMm) / wf.fluegelBreiteMm : null;

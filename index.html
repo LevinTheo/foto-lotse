@@ -496,7 +496,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.9 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.10 · Test</span>
   </header>
 
   <div class="kopf">
@@ -740,6 +740,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         <div class="k-pruefen__marken">
           <span class="k-pruefen__marke" id="p-marke" hidden></span>
           <span class="k-pruefen__marke k-pruefen__marke--ok" id="p-gesicht" hidden></span>
+        </div>
+      </div>
+      <div class="k-pruefen__griff" id="p-rahmen" hidden>
+        <div class="k-pruefen__knoepfe k-pruefen__knoepfe--gleich">
+          <button class="kbtn kbtn--zweit" id="p-rahmen-nein" type="button">Nein</button>
+          <button class="kbtn kbtn--haupt" id="p-rahmen-ja" type="button">Ja</button>
         </div>
       </div>
       <div class="k-pruefen__griff" id="p-griff" hidden>
@@ -2511,7 +2517,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now();
-    k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; clearTimeout(k.weiterUhr);
+    k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; k.rahmenJa = false; k.rahmenNein = 0; clearTimeout(k.weiterUhr);
     k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
@@ -3134,7 +3140,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function mitUmriss(cv, m) {
     var c2 = kopie(cv), c = c2.getContext('2d'), lw = Math.max(2, Math.round(cv.width / 260));
     c.lineJoin = 'miter'; c.strokeStyle = '#80c99d';
-    if (m.roh && m.roh.glas && m.lage) {
+    if (ENTWICKLER && m.roh && m.roh.glas && m.lage) {   // Glaskante gestrichelt nur für Levin; der Kunde sieht genau einen Rahmen
       var gl = m.roh.glas;
       c.lineWidth = Math.max(1, lw * 0.6); c.setLineDash([lw * 3.5, lw * 2.5]);
       zug(c, [[gl[0], gl[1]], [gl[2], gl[1]], [gl[2], gl[3]], [gl[0], gl[3]]].map(function (q) { return MASS.abb(m.lage.H, q[0], q[1]); }), true);
@@ -3208,6 +3214,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function pruefen(url, gesichter, messung, vorschau) {
     if (!k.offen) return;
+    k.pruefArgs = [url, gesichter, messung, vorschau];
     k.pruefen = true;
     k.url = url;
     k.messung = messung || null;
@@ -3232,11 +3239,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       k.griffY = gr && gr.sicher ? gr.y : 0.5;
       frageGriff = true;
     }
+    // Kundenfrage ohne Zahl (Prüfung 13, 5. Nov. 2026): Kunden haben keinen Zollstock, aber sie sehen, ob der grüne Rahmen auf dem
+    // Flügel liegt. Bei Nein: nochmal fotografieren, das Foto wird für Levin markiert. Erst nach dem Ja kommt die Griff-Frage.
+    var frageRahmen = s.id === 'innen' && blattModus() && !!messung && !!vorschau && !k.rahmenJa;
+    if (frageRahmen) frageGriff = false;
     // Ohne Maß (Maßblatt-Modus) oder unscharf trotz Wiederholung: der Kunde entscheidet. Sonst geht es von selbst weiter.
     var warten = (s.id === 'innen' && blattModus() && (!messung || messung.massSicher === false)) || (weich && k.modus !== 'uebung');
     // Griff: eine Frage, einmal gestellt (Titel). Darunter nur der Vorschlag, falls es einen gibt (Prüfung 4. Nov. 2026, Punkt 7).
-    $('p-titel').textContent = frageGriff ? 'Wo ist der Griff?' : warten ? 'Gut geworden?' : 'Gespeichert';
-    $('p-frage').textContent = weich ? 'Das Foto ist etwas unscharf. Nochmal, oder so nehmen?' :
+    $('p-titel').textContent = frageRahmen ? 'Liegt der grüne Rahmen genau auf der Kante vom Flügel?' : frageGriff ? 'Wo ist der Griff?' : warten ? 'Gut geworden?' : 'Gespeichert';
+    $('p-frage').textContent = frageRahmen ? 'Er soll außen um den Flügel laufen, nicht um das Glas und nicht um die Wand.' :
+      weich ? 'Das Foto ist etwas unscharf. Nochmal, oder so nehmen?' :
       frageGriff ? (k.griffVorschlag ? 'Ich glaube ' + k.griffVorschlag + ' (hervorgehoben).' : '') :
       warten ? 'Ist es scharf und ist alles drauf, was in den Linien war?' : 'Scharf und vollständig. Es geht gleich weiter.';
     $('p-frage').hidden = !$('p-frage').textContent;
@@ -3256,13 +3268,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     $('p-werte').textContent = werte.join('\n');
     $('p-werte').hidden = !werte.length;
     $('p-griff').hidden = !frageGriff;
+    $('p-rahmen').hidden = !frageRahmen;
+    $('p-knoepfe').hidden = frageRahmen;
     $('p-lernfoto').hidden = !(ENTW.token && k.url);
     $('p-griff-l').className = 'kbtn ' + (k.griffVorschlag === 'rechts' ? 'kbtn--zweit' : 'kbtn--haupt');
     $('p-griff-r').className = 'kbtn ' + (k.griffVorschlag === 'links' ? 'kbtn--zweit' : 'kbtn--haupt');
     $('p-weiter').hidden = frageGriff;
     $('p-knoepfe').classList.toggle('k-pruefen__knoepfe--gleich', frageGriff);
     $('p-weiter').textContent = weich ? 'So nehmen' : naechster(k.i) < 0 ? 'Passt, fertig' : 'Passt, weiter';
-    var auto = !warten && !frageGriff;
+    var auto = !warten && !frageGriff && !frageRahmen;
     var lauf = $('p-lauf');
     lauf.hidden = !auto;
     lauf.classList.remove('an');
@@ -3273,7 +3287,18 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       void lauf.offsetWidth; lauf.classList.add('an');
       k.weiterUhr = setTimeout(function () { if (k.pruefen) weiter(); }, TOL.weiterNach);
     }
-    (frageGriff ? $('p-griff-r') : $('p-weiter')).focus();
+    (frageRahmen ? $('p-rahmen-ja') : frageGriff ? $('p-griff-r') : $('p-weiter')).focus();
+  }
+  function rahmenAntwort(ja) {
+    if (ja) { k.rahmenJa = true; pruefen.apply(null, k.pruefArgs); return; }
+    // Nein: dieses Foto für Levin markieren (Durchlauf-Daten) und nochmal fotografieren
+    k.rahmenNein = (k.rahmenNein || 0) + 1;
+    entwDurchlauf(k.url, 'innen-rahmen-falsch', k.messung, { rahmenAufFluegel: false, nein: k.rahmenNein });
+    nochmal();
+    // Rahmen neu suchen lassen, sonst bleibt der alte stehen und der Lotse löst nicht wieder aus
+    k.blattOkSeit = 0; k.rahmenAlt = null; if (k.mass) k.mass.rahmen = false;
+    k.warteBis = performance.now() + 2500;
+    k.warteText = 'Danke. Nochmal: ca. 3 m mittig vors Fenster, das ganze Fenster ins Bild.';
   }
   function griffGewaehlt(seite) {
     var passt = k.griffVorschlag === seite;
@@ -3306,8 +3331,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var karte = s.id === 'innen' ? (m && k.aufnahmeGroesse ? karteAusMessung(m, k.aufnahmeGroesse) : k.aufnahme) : null;
     fotos[s.id] = { url: k.url, art: k.modus, karte: karte, unscharf: unscharf(k.schaerfe),
       schaerfe: k.schaerfe ? Math.round(k.schaerfe.breite * 10) / 10 : null,
-      mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand), ecken: m.ecken } : null };
-    entwDurchlauf(k.url, s.id, m || (s.id === 'innen' ? k.messung : null));
+      mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand), ecken: m.ecken } : null,
+      rahmen: s.id === 'innen' && m ? { aufFluegel: !!k.rahmenJa, vorherNein: k.rahmenNein || 0 } : null };
+    entwDurchlauf(k.url, s.id, m || (s.id === 'innen' ? k.messung : null), s.id === 'innen' && k.rahmenJa ? { rahmenAufFluegel: true, vorherNein: k.rahmenNein || 0 } : null);
     k.pruefen = false;
     $('k-pruefen').hidden = true;
     var n = naechster(k.i);
@@ -3318,6 +3344,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function nochmal() {
     clearTimeout(k.weiterUhr);
+    k.rahmenJa = false;
     k.griffErg = null;
     k.unscharfZahl = 0;
     k.pruefen = false;
@@ -3491,6 +3518,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   $('k-ort-ok').addEventListener('click', function () { $('k-ort').hidden = true; $('k-mini').focus(); });
   $('p-weiter').addEventListener('click', weiter);
   $('p-nochmal').addEventListener('click', nochmal);
+  $('p-rahmen-ja').addEventListener('click', function () { rahmenAntwort(true); });
+  $('p-rahmen-nein').addEventListener('click', function () { rahmenAntwort(false); });
   $('p-griff-l').addEventListener('click', function () { griffGewaehlt('links'); });
   $('p-griff-r').addEventListener('click', function () { griffGewaehlt('rechts'); });
   document.addEventListener('keydown', function (e) {
@@ -3741,7 +3770,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     });
   }
   // Beim normalen Durchlauf: jedes übernommene Foto samt Messung mit hochladen (wenn eingeschaltet)
-  function entwDurchlauf(url, schrittId, messung) {
+  function entwDurchlauf(url, schrittId, messung, kunde) {
     if (!ENTW.mit || !ENTW.token || !url) return;
     var ordner = entwOrdner(), name = 'lauf-' + zwei(++ENTW.nr) + '-' + schrittId;
     var meta = { zeit: new Date().toISOString(), quelle: 'durchlauf', schritt: schrittId, modus: k.modus, fenster: entwFenster(),
@@ -3749,7 +3778,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       schaerfe: k.schaerfe, messung: messung ? { breite: Math.round(messung.breite), hoehe: Math.round(messung.hoehe), abstand: Math.round(messung.abstand || 0),
         ecken: messung.ecken, griff: messung.griff || null, stimmig: messung.sicher === undefined ? null : !!messung.sicher,
         massSicher: messung.massSicher === undefined ? null : messung.massSicher, geometrie: messung.geometrie || null, version: messung.version || 'v2' } : null,
-      geraet: { ua: navigator.userAgent } };
+      kunde: kunde || null, geraet: { ua: navigator.userAgent } };
     entwZeile(name + ': lädt hoch …').then(function (li) {
       ghPut(ordner + '/' + name + '.jpg', url.split(',')[1], 'Durchlauf ' + ordner + '/' + name)
         .then(function () { return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Durchlauf-Daten ' + ordner + '/' + name); })

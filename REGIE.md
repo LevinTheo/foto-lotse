@@ -1,6 +1,6 @@
 # Foto-Lotse – Regiebericht
 
-Stand: 4. Nov. 2026 abends · Levin (Holtcraft) · **Version v3.9** (grüner Rahmen im Livebild wieder da, jetzt aus v3)
+Stand: 4. Nov. 2026 abends · Levin (Holtcraft) · **Version v3.10** (Kundenfrage „Liegt der grüne Rahmen genau auf der Kante vom Flügel?“)
 
 ## Versionen
 
@@ -8,7 +8,8 @@ Jeder Stand liegt auf GitHub. Zurückholen: Claude sagen „bau zurück auf vX�
 
 | Version | Wo | Was |
 | --- | --- | --- |
-| v3.9 | Branch `main` (aktuell), gesichert als `stand-v3.9` | wie v3.8, dazu grüner Fensterrahmen im Livebild aus v3 (ein Raster), „Fenster gefunden. Halt still …“ |
+| v3.10 | Branch `main` (aktuell), gesichert als `stand-v3.10` | wie v3.9, dazu im Prüfdialog die Frage nach dem grünen Rahmen (Ja / Nein) |
+| v3.9 | Branch `stand-v3.9` | wie v3.8, dazu grüner Fensterrahmen im Livebild aus v3 (ein Raster), „Fenster gefunden. Halt still …“ |
 | v3.8 | Branch `stand-v3.8` | wie v3.7, dazu Fuge an den unsicheren Seiten nur dort, wo die Holzbreite zur sichersten Seite passt |
 | v3.7 | Branch `stand-v3.7` | wie v3.6, misst identisch; Grenzwerte mit Namen in `V3`, entfernt: Ecken-Abgleich, Holzbreiten-Abgleich, Spiegelprobe, alte Suche v2, Messwerte-Box im Livebild |
 | v3.6 | Branch `stand-v3.6` (enthält noch v2, Ecken-Abgleich und Spiegelprobe) | wie v3.5, Livebild ohne v2-Fensterumriss, Auslösen nur am Maßblatt |
@@ -68,11 +69,12 @@ Nach „Analyse starten“ geht der Lotse alle Fotos der Reihe nach durch. Der K
 Analyse starten → „Wie viele Flügel hat dein Fenster?“ (1 / 2, ein Tipp, beim Fortsetzen nicht mehr)
   → Ganzes Fenster (löst selbst aus)
   → Scharf?  nein: selbst nochmal, bis 3×
+  → „Liegt der grüne Rahmen genau auf der Kante vom Flügel?“  Ja / Nein (Nein: nochmal, Foto für Levin markiert)
   → nur 1 Flügel: „Wo ist der Griff?“ links / rechts, erkannte Seite hervorgehoben
   → Griff → Schere oben → Ecklager unten → Fenster gekippt (nur Dreh-Kipp) → Von außen (freiwillig)
 ```
 
-Die Flügel-Frage (v3.4) setzt `P.nU`: bei 2 Flügeln heißt der Tipp „auf die linke Scheibe“, es gibt keine Griff-Frage (Griff mittig), der Griff liegt in der Skizze in der Mitte, Spiegeln links ↔ rechts ist aus. Die Bauart wählt der Kunde nicht, sie bleibt Holz. Die Schärfeprüfung läuft nach jedem Foto. Die Griffsuche nur beim ersten Foto und nur bei 1 Flügel; bestätigt wird immer mit einem Tipp (eine Frage im Titel, darunter nur der Vorschlag). Kastenfenster: oberes und unteres Band statt Schere und Ecklager, kein Kippen.
+Die Flügel-Frage (v3.4) setzt `P.nU`: bei 2 Flügeln heißt der Tipp „auf die linke Scheibe“, es gibt keine Griff-Frage (Griff mittig), der Griff liegt in der Skizze in der Mitte, Spiegeln links ↔ rechts ist aus. Die Bauart wählt der Kunde nicht, sie bleibt Holz. Rahmen-Frage (v3.10): nach dem ersten Foto mit Maß zeigt der Prüfdialog das Foto mit genau einem grünen Rahmen (die gestrichelte Glaskante nur noch für Levin) und fragt ohne Zahl, ob er außen auf dem Flügel liegt. Ja → weiter (bei 1 Flügel dann die Griff-Frage). Nein → Dialog zu, „Danke. Nochmal: ca. 3 m mittig vors Fenster …“, der Rahmen wird neu gesucht und das Foto neu gemacht; das falsche Foto geht mit `kunde: { rahmenAufFluegel: false }` in die Durchlauf-Daten (`lauf-…-innen-rahmen-falsch`, nur mit Lernfoto-Zugang und „alle Fotos mit hochladen“). Das gute Foto trägt `rahmen: { aufFluegel, vorherNein }`. Die Schärfeprüfung läuft nach jedem Foto. Die Griffsuche nur beim ersten Foto und nur bei 1 Flügel; bestätigt wird immer mit einem Tipp (eine Frage im Titel, darunter nur der Vorschlag). Kastenfenster: oberes und unteres Band statt Schere und Ecklager, kein Kippen.
 
 | Nr. | Foto | Was der Kunde sieht und tut | Auslösen |
 | --- | --- | --- | --- |
@@ -135,6 +137,7 @@ Holzbreiten je Fenstertyp stehen in `TYPEN` (Prüfstand und Wackeltest lesen sie
 
 | Datum | Stand | Ergebnis |
 | --- | --- | --- |
+| 5. Nov. 2026 | v3.10 | bestanden, 1 und 2 Flügel je 6 Schritte. Neu geprüft: „Fenster gefunden“ (grüner Rahmen) vor dem Auslösen, Rahmen-Frage nach dem ersten Foto, bei 1 Flügel einmal Nein → Dialog zu, gleiches Foto, löst wieder aus, Rahmen-Frage wieder da, dann Ja → Griff-Frage |
 | 4. Nov. 2026 | v3.7 | bestanden, 1 und 2 Flügel je 6 Schritte (5 Fotos, außen übersprungen), Übungsfenster „ca. 79 × 122 cm“ bzw. „linker Flügel ca. 39 × 123 cm“. Gegenprobe: gegen `stand-v3.3` meldet er 4 Fehler (Entwickler-Knopf sichtbar, keine Flügel-Frage) |
 
 ## Wackeltest
@@ -156,6 +159,7 @@ Holzbreiten je Fenstertyp stehen in `TYPEN` (Prüfstand und Wackeltest lesen sie
 | 4. Nov. 2026 | v3.7: aufgeräumt | 5 von 29 | 6,9 % | 4,1 % | 42 von 141 (±5 %: 84), identisch |
 | 5. Nov. 2026 | v3.8: Holzbreite nach Vorlage (`V3.vorlage`) | 5 von 29 | **4,9 %** | **3,7 %** | **45 von 141** (±5 %: 84) |
 | 5. Nov. 2026 | v3.9: grüner Rahmen im Livebild (Messung des Fotos unverändert) | 5 von 29 | 4,9 % | 3,7 % | 45 von 141 (±5 %: 84), identisch |
+| 5. Nov. 2026 | v3.10: Rahmen-Frage (Messmodul Zeichen für Zeichen gleich) | 5 von 29 | 4,9 % | 3,7 % | 45 von 141 (±5 %: 84), identisch |
 
 v3.3: Weniger „stabil“, weil Fotos, die vorher stur falsch lagen, jetzt richtig, aber mit ein paar mm Streuung liegen (Balkontür Foto 2: vorher 830–832 mm in allen Varianten, jetzt 783–792, echt 788).
 
@@ -167,6 +171,7 @@ Bis zum 4. Nov. abends war die 5. Variante („leicht weich“, `c.filter = 'blu
 
 | Datum | Commit | Fotos | auf ±2 % | Bemerkung |
 | --- | --- | --- | --- | --- |
+| 5. Nov. 2026 | v3.10 (Rahmen-Frage) | 30 aus 8 Fenstern | 10 von 30 (±5 %: 17) | Identisch, Messmodul unverändert |
 | 5. Nov. 2026 | v3.9 (Rahmen live) | 30 aus 8 Fenstern | 10 von 30 (±5 %: 17) | Identisch mit v3.8. Dazu v3 so, wie es im Livebild rechnet (1280 px, ein Raster 3 mm), an allen 30 Fotos: Median 226 ms, höchstens 419 ms am Rechner; ±5 % 10 von 30 (Raster 2,5 mm: 15, aber 334 ms). Bei den 5 Fotos, die im Abstand 2,5–3,5 m liegen (dort sucht er überhaupt): KiZi Holz 5 0,5 %, WZ 1 0,5 %, KiZi v3 1,2 %, KiZi v2 1 4,7 %, SZ 1 5,8 % |
 | 5. Nov. 2026 | v3.8 (Vorlage) | 30 aus 8 Fenstern | **10 von 30** (±5 %: **17**) | Median Breite 3,2 % (v3.7: 3,4), Höhe 1,8 % (1,7). Wie der Kunde ebenso 10 / 17 (Breite 3,4, Höhe 1,7 %). Je Foto (größerer der beiden Fehler): 7 besser, 6 schlechter. Neu auf ±2 %: Balkontür 2 (Höhe +4,8 → +1,7 %), SZ 1 (Breite −5,1 → 0,0 %), KiZi abends 1 (Breite −2,6 → −0,9 %); raus: KiZi v2 4 (−0,7 / 0,0 → +2,2 / +1,5 %). Sonst kleine Verschiebungen (KiZi Holz 5 Höhe −0,5 → +1,0 %, KiZi v2 2 +3,4 → +4,4 %). Selbsteinschätzung: sicher 19, davon 15 auf ±5 %. Varianten: unten +120 mm Spielraum → 5 / 15 (findet unten Heizkörper und Fensterbank, Höhe Median 4,4 %); Toleranz 10/15/20 mm und Bauart-Abstand 15/25/40 mm → 10–11 / 16–17; ohne Spiegeln danach 9 / 16 |
 | 5. Nov. 2026 | v3.7 + Lichtmaß Balkontür | 30 aus 8 Fenstern | 8 von 30 (±5 %: 16) | Erkennung unverändert. Neu im Prüfstand: Glas gegen Lichtmaß (jetzt bei 29 Fotos bekannt): Median Breite 3,3 %, Höhe 2,1 %. Balkontür frontal: Glas 681 × 1940 gegen 648 × 1883 (+5,1 / +3,0 %), Flügel aber nur +3,0 / +1,2 % → an der Tür sitzen die Glaskanten zu weit außen, der Maßstab stimmt |
@@ -229,6 +234,7 @@ Neueste oben. Format: Datum · Account/Sitzung · Commit · Änderung · Warum �
 
 | Datum | Commit | Änderung | Warum | Ergebnis |
 | --- | --- | --- | --- | --- |
+| 5. Nov. 2026 | v3.10 | Prüfdialog nach dem ersten Foto: „Liegt der grüne Rahmen genau auf der Kante vom Flügel?“ mit Ja / Nein (`p-rahmen`, `rahmenAntwort`); Nein → `nochmal()`, Rahmen neu suchen, Foto als `innen-rahmen-falsch` in die Durchlauf-Daten (`entwDurchlauf` mit `kunde`); Ja → Griff-Frage bzw. weiter. Gestrichelte Glaskante im Prüfbild nur noch für Levin (`ENTWICKLER`). `fotos.innen.rahmen`. Ablauf-Test prüft Rahmen, Nein und Ja. Anzeige v3.10 | Prüfung 13, präzisiert im Fable-Chat 5. Nov.: Kunden haben keinen Zollstock, sehen aber, ob der Rahmen stimmt; fängt grobe Ausreißer wie −35 % ab | Prüfstand und Wackeltest identisch. Ablauf-Test bestanden (1 Flügel mit einem Nein, 2 Flügel) |
 | 5. Nov. 2026 | v3.9 | Grüner Rahmen im Livebild aus v3: passt das Blatt (`k.blattOkSeit`), rechnet `massLive` mit Farben und `opt.v3`, `opt.raster = TOL.liveRaster`; `e.rahmen`, wenn zwei Messungen hintereinander gleich sind (`k.rahmenAlt`); `deutenBlatt` gibt dann die Ecken mit, neuer Zustand „fensterSuchen“, nach `TOL.rahmenWarten` Auslösen ohne Rahmen. Anzeige v3.9 | Levin: der grüne Rahmen sagt dem Kunden „gefunden, still halten“, das ist das Beste am Lotsen | Prüfstand und Wackeltest identisch mit v3.8. Übung: zu nah „Geh ca. 1 m zurück“ → „Halt still …“ → nach ca. 1 s „Fenster gefunden. Halt still …“ mit Rahmen genau auf dem Flügel → Auslösen nach ca. 1,5 s; mit 2 Flügeln ebenso. Ablauf-Test 1 und 2 Flügel ohne Fehler |
 | 5. Nov. 2026 | v3.8 | Holzbreite nach Vorlage (`v3Vorlage`, `v3FugeIm`, Schalter `V3.vorlage`, `vorlageTol` 15, `vorlageUnten` 40, `vorlageBauart` 25 mm): sicherste Seite (links/oben/rechts, alle Durchgänge einig, Breite passt zur Bauart) ist die Vorlage, an den anderen Seiten zählt die Fuge nur im passenden Fenster. Spiegeln danach neu (`v3Spiegel`). `v3Finden` gibt seine Profile mit (`fd`). Prüfstand zeigt „Vorlage …“. Anzeige v3.8 | Levins Ecken-Idee in der Maß-Form (Auftrag 5. Nov.) | Prüfstand ±2 % **10 statt 8**, ±5 % **17 statt 16**; wie der Kunde ebenso. Wackeltest ±2 % **45 statt 42**, ±5 % 84 wie vorher, Fehler Median 3,7 statt 4,1 %, Streuung 4,9 statt 6,9 %. Je Foto 7 besser, 6 schlechter (Einzelheiten unter Prüfstand) |
 | 5. Nov. 2026 | (Lichtmaß) | Nachtrag: Lichtmaß Balkontür 648 × 1883 mm für 1217 und 1231. Prüfstand zeigt je Foto „Glas zu Lichtmaß“ und in der Kopfzeile den Median | Levin: Flügel minus 140 mm. Trennt bei der Tür falsche Kante von falschem Maßstab | siehe Prüfstand: Glaskanten an der Tür zu weit außen, Maßstab stimmt |
@@ -278,7 +284,7 @@ Aus der Prüfung vom 4. Nov. abends (Nummern wie dort, Reihenfolge = Empfehlung)
 - [ ] **Ebene aus den Flügelkanten statt nur vom Blatt (Prüfung 11)** – nicht die Spiegelprobe und nicht die Schablonen (Klarstellung 5. Nov.): gemeint ist, die Fensterebene wie früher in v2 (`fensterGenau`) aus den vier Flügelkanten (Fluchtpunkte, 2 m Basis) nachzubestimmen und das Blatt nur für den Maßstab zu nehmen. Hebel gemessen: bei WZ 1 macht allein die Wahl der Abbildung 6 % aus. Vermutung, 4–8 h, mit Prüfstand belegen
 - [x] **Levins Ecken-Idee in der Maß-Form (5. Nov., v3.8: Prüfstand 10 / 17 statt 8 / 16, Wackeltest ±2 % 45 statt 42):** Holzbreite Glaskante → Fuge ist links, rechts und oben gleich, unten gleich oder breiter (Tür mit Füllung). Die Seite, bei der alle Durchgänge einig sind und das Holz zur Bauart passt, ist die Vorlage; an den anderen Seiten die Fuge nur noch dort zulassen, wo die Breite zur Vorlage passt (unten mit Spielraum), erst wenn dort gar keine Kante ist, weiter weg suchen. Das ist nicht der alte `V3.abgleich` (der suchte oben/unten weiter frei und nahm die Seitenbreite nur als Bonus) und nicht die Bild-Schablonen. Nur behalten, wenn Prüfstand und Wackeltest besser werden als v3.7
 - [x] Ablauf-Test (Playwright, Übungsmodus) ins Repo: `pruefstand/uebung.js` (4. Nov. 2026)
-- [ ] **Kundenfrage ohne Zahl (Prüfung 13, präzisiert 5. Nov.):** keine Maße abfragen, Kunden haben keinen Zollstock. Stattdessen im Prüfdialog unter dem Foto mit dem grünen Rahmen: „Liegt der grüne Rahmen genau auf der Kante vom Flügel?“ Ja / Nein. Bei Nein: nochmal fotografieren, und das Foto für Levin markieren (Durchlauf-Daten). Fängt grobe Ausreißer wie −35 % ab, ca. 30 min
+- [x] **Kundenfrage ohne Zahl (Prüfung 13, präzisiert 5. Nov., v3.10):** keine Maße abfragen, Kunden haben keinen Zollstock. Stattdessen im Prüfdialog unter dem Foto mit dem grünen Rahmen: „Liegt der grüne Rahmen genau auf der Kante vom Flügel?“ Ja / Nein. Bei Nein: nochmal fotografieren, und das Foto für Levin markieren (Durchlauf-Daten). Fängt grobe Ausreißer wie −35 % ab, ca. 30 min
 - [x] Lichtmaß der Balkontür: 648 × 1883 mm (Levin 5. Nov.: Flügel minus 140 mm in Breite und Höhe), im Nachtrag
 - [ ] Nur für Levin (Lernfotos): Profil unten an einem Kunststofffenster nachmessen (Glaskante bis Fuge, mm), zum Vergleich seitlich (Prüfung 13, v3.7)
 - [x] Gegenprobe nur bei „Selbst eingeben“ (Prüfung 1, 4. Nov. 2026)

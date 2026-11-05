@@ -1,7 +1,8 @@
 // Ablauf-Test: spielt den Übungsmodus mit Playwright ganz durch, wie ein Kunde am Handy (iPhone-Ansicht).
 // Aufruf: node pruefstand/uebung.js [Pfad zum Lotsen, Standard: dieses Repo] [--bilder <Ordner>]
-// Prüft: Startseite ohne Entwickler-Sachen, Frage „1 oder 2 Flügel?“, Livebild ohne Fensterumriss mit „Geh … zurück“,
-// alle Fotos bis „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine Fehler in der Konsole.
+// Prüft: Startseite ohne Entwickler-Sachen, Frage „1 oder 2 Flügel?“, Livebild mit „Geh … zurück“ und „Fenster gefunden“ (grüner
+// Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ (bei 1 Flügel einmal Nein → nochmal, dann Ja), alle Fotos bis
+// „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine Fehler in der Konsole.
 // Läuft einmal mit 1 und einmal mit 2 Flügeln, dauert ca. 1 Minute. Mit --bilder legt es Bildschirmfotos ab.
 // Ergebnis in REGIE.md unter „Ablauf-Test“ eintragen.
 // Braucht Playwright mit Chromium. Ohne Kamera (http, headless) startet der Lotse von selbst den Übungsmodus.
@@ -66,8 +67,34 @@ async function durchlauf(browser, nU, fehler, notizen) {
     }
     if (await sichtbar(page, '#k-skip')) { titel.push(schritt + ' (übersprungen)'); await page.click('#k-skip'); continue; }
     await page.click('#k-zeig');
-    try { await page.waitForSelector('#k-pruefen:not([hidden])', { timeout: 30000 }); }
-    catch (e) { pruef(false, 'Foto „' + schritt + '“ löst nicht aus'); break; }
+    // Auf den Prüfdialog warten; beim ganzen Fenster mitlesen, ob „Fenster gefunden“ (grüner Rahmen) kam
+    const ausgeloest = async () => {
+      let gefunden = false;
+      for (let t = 0; t < 300; t++) {
+        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden };
+        if (/gefunden/.test(await page.textContent('#k-status'))) gefunden = true;
+        await page.waitForTimeout(100);
+      }
+      return { ok: false, gefunden };
+    };
+    let a = await ausgeloest();
+    if (!a.ok) { pruef(false, 'Foto „' + schritt + '“ löst nicht aus'); break; }
+    if (n === 0) {
+      pruef(a.gefunden, 'kein „Fenster gefunden“ (grüner Rahmen) vor dem Auslösen');
+      pruef(await sichtbar(page, '#p-rahmen') && /grüne Rahmen/.test(await page.textContent('#p-titel')), 'Frage „Liegt der grüne Rahmen …?“ fehlt');
+      if (BILDER) await page.screenshot({ path: path.join(BILDER, 'rahmen-' + nU + '.png') });
+      if (nU === 1) {
+        // Einmal Nein: Dialog zu, gleiches Foto nochmal, der Lotse muss wieder auslösen
+        await page.click('#p-rahmen-nein');
+        await page.waitForSelector('#k-pruefen', { state: 'hidden', timeout: 5000 }).catch(() => pruef(false, 'Nein schließt den Prüfdialog nicht'));
+        pruef((await page.textContent('#k-titel')) === schritt, 'nach Nein nicht beim selben Foto');
+        a = await ausgeloest();
+        if (!a.ok) { pruef(false, 'nach Nein löst er nicht wieder aus'); break; }
+        pruef(await sichtbar(page, '#p-rahmen'), 'nach Nein und neuem Foto fehlt die Rahmen-Frage');
+      }
+      await page.click('#p-rahmen-ja');
+      await page.waitForTimeout(200);
+    }
     const pt = await page.textContent('#p-titel'), pf = (await sichtbar(page, '#p-frage')) ? await page.textContent('#p-frage') : '';
     const mass = (await sichtbar(page, '#p-mass')) ? await page.textContent('#p-mass') : '';
     const werte = await sichtbar(page, '#p-werte');

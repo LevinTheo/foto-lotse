@@ -95,8 +95,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   await page.fill('#entw-name', 'Testfenster');
   await page.fill('#entw-f1-b', '450'); await page.fill('#entw-f1-h', '1240'); await page.fill('#entw-f1-rib', '320');
   await page.fill('#entw-f2-b', '451'); await page.fill('#entw-f2-h', '1239');
-  pruef(await sichtbar('#entw-gb'), 'Feld „Alle Flügel zusammen breit“ fehlt');
-  await page.fill('#entw-gb', '905');
+  pruef(await sichtbar('#entw-zm'), 'Feld „Zwischenraum Mitte“ fehlt');
+  await page.fill('#entw-zm', '0');
   await page.click('#entw-neu');
   for (let t = 0; t < 100 && !hoch[ordner + '/fenster.json']; t++) await page.waitForTimeout(100);
   pruef(!!hoch[ordner + '/fenster.json'], 'fenster.json fehlt (Ordner ' + ordner + ')');
@@ -106,7 +106,7 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
     pruef(f.fluegelJeBlatt && f.fluegelJeBlatt.length === 2 && f.fluegelJeBlatt[0].blatt === 1 && f.fluegelJeBlatt[0].breiteMm === 450 && f.fluegelJeBlatt[0].lichtBreiteMm === 320 &&
       f.fluegelJeBlatt[1].blatt === 2 && f.fluegelJeBlatt[1].hoeheMm === 1239, 'fluegelJeBlatt: ' + JSON.stringify(f.fluegelJeBlatt));
     pruef(f.fluegelBreiteMm === 450 && f.fluegelHoeheMm === 1240 && f.name === 'Testfenster', 'Einzelwerte: ' + f.fluegelBreiteMm + ' × ' + f.fluegelHoeheMm + ', ' + f.name);
-    pruef(f.gesamtBreiteMm === 905 && f.gesamtHoeheMm === null, 'Gesamtmaß: ' + f.gesamtBreiteMm + ' × ' + f.gesamtHoeheMm);
+    pruef(f.zwischenraumMitteMm === 0 && f.zwischenraumObenUntenMm === null, 'Zwischenraum: ' + f.zwischenraumMitteMm + ' / ' + f.zwischenraumObenUntenMm);
   }
   await page.waitForFunction(() => /Gespeichert/.test(document.getElementById('entw-ordner').textContent), null, { timeout: 5000 }).catch(() => pruef(false, 'kein „Gespeichert ✓“ nach „Fenster fertig“'));
   pruef(!(await sichtbar('#entw-fluegel')) && (await page.$$('#entw-fluegel fieldset')).length === 0, 'Felder je Flügel nach „Fenster fertig“ nicht geleert');

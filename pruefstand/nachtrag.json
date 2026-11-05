@@ -45,6 +45,7 @@
   },
   "2026-11-05_1549_fenster": {
     "gesamtBreiteMm": 2062,
-    "notizGesamt": "Levin 5. Nov. abends, Laser: beide Flügel zusammen außen 2062/2063 mm (linke Kante Flügel 1 bis rechte Kante Flügel 2). Diagonalen am Glas gemessen (bestätigt)"
+    "notizGesamt": "Levin 5. Nov. abends, Laser: beide Flügel zusammen außen 2062/2063 mm (linke Kante Flügel 1 bis rechte Kante Flügel 2). Diagonalen am Glas gemessen (bestätigt). Zwischenraum Mitte errechnet: 2062 − 810 − 1228 = 24 mm",
+    "zwischenraumMitteMm": 24
   }
 }

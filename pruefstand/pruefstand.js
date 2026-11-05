@@ -24,6 +24,14 @@ function fuerBlatt(w, blatt) {
   if (!q) return w;
   return Object.assign({}, w, { fluegelBreiteMm: q.breiteMm, fluegelHoeheMm: q.hoeheMm, rahmenInnenBreiteMm: q.lichtBreiteMm || null, rahmenInnenHoeheMm: q.lichtHoeheMm || null, blattWahrheit: blatt });
 }
+// Echtes Gesamtmaß nebeneinander: gelasert (gesamtBreiteMm) oder Flügel je Blatt plus Zwischenraum Mitte (v3.21, Levin: „reicht der
+// Zwischenraum, die anderen Maße hast du ja“). Nur für 2 Flügel nebeneinander; sonst null.
+function gesamtEcht(w) {
+  if (w.gesamtBreiteMm) return w.gesamtBreiteMm;
+  const f = w.fluegelJeBlatt || [];
+  if (f.length === 2 && f.every((q) => q.breiteMm) && typeof w.zwischenraumMitteMm === 'number') return f[0].breiteMm + f[1].breiteMm + w.zwischenraumMitteMm;
+  return null;
+}
 const pz1 = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' %');
 function wahrheit(ordner) {
   const f = path.join(DATEN, 'fenster', ordner, 'fenster.json');
@@ -117,7 +125,7 @@ function wahrheit(ordner) {
         // Mehrere Maßblätter (v3.14): je Flügel gegen das eine echte Maß (Levin misst einen Flügel; gleich große Flügel angenommen)
         blaetter: r.fluegel ? r.blaetter + ' Blätter, ' + r.anordnung + ': ' + r.fluegel.map((q) => 'Blatt ' + q.blatt + ' ' + (q.ok ? q.b + '×' + q.h +
           (fuerBlatt(w, q.blatt).fluegelBreiteMm ? ' (' + pz1((q.b - fuerBlatt(w, q.blatt).fluegelBreiteMm) / fuerBlatt(w, q.blatt).fluegelBreiteMm) + ' / ' + pz1((q.h - fuerBlatt(w, q.blatt).fluegelHoeheMm) / fuerBlatt(w, q.blatt).fluegelHoeheMm) + ')' : '') + (q.sicher ? '' : ' unsicher') : 'kein Maß')).join(' · ') +
-          (r.gesamt ? ' · zusammen ' + r.gesamt.join('×') + (w.gesamtBreiteMm ? ' (echt ' + w.gesamtBreiteMm + (w.gesamtHoeheMm ? '×' + w.gesamtHoeheMm : '') + ': ' + pz1((r.gesamt[0] - w.gesamtBreiteMm) / w.gesamtBreiteMm) + ')' : '') : '') : '' });
+          (r.gesamt ? ' · zusammen ' + r.gesamt.join('×') + (gesamtEcht(w) && r.anordnung === 'nebeneinander' ? ' (echt ' + gesamtEcht(w) + ': ' + pz1((r.gesamt[0] - gesamtEcht(w)) / gesamtEcht(w)) + ')' : '') : '') : '' });
       process.stdout.write('.');
     }
   }

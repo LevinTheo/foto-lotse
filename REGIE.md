@@ -262,9 +262,11 @@ Aus der Prüfung vom 4. Nov. abends (Nummern wie dort, Reihenfolge = Empfehlung)
 - [x] **Livebild ohne v2-Umriss, Auslösen am Blatt (Prüfung 6)** (v3.6, 4. Nov. 2026)
 - [ ] v3 mit einem Raster live probieren (Prüfung 6, zweiter Teil): nur wenn es am Handy schnell genug ist; dann wieder ein Umriss, aber nur bei `massSicher`
 - [x] **Grenzwerte nach `V3`, `opt.fu` durchreichen, toten Code entfernen (Prüfung 9 und 10)** (v3.7, 4. Nov. 2026: identisch gemessen; `fuBauart` getestet, aus)
-- [ ] **Ebene aus den Flügelkanten statt nur vom Blatt (Prüfung 11)**
+- [ ] **Ebene aus den Flügelkanten statt nur vom Blatt (Prüfung 11)** – nicht die Spiegelprobe und nicht die Schablonen (Klarstellung 5. Nov.): gemeint ist, die Fensterebene wie früher in v2 (`fensterGenau`) aus den vier Flügelkanten (Fluchtpunkte, 2 m Basis) nachzubestimmen und das Blatt nur für den Maßstab zu nehmen. Hebel gemessen: bei WZ 1 macht allein die Wahl der Abbildung 6 % aus. Vermutung, 4–8 h, mit Prüfstand belegen
+- [ ] **Levins Ecken-Idee in der Maß-Form (5. Nov.):** Holzbreite Glaskante → Fuge ist links, rechts und oben gleich, unten gleich oder breiter (Tür mit Füllung). Die Seite, bei der alle Durchgänge einig sind und das Holz zur Bauart passt, ist die Vorlage; an den anderen Seiten die Fuge nur noch dort zulassen, wo die Breite zur Vorlage passt (unten mit Spielraum), erst wenn dort gar keine Kante ist, weiter weg suchen. Das ist nicht der alte `V3.abgleich` (der suchte oben/unten weiter frei und nahm die Seitenbreite nur als Bonus) und nicht die Bild-Schablonen. Nur behalten, wenn Prüfstand und Wackeltest besser werden als v3.7
 - [x] Ablauf-Test (Playwright, Übungsmodus) ins Repo: `pruefstand/uebung.js` (4. Nov. 2026)
-- [ ] Plausibilitätsfrage am Ende („Flügel ca. 122 × 132 cm – kommt das hin?“); Lichtmaß der Balkontür und Holz unten an einem Kunststofffenster nachmessen (Prüfung 13, v3.7)
+- [ ] **Kundenfrage ohne Zahl (Prüfung 13, präzisiert 5. Nov.):** keine Maße abfragen, Kunden haben keinen Zollstock. Stattdessen im Prüfdialog unter dem Foto mit dem grünen Rahmen: „Liegt der grüne Rahmen genau auf der Kante vom Flügel?“ Ja / Nein. Bei Nein: nochmal fotografieren, und das Foto für Levin markieren (Durchlauf-Daten). Fängt grobe Ausreißer wie −35 % ab, ca. 30 min
+- [ ] Nur für Levin (Lernfotos): Lichtmaß der Balkontür und Holz unten an einem Kunststofffenster nachtragen (Prüfung 13, v3.7)
 - [x] Gegenprobe nur bei „Selbst eingeben“ (Prüfung 1, 4. Nov. 2026)
 - [x] Wackeltest-Variante „weich“ repariert, KiZi v2 als 2 Flügel, Griff im Prüfstand nur bei 1 Flügel (Prüfung 3, 4, 8, 4. Nov. 2026)
 

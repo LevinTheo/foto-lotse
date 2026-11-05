@@ -77,7 +77,7 @@ function wahrheit(ordner) {
         const gf = e.geometrie && e.geometrie.fluegel, gg = e.geometrie && e.geometrie.glas;
         if (gf && gf.eckenBild) { c.strokeStyle = '#ffd400'; c.lineWidth = Math.max(2, cv.width / 600); c.setLineDash([]); c.beginPath(); gf.eckenBild.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); c.closePath(); c.stroke(); }
         const glMm = e.roh && e.roh.glas ? [Math.round(e.roh.glas[2] - e.roh.glas[0]), Math.round(e.roh.glas[3] - e.roh.glas[1])] : null;
-        return { glMm, gesp: (e.spiegelVorschlag || '') + (e.gespiegelt ? ' → ' + e.gespiegelt : '') + (e.amEnde && /[ou]/.test(e.amEnde) ? ' · Ende ' + e.amEnde : ''), geoF: gf ? { w: gf.winkel, d: gf.diagonalenMm, dd: gf.diagonalenDiffMm, b: gf.breiteMm, h: gf.hoeheMm } : null, geoG: gg ? { w: gg.winkel, dd: gg.diagonalenDiffMm } : null,
+        return { glMm, gesp: (e.spiegelVorschlag || '') + (e.gespiegelt ? ' → ' + e.gespiegelt : '') + (e.amEnde && /[ou]/.test(e.amEnde) ? ' · Ende ' + e.amEnde : '') + (e.vorlage ? ' · Vorlage ' + e.vorlage.seite + ' ' + e.vorlage.breite + ' (' + e.vorlage.geaendert + ')' : ''), geoF: gf ? { w: gf.winkel, d: gf.diagonalenMm, dd: gf.diagonalenDiffMm, b: gf.breiteMm, h: gf.hoeheMm } : null, geoG: gg ? { w: gg.winkel, dd: gg.diagonalenDiffMm } : null,
           sicherM: e.massSicher, marker: e.marker, abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null,
           hoehe: e.ok ? Math.round(e.hoehe) : null, stimmig: e.sicher, griff: e.griff ? { seite: e.griff.seite, sicher: e.griff.sicher } : null, ms,
           bild: k.toDataURL('image/jpeg', 0.7) };

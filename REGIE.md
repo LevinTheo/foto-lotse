@@ -2,6 +2,17 @@
 
 Stand: 5. Nov. 2026 · Levin (Holtcraft) · **Version v3.14** (mehrere Maßblätter: auf jeden Flügel ein eigenes Blatt, der Lotse zählt und misst jeden Flügel)
 
+## Übergabe (für einen neuen Chat)
+
+- **Stand:** v3.14 auf `main`, gesichert als `stand-v3.14`. Chat-Name: „Foto Lotse v3.14“.
+- **In Arbeit:** Das Maßblatt darf schief, quer oder auf dem Kopf kleben. Der Lotse soll sich dazu an den Kanten vom Fenster ausrichten statt am Blatt. Gefunden am 5. Nov. mit nachgestellten Fotos: Ein Blatt, das nur 3° schief klebt, macht das Maß kaputt (−24 bis +115 %). Auf dem Kopf liegt es teils 20 % daneben. Einzelheiten unter Offene Punkte.
+- **Offene Fragen an Levin:** Der grüne Rahmen kam am 5. Nov. mittags nicht (mit Sonne auf der Scheibe): Welcher Modus war gewählt („1 Flügel“ oder „Mehrere“), und welcher Text stand unten? Diagonale am Glas oder am Flügel gemessen?
+- **Start-Text für einen neuen Chat** (kopieren):
+
+```
+Du baust den Foto-Lotsen von Holtcraft weiter. Hol dir zuerst beide Repos in die Sitzung: LevinTheo/foto-lotse (Code) und LevinTheo/foto-lotse-daten (privat, Lernfotos mit echten Maßen; nur lesen, dort nichts ändern oder löschen). Lies CLAUDE.md und REGIE.md, zuerst den Abschnitt „Übergabe“, und mach beim dort genannten nächsten Schritt weiter. Berichte mir nach jedem Schritt kurz und in einfachen Worten, auf Deutsch, mit „du“.
+```
+
 ## Versionen
 
 Jeder Stand liegt auf GitHub. Zurückholen: Claude sagen „bau zurück auf vX“.

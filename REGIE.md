@@ -11,7 +11,7 @@ Stand: 5. Nov. 2026 mittags · Levin (Holtcraft) · **Version v3.15** (das Maßb
 - **Start-Text für einen neuen Chat** (kopieren):
 
 ```
-Du baust den Foto-Lotsen von Holtcraft weiter. Hol dir zuerst beide Repos in die Sitzung: LevinTheo/foto-lotse (Code) und LevinTheo/foto-lotse-daten (privat, Lernfotos mit echten Maßen; nur lesen, dort nichts ändern oder löschen). Lies CLAUDE.md und REGIE.md, zuerst den Abschnitt „Übergabe“, und mach beim dort genannten nächsten Schritt weiter. Berichte mir nach jedem Schritt kurz und in einfachen Worten, auf Deutsch, mit „du“.
+Du baust den Foto-Lotsen von Holtcraft weiter. Hol dir zuerst beide Repos in die Sitzung: LevinTheo/foto-lotse (Code) und LevinTheo/foto-lotse-daten (privat, Lernfotos mit echten Maßen; nur lesen, dort nichts ändern oder löschen). Lies CLAUDE.md und REGIE.md, zuerst den Abschnitt „Übergabe“, und mach beim dort genannten nächsten Schritt weiter. Arbeite selbstständig und halte die Übergabe in REGIE.md nach jedem Schritt aktuell, damit der nächste Chat nahtlos weitermachen kann.
 ```
 
 ## Versionen

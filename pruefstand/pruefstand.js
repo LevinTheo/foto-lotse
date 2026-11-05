@@ -17,6 +17,7 @@ const AUS = path.resolve(ARGS[1] || '/tmp/pruefstand');
 const LOTSE = path.resolve(__dirname, '..');
 const NACHTRAG = JSON.parse(fs.readFileSync(path.join(__dirname, 'nachtrag.json'), 'utf8'));
 
+const pz1 = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' %');
 function wahrheit(ordner) {
   const f = path.join(DATEN, 'fenster', ordner, 'fenster.json');
   const w = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')).fenster : {};
@@ -65,7 +66,8 @@ function wahrheit(ordner) {
         // Bild mit dem, was der Lotse erkannt hat (grün Flügel, rot gestrichelt Glas)
         if (e.ecken) {
           c.lineWidth = Math.max(3, cv.width / 400); c.strokeStyle = '#00e060';
-          c.beginPath(); e.ecken.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); c.closePath(); c.stroke();
+          // Mehrere Maßblätter (v3.14): ein Rahmen je Flügel
+          (e.fluegel ? e.fluegel.filter((q) => q.ok).map((q) => q.ecken) : [e.ecken]).forEach((pk) => { c.beginPath(); pk.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); c.closePath(); c.stroke(); });
           if (e.roh && e.roh.glas && e.lage) {
             const gl = e.roh.glas, ab = (x, y) => L.MASS.abb(e.lage.H, x, y);
             c.strokeStyle = '#ff3030'; c.setLineDash([16, 10]);
@@ -81,6 +83,8 @@ function wahrheit(ordner) {
         return { glMm, holz, gesp: (e.spiegelVorschlag || '') + (e.gespiegelt ? ' → ' + e.gespiegelt : '') + (e.amEnde && /[ou]/.test(e.amEnde) ? ' · Ende ' + e.amEnde : '') + (e.vorlage ? ' · Vorlage ' + e.vorlage.seite + ' ' + e.vorlage.breite + ' (' + e.vorlage.geaendert + ')' : ''), geoF: gf ? { w: gf.winkel, d: gf.diagonalenMm, dd: gf.diagonalenDiffMm, b: gf.breiteMm, h: gf.hoeheMm } : null, geoG: gg ? { w: gg.winkel, dd: gg.diagonalenDiffMm } : null,
           sicherM: e.massSicher, marker: e.marker, abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null,
           hoehe: e.ok ? Math.round(e.hoehe) : null, stimmig: e.sicher, griff: e.griff ? { seite: e.griff.seite, sicher: e.griff.sicher } : null, ms,
+          blaetter: e.blaetter ? e.blaetter.length : null, anordnung: e.anordnung || null, gesamt: e.gesamt ? [Math.round(e.gesamt.breite), Math.round(e.gesamt.hoehe)] : null,
+          fluegel: e.fluegel ? e.fluegel.map((q) => ({ blatt: q.blatt, ok: q.ok, b: q.ok ? Math.round(q.breite) : null, h: q.ok ? Math.round(q.hoehe) : null, sicher: q.massSicher })) : null,
           bild: k.toDataURL('image/jpeg', 0.7) };
       }, { url: 'http://lotse.test/_daten/fenster/' + ordner + '/' + foto, opt });
       fs.writeFileSync(path.join(AUS, ordner + '__' + foto), Buffer.from(r.bild.split(',')[1], 'base64'));
@@ -95,13 +99,17 @@ function wahrheit(ordner) {
         gesp: r.gesp || '', marker: r.marker, glas: r.glMm, holz: r.holz,
         rahmen: w.rahmenSichtbarSeitenMm ? [w.rahmenSichtbarSeitenMm.links, w.rahmenSichtbarSeitenMm.oben, w.rahmenSichtbarSeitenMm.rechts, w.rahmenSichtbarSeitenMm.unten] : w.rahmenSichtbarMm ? [w.rahmenSichtbarMm, w.rahmenSichtbarMm, w.rahmenSichtbarMm, w.rahmenSichtbarMm] : null, licht: w.rahmenInnenBreiteMm ? [w.rahmenInnenBreiteMm, w.rahmenInnenHoeheMm] : null,
         gb: r.glMm && w.rahmenInnenBreiteMm ? (r.glMm[0] - w.rahmenInnenBreiteMm) / w.rahmenInnenBreiteMm : null, gh: r.glMm && w.rahmenInnenHoeheMm ? (r.glMm[1] - w.rahmenInnenHoeheMm) / w.rahmenInnenHoeheMm : null, abstand: r.abstand, stimmig: r.stimmig,
-        griff: r.griff ? (r.griff.seite === griffEcht ? 'richtig' : griffEcht ? 'FALSCH' : r.griff.seite) + (r.griff.sicher ? ' (sicher)' : '') : '–', ms: r.ms });
+        griff: r.griff ? (r.griff.seite === griffEcht ? 'richtig' : griffEcht ? 'FALSCH' : r.griff.seite) + (r.griff.sicher ? ' (sicher)' : '') : '–', ms: r.ms,
+        // Mehrere Maßblätter (v3.14): je Flügel gegen das eine echte Maß (Levin misst einen Flügel; gleich große Flügel angenommen)
+        blaetter: r.fluegel ? r.blaetter + ' Blätter, ' + r.anordnung + ': ' + r.fluegel.map((q) => 'Blatt ' + q.blatt + ' ' + (q.ok ? q.b + '×' + q.h +
+          (w.fluegelBreiteMm ? ' (' + pz1((q.b - w.fluegelBreiteMm) / w.fluegelBreiteMm) + ' / ' + pz1((q.h - w.fluegelHoeheMm) / w.fluegelHoeheMm) + ')' : '') + (q.sicher ? '' : ' unsicher') : 'kein Maß')).join(' · ') +
+          (r.gesamt ? ' · zusammen ' + r.gesamt.join('×') : '') : '' });
       process.stdout.write('.');
     }
   }
   await browser.close();
 
-  const pz = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' %');
+  const pz = pz1;
   const gut = zeilen.filter((z) => z.fb !== null && Math.abs(z.fb) <= 0.02 && Math.abs(z.fh) <= 0.02).length;
   const sicherOk = zeilen.filter((z) => z.sicherM && z.fb !== null), sicherGut = sicherOk.filter((z) => Math.abs(z.fb) <= 0.05 && Math.abs(z.fh) <= 0.05).length;
   const unsicherSchlecht = zeilen.filter((z) => z.sicherM === false && z.fb !== null && (Math.abs(z.fb) > 0.05 || Math.abs(z.fh) > 0.05)).length, unsicherAlle = zeilen.filter((z) => z.sicherM === false && z.fb !== null).length;
@@ -123,8 +131,8 @@ function wahrheit(ordner) {
       return 'Rahmen sichtbar (Glaskante bis Fuge) gegen echt, Fotos auf ±5 %: seitlich ' + m(d[0]) + ' (' + d[0].length + '), oben ' + m(d[1]) + ', unten ' + m(d[2]) + ' (Median der Abweichung)\n\n'; })() +
     'Selbsteinschätzung v3: als sicher gemeldet ' + sicherOk.length + ', davon auf ±5 % ' + sicherGut + ' · als unsicher gemeldet ' + unsicherAlle + ', davon wirklich > 5 % daneben ' + unsicherSchlecht + '\n\n' +
     'Griff (nur 1 Flügel, mit bekannter Seite): richtig ' + grRichtig + ' von ' + gr.length + ' · als sicher gemeldet ' + grSicher.length + ', davon richtig ' + grSicherRichtig + '\n\n' +
-    '| Fenster | Foto | echt (mm) | Lotse (mm) | Breite | Höhe | Glas zu Lichtmaß | Marker | Abstand | stimmig | Griff | Ecken Flügel (OL/OR/UR/UL) | Ecken Glas | gespiegelt · Ende | ms |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
-  zeilen.forEach((z) => { md += `| ${z.name || z.ordner} | ${z.foto} | ${z.echt} | ${z.lotse} | ${pz(z.fb)} | ${pz(z.fh)} | ${z.gb === null ? '–' : pz(z.gb) + ' / ' + pz(z.gh)} | ${z.marker} | ${z.abstand ? (z.abstand / 1000).toFixed(2) + ' m' : '–'} | ${z.stimmig === undefined ? '–' : z.stimmig ? 'ja' : 'nein'} | ${z.griff} | ${z.geo} | ${z.geoGlas} | ${z.gesp} | ${z.ms} |\n`; });
+    '| Fenster | Foto | echt (mm) | Lotse (mm) | Breite | Höhe | Glas zu Lichtmaß | Marker | Abstand | stimmig | Griff | Ecken Flügel (OL/OR/UR/UL) | Ecken Glas | gespiegelt · Ende | ms | mehrere Blätter |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n';
+  zeilen.forEach((z) => { md += `| ${z.name || z.ordner} | ${z.foto} | ${z.echt} | ${z.lotse} | ${pz(z.fb)} | ${pz(z.fh)} | ${z.gb === null ? '–' : pz(z.gb) + ' / ' + pz(z.gh)} | ${z.marker} | ${z.abstand ? (z.abstand / 1000).toFixed(2) + ' m' : '–'} | ${z.stimmig === undefined ? '–' : z.stimmig ? 'ja' : 'nein'} | ${z.griff} | ${z.geo} | ${z.geoGlas} | ${z.gesp} | ${z.ms} | ${z.blaetter || '–'} |\n`; });
   fs.writeFileSync(path.join(AUS, 'ergebnis.md'), md);
   fs.writeFileSync(path.join(AUS, 'ergebnis.json'), JSON.stringify(zeilen, null, 2));
   console.log('\n' + md);

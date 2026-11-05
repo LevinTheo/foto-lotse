@@ -3,7 +3,9 @@
 // Prüft: Startseite ohne Entwickler-Sachen, Frage „1 oder 2 Flügel?“, Livebild mit „Geh … zurück“ und „Fenster gefunden“ (grüner
 // Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ (bei 1 Flügel einmal Nein → nochmal, dann Ja), alle Fotos bis
 // „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine Fehler in der Konsole.
-// Läuft einmal mit 1 und einmal mit 2 Flügeln, dauert ca. 1 Minute. Mit --bilder legt es Bildschirmfotos ab.
+// Läuft einmal mit 1 Flügel und einmal mit „Mehrere Flügel“ (v3.14: die Übung zeichnet dann 2 Flügel mit Blatt 1 und Blatt 2; geprüft
+// wird „2 Flügel gefunden“, die Frage nach den grünen Rahmen und „2 Flügel nebeneinander“), dauert ca. 1 Minute.
+// Mit --bilder legt es Bildschirmfotos ab.
 // Ergebnis in REGIE.md unter „Ablauf-Test“ eintragen.
 // Braucht Playwright mit Chromium. Ohne Kamera (http, headless) startet der Lotse von selbst den Übungsmodus.
 'use strict';
@@ -41,11 +43,11 @@ async function durchlauf(browser, nU, fehler, notizen) {
   await page.click('#manuell');
   if (BILDER) await page.screenshot({ path: path.join(BILDER, 'start.png') });
 
-  // 2. Analyse starten → Frage nach den Flügeln
+  // 2. Analyse starten → Frage nach den Flügeln (1 / Mehrere)
   await page.click('#start');
   pruef(await sichtbar(page, '#flu-frage'), 'Frage „Wie viele Flügel?“ kommt nicht');
   if (BILDER && nU === 1) await page.screenshot({ path: path.join(BILDER, 'frage.png') });
-  await page.click('#flu-wahl-' + nU);
+  await page.click('#flu-wahl-' + nU);   // 2 = „Mehrere Flügel“
   await page.waitForSelector('#kamera:not([hidden])');
   // Übungsmodus: Erklärkarte wegtippen
   await page.waitForTimeout(500);
@@ -58,7 +60,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
     const schritt = await page.textContent('#k-titel');
     const tipp = await page.textContent('#k-tipp');
     if (n === 0) {
-      pruef(nU === 2 ? /linke Scheibe/.test(tipp) : /auf die Scheibe/.test(tipp), 'Tipp beim ersten Foto passt nicht zur Flügelzahl: ' + tipp);
+      pruef(nU === 2 ? /auf jeden Flügel/.test(tipp) : /auf die Scheibe/.test(tipp), 'Tipp beim ersten Foto passt nicht zur Flügelzahl: ' + tipp);
       // Die Übung beginnt zu nah (1,8 m): das Livebild muss zurückschicken, nur nach dem Maßblatt
       await page.waitForTimeout(1500);
       const st = await page.textContent('#k-status');
@@ -69,19 +71,24 @@ async function durchlauf(browser, nU, fehler, notizen) {
     await page.click('#k-zeig');
     // Auf den Prüfdialog warten; beim ganzen Fenster mitlesen, ob „Fenster gefunden“ (grüner Rahmen) kam
     const ausgeloest = async () => {
-      let gefunden = false;
+      let gefunden = false, zwei = false;
       for (let t = 0; t < 300; t++) {
-        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden };
-        if (/gefunden/.test(await page.textContent('#k-status'))) gefunden = true;
+        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden, zwei };
+        const st = await page.textContent('#k-status');
+        if (/gefunden/.test(st)) gefunden = true;
+        if (/2 Flügel gefunden/.test(st)) zwei = true;
         await page.waitForTimeout(100);
       }
-      return { ok: false, gefunden };
+      return { ok: false, gefunden, zwei };
     };
     let a = await ausgeloest();
     if (!a.ok) { pruef(false, 'Foto „' + schritt + '“ löst nicht aus'); break; }
     if (n === 0) {
       pruef(a.gefunden, 'kein „Fenster gefunden“ (grüner Rahmen) vor dem Auslösen');
-      pruef(await sichtbar(page, '#p-rahmen') && /grüne Rahmen/.test(await page.textContent('#p-titel')), 'Frage „Liegt der grüne Rahmen …?“ fehlt');
+      if (nU === 2) pruef(a.zwei, 'kein „2 Flügel gefunden“ (zwei Maßblätter) vor dem Auslösen');
+      pruef(await sichtbar(page, '#p-rahmen') && (nU === 2 ? /grünen Rahmen genau auf den Kanten der Flügel/ : /grüne Rahmen genau auf der Kante/).test(await page.textContent('#p-titel')),
+        'Frage nach dem grünen Rahmen fehlt oder passt nicht zur Flügelzahl: ' + await page.textContent('#p-titel'));
+      if (nU === 2) pruef(/Gemessen: 2 Flügel nebeneinander/.test(await page.textContent('#p-mass')), 'Maß nennt nicht „2 Flügel nebeneinander“: ' + await page.textContent('#p-mass'));
       if (BILDER) await page.screenshot({ path: path.join(BILDER, 'rahmen-' + nU + '.png') });
       if (nU === 1) {
         // Einmal Nein: Dialog zu, gleiches Foto nochmal, der Lotse muss wieder auslösen
@@ -102,7 +109,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
     if (BILDER && n === 0) await page.screenshot({ path: path.join(BILDER, 'pruefen-' + nU + '.png') });
     pruef(!werte, 'Messwerte (Entwickler) im Prüfdialog sichtbar');
     if (await sichtbar(page, '#p-griff')) {
-      pruef(nU === 1, 'Griff-Frage bei 2 Flügeln');
+      pruef(nU === 1, 'Griff-Frage bei mehreren Flügeln nebeneinander');
       pruef(!/Griff/.test(pf), 'Griff-Frage doppelt gestellt: ' + pt + ' / ' + pf);
       await page.click('#p-griff-r');
     } else {
@@ -115,6 +122,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
   pruef(await sichtbar(page, '#fertig'), 'Am Ende fehlt „Alle Pflichtfotos sind da“');
   const st = await page.evaluate(() => JSON.parse(localStorage.getItem('foto-lotse-fenster') || '{}'));
   pruef(st.nU === nU, 'Flügelanzahl nicht übernommen (gemerkt: ' + st.nU + ')');
+  pruef(!!st.mehr === (nU === 2), '„Mehrere Flügel“ nicht gemerkt');
   notizen.push(nU + ' Flügel: ' + titel.length + ' Schritte\n  ' + titel.join('\n  '));
 
   // 4. Mit ?test: Entwickler-Knopf und Messwerte da
@@ -133,6 +141,6 @@ async function durchlauf(browser, nU, fehler, notizen) {
   }
   await browser.close();
   console.log(notizen.join('\n'));
-  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nAblauf-Test bestanden: 1 und 2 Flügel, keine Fehler.');
+  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nAblauf-Test bestanden: 1 Flügel und „Mehrere“ (2 Blätter), keine Fehler.');
   process.exit(fehler.length ? 1 : 0);
 })();

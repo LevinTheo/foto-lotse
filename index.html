@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.29 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.30 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1385,7 +1385,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var TOL = { groesse: 0.15, lage: 0.09, schraeg: 0.16, kipp: 0.15, gefunden: 0.4, passt: 0.55, halten: 800,
     haltenBlatt: 4000,     // v3.26 (Levin): beim Fenster und bei jedem Flügel so lange still halten, mit Countdown 4, 3, 2, 1
     haltenLuecke: 700,     // ms: so lange darf der grüne Rahmen kurz wegfallen, ohne dass der Countdown neu anfängt
-    vergleichAb: 1.3,      // v3.28 (Parallaxe, „Z 0“): ab so vielen m macht der Lotse beim Zurückgehen still ein Vergleichsfoto vom Flügel
+    vergleichAb: 1.5,      // v3.28 (Parallaxe, „Z 0“): ab so vielen m macht der Lotse beim Zurückgehen still ein Vergleichsfoto vom Flügel
+                           // (v3.30: war 1,3; Paare mit Vergleich unter 1,5 m machten öfter ein gutes Maß kaputt, Fable F1)
+    vergleichMehr: 0.3,    // v3.30: nach dem Vergleichsfoto muss das Flügel-Foto mind. so viele m weiter weg sein (sonst keine Verschiebung)
+    vergleichMehrBis: 2.2, // v3.30: … aber dafür nie weiter zurück schicken als bis hier (kleine Räume)
     fastHalten: 1500,      // so lange „Fast“ ruhig gehalten zählt auch als passt
     neigungSeite: 10, neigungKipp: 20,   // Grad, ab dann kommt „Handy gerade halten“ bzw. „senkrecht halten“
     neigungZurueck: 3, neigungHalten: 1000,   // v3.23: Hinweis geht erst 3° unter der Grenze und bleibt mind. 1 s (vorher Flackern)
@@ -1709,7 +1712,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       fuss = abb(inv3(Hs), w / 2, h / 2);
     }
     return { H: H2, Hvoll: Hm, z: z, fuss: fuss, fehler: fehler, anzahl: marker.length, neigung: neig,
-      blick: [r1[2], r2[2], r3[2]] };   // Blickrichtung der Kamera in Blattkoordinaten
+      blick: [r1[2], r2[2], r3[2]],   // Blickrichtung der Kamera in Blattkoordinaten
+      kamera: [Math.round(C[0]), Math.round(C[1]), Math.round(Math.abs(C[2]))] };   // v3.30: Standort der Kamera (mm, volle Perspektive)
   }
 
   // Alles zusammen: Marker → Lage des Blatts → Fenster von der Holzseite her (v3). Die alte Fenstersuche vom Blatt aus (v2,
@@ -1897,7 +1901,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     });
     var ok = liste.filter(function (e) { return e.ok; });
     var erg = Object.assign({}, ok[0] || liste[0]);
-    erg.lage = { H: lage.Hvoll || lage.H, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung };
+    erg.lage = { H: lage.Hvoll || lage.H, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung, kamera: lage.kamera };
     erg.marker = haupt.marker; erg.blaetter = info;
     erg.fluegel = liste.map(function (e) {
       return { blatt: e.blatt, ok: !!e.ok, grund: e.grund || '', breite: e.ok ? e.breite : null, hoehe: e.ok ? e.hoehe : null, ecken: e.ok ? e.ecken : null,
@@ -1999,6 +2003,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     hintenGrenze: 0.6,        // Übereinstimmung (Korrelation) darunter = dahinter
     hintenStruktur: 6,        // Graustufen: nur wo beide Fotos so viel Struktur haben (glatte Flächen sagen nichts)
     hintenRest: 0.2,          // eine Glaskante zählt nur, wenn mind. so viel ihrer Stärke nicht „dahinter“ liegt
+    hintenMinVersatz: 100,    // v3.30 (Fable F1): mm; stehen beide Kameras näher beisammen, verschiebt sich nichts → ohne Vergleich messen
     blatt: [0, 0, 210, 297] };   // Blattrand im Messraster (mm), von messenV3 je Blatt gesetzt
   function v3Raster(S) { V3.S = S; V3.W = Math.round(3210 / S); V3.H = Math.round(3300 / S); }
   function v3Entzerren(rgb, g, w, h, Hm) {
@@ -2441,6 +2446,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (mk.length < 2) return { ok: false, grund: 'blatt' };
     var l2 = blattLage(mk, zweit.w, zweit.h, zweit.f);
     if (!l2) return { ok: false, grund: 'lage' };
+    // v3.30 (Fable F1): vom selben Platz aufgenommen → keine Verschiebung, die Karte wäre leer; nur ungenaues Übereinanderlegen bliebe
+    var versatz = lage.kamera && l2.kamera ? Math.hypot(lage.kamera[0] - l2.kamera[0], lage.kamera[1] - l2.kamera[1], lage.kamera[2] - l2.kamera[2]) : null;
+    if (versatz !== null && versatz < V3.hintenMinVersatz) return { ok: false, grund: 'gleicherPlatz', z2: Math.round(l2.z), versatz: Math.round(versatz) };
     // Drehung des Messrasters gegen das Blatt (v3.15) auch fürs zweite Foto
     var psi = (lage.drehung || 0) * Math.PI / 180, c = Math.cos(psi), sn = Math.sin(psi), cx = MB.b / 2, cy = MB.h / 2;
     var A = [[c, -sn, cx - c * cx + sn * cy], [sn, c, cy - sn * cx - c * cy], [0, 0, 1]];
@@ -2509,7 +2517,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       tex++;
       if (best[i] < V3.hintenGrenze) { m[i] = 1; hin++; }
     }
-    return { ok: true, S: S, W: W, H: Hh, m: m, anteil: tex ? Math.round(1000 * hin / tex) / 10 : 0, blatt: Math.round(kor * 100) / 100, z2: Math.round(l2.z), ms: Date.now() - t0 };
+    return { ok: true, S: S, W: W, H: Hh, m: m, anteil: tex ? Math.round(1000 * hin / tex) / 10 : 0, blatt: Math.round(kor * 100) / 100, z2: Math.round(l2.z),
+      versatz: versatz === null ? null : Math.round(versatz), ms: Date.now() - t0 };
   }
   // Karte „dahinter“ auf ein Messraster legen: Kantenkarten ohne diese Stellen (E.exG, E.eyG), für die Glaskanten-Suche
   function v3HintenAnwenden(E, K) {
@@ -2549,9 +2558,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       alle = alle2; Hm = Hm2; eb.info.angewendet = true;
     }
     var laeufe = alle.laeufe, E2 = alle.E2, vorlage = alle.vorlage, sp = alle.sp, spiegelSeite = alle.spiegelSeite, z = alle.z;
-    var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung },
+    var erg = { marker: marker, version: 'v3', lage: { H: Hm, z: lage.z, fuss: lage.fuss, anzahl: lage.anzahl, neigung: lage.neigung, kamera: lage.kamera },
       ausrichtung: lage.ausrichtung || null, drehung: lage.drehung || 0, ebene: ebene,
-      hinten: hinten ? { ok: !!hinten.ok, grund: hinten.grund || '', anteil: hinten.anteil, blatt: hinten.blatt, z2: hinten.z2, ms: hinten.ms, verworfen: alle.verworfen || 0 } : null };
+      hinten: hinten ? { ok: !!hinten.ok, grund: hinten.grund || '', anteil: hinten.anteil, blatt: hinten.blatt, z2: hinten.z2, versatz: hinten.versatz, ms: hinten.ms, verworfen: alle.verworfen || 0 } : null };
     if (!z) { erg.ok = false; erg.grund = 'fenster'; return erg; }
     var F = z.fluegel, Gl = z.glas, D = lage.z, k2 = (D - (opt.tiefe || 0)) / D;
     erg.roh = { ok: true, fluegel: F, glas: Gl, holz: [Gl[0] - F[0], Gl[1] - F[1], F[2] - Gl[2], F[3] - Gl[3]] };
@@ -3084,7 +3093,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     chips();
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
-    k.fastSeit = 0; k.schrittStart = performance.now(); k.vergleich = null; k.abbrueche = 0; k.rahmenLetzt = null;
+    k.fastSeit = 0; k.schrittStart = performance.now(); k.vergleich = null; k.abbrueche = 0; k.rahmenLetzt = null; k.zeigNach = null;
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; k.rahmenJa = false; k.rahmenNein = 0; clearTimeout(k.weiterUhr);
     k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
     k.blattNr = null; k.lesen = null; k.gelesenSeit = 0; k.gelesenH = null; k.gesamtSeit = 0;
@@ -3302,6 +3311,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function abstandSoll(s) {
     if (!fluegelSchritt(s)) return { min: TOL.abstandMin, max: TOL.abstandMax, ziel: TOL.abstand };
     var dyn = k.zMinDyn || 0;
+    // v3.30: nach dem stillen Vergleichsfoto mind. TOL.vergleichMehr weiter weg (höchstens bis TOL.vergleichMehrBis), damit sich etwas verschiebt
+    if (k.vergleich && !k.vergleich.ausReihe && k.vergleich.blattNr === k.blattNr) dyn = Math.max(dyn, Math.min(k.vergleich.abstand / 1000 + TOL.vergleichMehr, TOL.vergleichMehrBis));
     if (!reiheAktiv(s)) return { min: Math.max(TOL.abstandMinFluegel, dyn), max: TOL.abstandMax, ziel: Math.max(TOL.abstandFluegel, dyn + 0.2) };
     var r = k.reihe, n = r.fotos.length, vor = n ? r.fotos[n - 1].abstand / 1000 : 0;
     if (r.letzte) return { min: Math.max(TOL.abstandMinFluegel - TOL.reiheUnter, dyn), max: TOL.abstandMax + 0.1, ziel: Math.max(vor, TOL.abstandFluegel), reihe: true };
@@ -3594,6 +3605,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (k.pruefen) { countdown(0); return; }
     var s = SCHRITTE[k.i], z;
     if (k.anim) animieren(t);
+    if (k.zeigNach) zeigenWeiter();
     if (k.modus !== 'kamera') zeichneSzene(sctx, W, H, mitWackeln(t), k.modus === 'foto' ? 'foto' : s.szene, DPR);
     if (blattSchritt(s)) {
       if (k.modus !== 'foto') massLive(t);
@@ -3633,7 +3645,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     ablaufHinweis(warten ? 'warten' : nachhilfe ? 'nachhilfe' : z.art + (z.art === 'passt' && z.ecken ? '-rahmen' : ''), k.statusText);
     if (!$('k-nachhilfe').hidden) $('k-nachhilfe').hidden = true;
     if (z.art !== 'passt') k.sperre = false;
-    var darf = z.art === 'passt' && !k.sperre && !k.gemacht && !warten;
+    var darf = z.art === 'passt' && !k.sperre && !k.gemacht && !warten && !k.zeigNach;   // v3.30: „Zeig’s mir“ ist noch unterwegs
     // v3.26 (Levin): beim Fenster/Flügel 4 s mit Countdown, damit man nach dem Zurückgehen gut steht. Fällt der grüne Rahmen nur kurz
     // weg (bis TOL.haltenLuecke), läuft der Countdown weiter; ausgelöst wird aber nur, wenn es in dem Moment passt.
     var haltenMs = blattSchritt(s) && k.modus !== 'foto' ? TOL.haltenBlatt : TOL.halten;
@@ -3891,8 +3903,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   /* Vergleichsfoto (v3.28, Parallaxe, Levins Idee „Z 0“): Das Maßblatt ist Z 0. Ein zweites Foto desselben Blatts von einer anderen
      Stelle zeigt, was hinter dem Glas liegt (es verschiebt sich, die Ebene nicht). Der Lotse macht es still beim Zurückgehen, sobald
-     das gelesene Blatt ab TOL.vergleichAb ruhig zu sehen ist; mit Abstandsreihe (Levin) ist es das erste Foto der Reihe. Das Flügel-Foto
-     wird dann mit ihm gemessen (opt.zweit), so kommt der grüne Rahmen im Prüfdialog nicht mehr an den Baum hinter der Scheibe. */
+     das gelesene Blatt ab TOL.vergleichAb scharf zu sehen ist; mit Abstandsreihe (Levin) ist es das erste Foto der Reihe. Das Flügel-Foto
+     wird dann mit ihm gemessen (opt.zweit), so kommt der grüne Rahmen im Prüfdialog nicht mehr an den Baum hinter der Scheibe.
+     v3.30 (Fable F1): bis v3.29 musste das Blatt dafür „stabil“ sein; wer zurückgeht, ist das nie, also entstand das Vergleichsfoto erst
+     beim Stehenbleiben, meist am Platz des Flügel-Fotos, und es verschob sich nichts. Jetzt reicht ein scharfes Bild beim Zurückgehen
+     (nicht während eines Countdowns), und danach schickt abstandSoll mind. TOL.vergleichMehr weiter zurück. */
   function vergleichMerken(cv, z, ausReihe) {
     var w = cv.width, h = cv.height, g;
     try { g = grauVon(cv.getContext('2d', { willReadFrequently: true }), w, h); } catch (e) { return; }
@@ -3903,10 +3918,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (k.ablauf) { k.ablauf.vergleich = { ms: ablaufMs(), abstand: Math.round(z || 0), ausReihe: !!ausReihe }; ablaufHinweis('vergleich', ''); }
   }
   function vergleichVersuchen(s, t) {
-    if (k.vergleich || k.gemacht || k.pruefen || k.modus === 'foto' || !fluegelSchritt(s) || typeof k.blattNr !== 'number' || reiheAktiv(s)) return;
+    if (k.vergleich || k.gemacht || k.pruefen || k.passtSeit || k.modus === 'foto' || !fluegelSchritt(s) || typeof k.blattNr !== 'number' || reiheAktiv(s)) return;
     if (t - (k.gelesenSeit || 0) < TOL.blattZeigen || t - (k.vergleichVersuch || 0) < 400) return;
     var e = blattMessung();
-    if (!e || !e.lage || !e.stabil || e.lage.anzahl < 3 || e.lage.z / 1000 < TOL.vergleichAb || performance.now() - e.zeit > 600) return;
+    if (!e || !e.lage || e.lage.anzahl < 3 || e.lage.z / 1000 < TOL.vergleichAb || performance.now() - e.zeit > 600) return;
     var cv = null;
     k.vergleichVersuch = t;
     try { cv = k.modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (x) { cv = null; }
@@ -4399,14 +4414,28 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var nach = blattSchritt(s) ? (s.fl ? blattCam(mFl, G.glaeser[typeof k.blattNr === 'number' ? k.blattNr : s.fl - 1])
         : gesamtSchritt(s) ? blattCam(Math.max(TOL.abstand, (G.B / 100 + 0.4) / 0.6)) : blattCam(mFl))
       : { x: z[0] + z[2] / 2 - (b.x + b.w / 2 - W / 2) / sz, y: z[1] + z[3] / 2 - (b.y + b.h / 2 - H / 2) / sz, s: sz };
+    // v3.30: Flügel-Foto ohne Abstandsreihe wie beim echten Zurückgehen: erst kurz unterwegs stehen bleiben (dort entsteht still das
+    // Vergleichsfoto), dann weiter ans Ziel (zeigenWeiter). Unterwegs läuft kein Countdown.
+    k.zeigNach = null;
+    if (fluegelSchritt(s) && !reiheAktiv(s) && !k.vergleich && k.modus === 'uebung') {
+      k.zeigNach = nach; k.zeigBis = performance.now() + 8000;
+      nach = blattCam(TOL.vergleichAb + 0.2, G.glaeser[typeof k.blattNr === 'number' ? k.blattNr : s.fl - 1]);
+    }
     if (RUHIG) { k.cam = nach; return; }
     k.anim = { von: { x: k.cam.x, y: k.cam.y, s: k.cam.s }, nach: nach, dauer: 1300, t0: 0 };
+  }
+  function zeigenWeiter() {
+    if (!k.zeigNach || k.anim || (!k.vergleich && performance.now() < k.zeigBis)) return;
+    var nach = k.zeigNach;
+    k.zeigNach = null;
+    if (RUHIG) k.cam = nach;
+    else k.anim = { von: { x: k.cam.x, y: k.cam.y, s: k.cam.s }, nach: nach, dauer: 1000, t0: 0 };
   }
   function ziehbar() { return k.modus !== 'kamera' && !k.pruefen; }
   hilfe.addEventListener('pointerdown', function (e) {
     if (!ziehbar()) return;
     karteWeg();
-    k.anim = null;
+    k.anim = null; k.zeigNach = null;
     try { hilfe.setPointerCapture(e.pointerId); } catch (x) {}
     k.zeiger.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
   });
@@ -4433,7 +4462,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   hilfe.addEventListener('wheel', function (e) {
     if (!ziehbar()) return;
     e.preventDefault();
-    karteWeg(); k.anim = null;
+    karteWeg(); k.anim = null; k.zeigNach = null;
     zoomBei(e.offsetX, e.offsetY, Math.exp(-e.deltaY * 0.0015));
   }, { passive: false });
 
@@ -4494,8 +4523,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   });
   $('k-skip').addEventListener('click', ueberspringen);
   $('k-zeig').addEventListener('click', zeigen);
-  $('k-plus').addEventListener('click', function () { karteWeg(); k.anim = null; zoomBei(W / 2, H / 2, 1.3); });
-  $('k-minus').addEventListener('click', function () { karteWeg(); k.anim = null; zoomBei(W / 2, H / 2, 1 / 1.3); });
+  $('k-plus').addEventListener('click', function () { karteWeg(); k.anim = null; k.zeigNach = null; zoomBei(W / 2, H / 2, 1.3); });
+  $('k-minus').addEventListener('click', function () { karteWeg(); k.anim = null; k.zeigNach = null; zoomBei(W / 2, H / 2, 1 / 1.3); });
   $('k-karte-ok').addEventListener('click', function () { karteWeg(); $('k-ausloeser').focus(); });
   $('k-mini').addEventListener('click', function () { karteWeg(); ortZeigen(); });
   $('k-tippknopf').addEventListener('click', function () { tippZeigen($('k-tipp').classList.contains('weg'), 8000); });

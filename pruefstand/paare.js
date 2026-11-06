@@ -3,6 +3,11 @@
 // liegt (Bäume, Häuser durchs Glas), zählt nicht mehr.
 // Vergleichsfoto: im selben Ordner, mit demselben Blatt erkannt, Abstand mind. 0,25 m anders, davon das mit dem kleinsten Unterschied
 // (so ähnlich wie in der App: das stille Foto beim Zurückgehen). Gibt es keins mit 0,25 m, das mit dem größten Unterschied.
+// Modus „wie die App“ (v3.30, Fable F1/F4): --app [ab] [mehr]. Hauptfoto ab 1,5 m (wie TOL.abstandMinFluegel), Vergleich = das
+// nächstgelegene Foto desselben Blatts ab „ab“ m (Standard 1,5 = TOL.vergleichAb), das mind. „mehr“ m (Standard 0,3 =
+// TOL.vergleichMehr) näher am Fenster ist als das Hauptfoto: so macht es die App still beim Zurückgehen und schickt danach fürs
+// Hauptfoto mind. so weit zurück. Stehen beide Kameras weniger als V3.hintenMinVersatz auseinander, rechnet das Messmodul selbst ohne
+// Vergleich („gleicherPlatz“). --alle: jedes Paar Hauptfoto (ab 1,5 m) mit einem näheren Foto desselben Blatts, als JSON.
 // Aufruf: node pruefstand/paare.js <Pfad zu foto-lotse-daten> [Ausgabeordner] [--kunde] [--nur <Ordner-Muster, z. B. 2026-11-06_1[89]>]
 // Ausgabe: Tabelle je Foto (ohne / mit, Vergleichsfoto, Anteil „dahinter“, Rechenzeit) und Zusammenfassung ±2 % / ±5 %.
 'use strict';
@@ -12,7 +17,11 @@ const { chromium } = require('playwright');
 
 const ARGS = process.argv.slice(2);
 const nurI = ARGS.indexOf('--nur'), NUR = nurI >= 0 ? ARGS[nurI + 1] : null;
-const POS = ARGS.filter((a, i) => !a.startsWith('--') && !(nurI >= 0 && i === nurI + 1));
+const appI = ARGS.indexOf('--app'), APP = appI >= 0, ALLE = ARGS.includes('--alle');
+const zahlNach = (i) => (i >= 0 && ARGS[i + 1] && /^[0-9.]+$/.test(ARGS[i + 1]) ? Number(ARGS[i + 1]) : null);
+const AB = (APP && zahlNach(appI)) || 1.5, MEHR = APP && zahlNach(appI) !== null && zahlNach(appI + 1) !== null ? zahlNach(appI + 1) : 0.3;
+const appZahl = (i) => APP && (i === appI + 1 || i === appI + 2) && /^[0-9.]+$/.test(ARGS[i]);
+const POS = ARGS.filter((a, i) => !a.startsWith('--') && !(nurI >= 0 && i === nurI + 1) && !appZahl(i));
 const KUNDE = ARGS.includes('--kunde');
 const DATEN = path.resolve(POS[0] || '../foto-lotse-daten');
 const AUS = path.resolve(POS[1] || '/tmp/paare');
@@ -62,10 +71,11 @@ const pz = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(
     const e = L.MASS.messen(a.g, a.w, a.h, a.f, o, false, a.rgb);
     return { ok: !!e.ok, breite: e.ok ? Math.round(e.breite) : null, hoehe: e.ok ? Math.round(e.hoehe) : null, sicher: e.massSicher,
       abstand: e.lage ? Math.round(e.ok ? e.abstand : e.lage.z) : null, blatt: e.blaetter && e.blaetter[0] ? e.blaetter[0].blatt : null,
-      mehr: !!e.fluegel, hinten: e.hinten || null, ms: Math.round(performance.now() - t0) };
+      mehr: !!e.fluegel, hinten: e.hinten || null, ms: Math.round(performance.now() - t0),
+      kamera: e.lage && e.lage.kamera ? e.lage.kamera : null, neigung: e.lage ? Math.round(e.lage.neigung) : null };
   }, { url, opt, url2 });
 
-  const zeilen = [];
+  const zeilen = [], alle = [];
   const ordnerListe = fs.readdirSync(path.join(DATEN, 'fenster')).filter((o) => fs.statSync(path.join(DATEN, 'fenster', o)).isDirectory() && (!NUR || new RegExp(NUR).test(o))).sort();
   for (const ordner of ordnerListe) {
     const w = wahrheit(ordner);
@@ -85,6 +95,40 @@ const pz = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(
       liste.push({ foto, url, o, r });
       process.stdout.write('.');
     }
+    const wf0 = (p) => fuerBlatt(w, p.r.blatt);
+    const fehlVon = (wf, r) => (r.ok && wf.fluegelBreiteMm ? [(r.breite - wf.fluegelBreiteMm) / wf.fluegelBreiteMm, (r.hoehe - wf.fluegelHoeheMm) / wf.fluegelHoeheMm] : null);
+    const seitlich = (p, q) => (p.r.kamera && q.r.kamera ? Math.round(Math.hypot(p.r.kamera[0] - q.r.kamera[0], p.r.kamera[1] - q.r.kamera[1])) : null);
+    // --alle: jedes Paar Hauptfoto (ab 1,5 m) mit einem näheren Foto desselben Blatts
+    if (ALLE) {
+      for (const p of liste) {
+        if (!p.r.blatt || p.r.mehr || !p.r.abstand || p.r.abstand < 1500) continue;
+        for (const q of liste) {
+          if (q === p || q.r.blatt !== p.r.blatt || !q.r.abstand || q.r.abstand >= p.r.abstand) continue;
+          const m = await messe(p.url, Object.assign({}, p.o, { blattNr: p.r.blatt - 1 }), q.url);
+          const wf = wf0(p);
+          alle.push({ ordner, foto: p.foto, ref: q.foto, blatt: p.r.blatt, abstand: p.r.abstand, refAbstand: q.r.abstand, seitlich: seitlich(p, q),
+            neigung: p.r.neigung, refNeigung: q.r.neigung, echt: wf.fluegelBreiteMm ? [wf.fluegelBreiteMm, wf.fluegelHoeheMm] : null,
+            fOhne: fehlVon(wf, p.r), fMit: fehlVon(wf, m), hinten: m.hinten, ms: m.ms });
+          process.stdout.write('*');
+        }
+      }
+      continue;
+    }
+    // --app: wie die App (siehe oben)
+    if (APP) {
+      for (const p of liste) {
+        if (!p.r.blatt || p.r.mehr || !p.r.abstand || p.r.abstand < 1500) continue;
+        const kand = liste.filter((q) => q !== p && q.r.blatt === p.r.blatt && q.r.abstand && q.r.abstand >= AB * 1000 && q.r.abstand <= p.r.abstand - MEHR * 1000)
+          .sort((x, y) => x.r.abstand - y.r.abstand);
+        if (!kand.length) continue;
+        const ref = kand[0], wf = wf0(p);
+        const m = await messe(p.url, Object.assign({}, p.o, { blattNr: p.r.blatt - 1 }), ref.url);
+        zeilen.push({ ordner, foto: p.foto, ref: ref.foto, blatt: p.r.blatt, abstand: p.r.abstand, refAbstand: ref.r.abstand, seitlich: seitlich(p, ref),
+          echt: wf.fluegelBreiteMm ? wf.fluegelBreiteMm + ' × ' + wf.fluegelHoeheMm : '?', ohne: p.r, mit: m, fOhne: fehlVon(wf, p.r), fMit: fehlVon(wf, m) });
+        process.stdout.write('+');
+      }
+      continue;
+    }
     // 2. Durchgang: mit Vergleichsfoto (gleiches Blatt, nur Fotos, auf denen genau ein Blatt gemessen wurde)
     for (const p of liste) {
       if (!p.r.blatt || p.r.mehr || !p.r.abstand) continue;
@@ -102,10 +146,11 @@ const pz = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(
     }
   }
   await browser.close();
+  if (ALLE) { fs.writeFileSync(path.join(AUS, 'paare-alle.json'), JSON.stringify(alle, null, 1)); console.log('\n' + alle.length + ' Paare → ' + path.join(AUS, 'paare-alle.json')); return; }
   const gut = (f, t) => f && Math.abs(f[0]) <= t && Math.abs(f[1]) <= t;
   const mitEcht = zeilen.filter((z) => z.echt !== '?');
   const zahl = (key, t) => mitEcht.filter((z) => gut(z[key], t)).length;
-  const kopf = '# Paar-Prüfstand (Parallaxe)\n\n' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + (KUNDE ? 'wie der Kunde (Holz)' : 'Bauart aus der Wahrheit') +
+  const kopf = '# Paar-Prüfstand (Parallaxe)\n\n' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + (KUNDE ? 'wie der Kunde (Holz)' : 'Bauart aus der Wahrheit') + (APP ? ' · wie die App (Vergleich ab ' + AB + ' m, mind. ' + MEHR + ' m näher als das Hauptfoto)' : '') +
     ' · ' + mitEcht.length + ' Fotos mit Vergleichsfoto und echtem Maß\n\n' +
     '**ohne Vergleich: ' + zahl('fOhne', 0.02) + ' auf ±2 %, ' + zahl('fOhne', 0.05) + ' auf ±5 %** · **mit Vergleich: ' + zahl('fMit', 0.02) + ' auf ±2 %, ' + zahl('fMit', 0.05) + ' auf ±5 %**\n\n' +
     'besser (größerer Fehler kleiner um > 0,5 Punkte): ' + mitEcht.filter((z) => z.fOhne && z.fMit && Math.max(...z.fMit.map(Math.abs)) < Math.max(...z.fOhne.map(Math.abs)) - 0.005).length +

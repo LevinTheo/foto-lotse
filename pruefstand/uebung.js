@@ -112,7 +112,8 @@ async function durchlauf(browser, nU, fehler, notizen) {
       pruef(a.gefunden, schritt + ': kein „… gefunden“ (grüner Rahmen) vor dem Auslösen');
       pruef(await sichtbar(page, '#p-rahmen') && /grüne Rahmen genau auf der Kante/.test(await page.textContent('#p-titel')),
         schritt + ': Frage nach dem grünen Rahmen fehlt oder passt nicht: ' + await page.textContent('#p-titel'));
-      if (istFluegel) pruef(/Gemessen: Flügel \d \(Blatt \d\) ca\./.test(await page.textContent('#p-mass')), schritt + ': Maß nennt Flügel und Blatt nicht: ' + await page.textContent('#p-mass'));
+      // v3.31 (Fable F6): der Kunde liest „Gemessen: Flügel 2 ca. …“, das „(Blatt 3)“ sieht nur Levin
+      if (istFluegel) pruef(/Gemessen: Flügel \d ca\./.test(await page.textContent('#p-mass')) && !/\(Blatt/.test(await page.textContent('#p-mass')), schritt + ': Maß nennt den Flügel nicht (oder „Blatt“ für den Kunden): ' + await page.textContent('#p-mass'));
       if (BILDER && (n === 0 || istFluegel)) await page.screenshot({ path: path.join(BILDER, 'rahmen-' + nU + '-' + n + '.png') });
       if (nU === 1) {
         // Einmal Nein: Dialog zu, gleiches Foto nochmal, der Lotse muss wieder auslösen

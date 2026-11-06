@@ -3,7 +3,7 @@
 // liegt (Bäume, Häuser durchs Glas), zählt nicht mehr.
 // Vergleichsfoto: im selben Ordner, mit demselben Blatt erkannt, Abstand mind. 0,25 m anders, davon das mit dem kleinsten Unterschied
 // (so ähnlich wie in der App: das stille Foto beim Zurückgehen). Gibt es keins mit 0,25 m, das mit dem größten Unterschied.
-// Aufruf: node pruefstand/paare.js <Pfad zu foto-lotse-daten> [Ausgabeordner] [--kunde] [--nur <Ordnerteil>]
+// Aufruf: node pruefstand/paare.js <Pfad zu foto-lotse-daten> [Ausgabeordner] [--kunde] [--nur <Ordner-Muster, z. B. 2026-11-06_1[89]>]
 // Ausgabe: Tabelle je Foto (ohne / mit, Vergleichsfoto, Anteil „dahinter“, Rechenzeit) und Zusammenfassung ±2 % / ±5 %.
 'use strict';
 const fs = require('fs');
@@ -66,7 +66,7 @@ const pz = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(
   }, { url, opt, url2 });
 
   const zeilen = [];
-  const ordnerListe = fs.readdirSync(path.join(DATEN, 'fenster')).filter((o) => fs.statSync(path.join(DATEN, 'fenster', o)).isDirectory() && (!NUR || o.includes(NUR))).sort();
+  const ordnerListe = fs.readdirSync(path.join(DATEN, 'fenster')).filter((o) => fs.statSync(path.join(DATEN, 'fenster', o)).isDirectory() && (!NUR || new RegExp(NUR).test(o))).sort();
   for (const ordner of ordnerListe) {
     const w = wahrheit(ordner);
     if (w.ignorieren) continue;

@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.28 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.29 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1389,7 +1389,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     fastHalten: 1500,      // so lange „Fast“ ruhig gehalten zählt auch als passt
     neigungSeite: 10, neigungKipp: 20,   // Grad, ab dann kommt „Handy gerade halten“ bzw. „senkrecht halten“
     neigungZurueck: 3, neigungHalten: 1000,   // v3.23: Hinweis geht erst 3° unter der Grenze und bleibt mind. 1 s (vorher Flackern)
-    nachhilfe: 8000,       // nach so vielen ms ohne Grün kommt der Hinweis, selbst auszulösen
+    nachhilfe: 15000,      // nach so vielen ms ohne Foto kommt der Hinweis, selbst auszulösen (v3.29: war 8000, kam beim Zurückgehen
+                           // schon, bevor der erste Countdown durch war; zählt ab „Blatt erkannt“, nach jedem Reihe-Foto und nach „Nein“ neu)
+    countdownVersuche: 3,  // v3.29 (Levin): so oft darf der Countdown abbrechen, bevor der Hinweis zum Selbstauslösen kommt
     // Maßblatt
     abstand: 3, abstandMin: 2.5, abstandMax: 3.5,   // so weit (m) soll man vom Fenster weg stehen
     // Flügel-Fotos (v3.23): ein Flügel ist kleiner als das ganze Fenster und passt schon aus 1,5 m ins Bild (WZ: Levin stand bei 2,3 m,
@@ -2791,7 +2793,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var k = {
     offen: false, i: 0, basis: 'uebung', modus: 'uebung', stream: null, raf: 0, box: null, loch: null, s0: 1,
     cam: { x: 40, y: 50, s: 3 }, zeiger: new Map(), anim: null, bild: null, formen: [],
-    passtSeit: 0, passtZuletzt: 0, countdown: 0, vergleich: null, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
+    passtSeit: 0, passtZuletzt: 0, countdown: 0, vergleich: null, abbrueche: 0, rahmenLetzt: null, passtText: '', passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
     letzteAnalyse: 0, treffer: null, lage: null, zuNah: -1e9, statusText: '', statusArt: '', karte: true, zurueck: null,
     mass: null, massGen: 0, massLaeuft: false, massZeit: 0, messung: null, fotoMessung: null, fotoCv: null,
     schaerfe: null, unscharfZahl: 0, warteBis: 0, warteText: '', griffErg: null, weiterUhr: 0,
@@ -3082,7 +3084,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     chips();
     k.formen = formen(s);
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
-    k.fastSeit = 0; k.schrittStart = performance.now(); k.vergleich = null;
+    k.fastSeit = 0; k.schrittStart = performance.now(); k.vergleich = null; k.abbrueche = 0; k.rahmenLetzt = null;
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; k.rahmenJa = false; k.rahmenNein = 0; clearTimeout(k.weiterUhr);
     k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
     k.blattNr = null; k.lesen = null; k.gelesenSeit = 0; k.gelesenH = null; k.gesamtSeit = 0;
@@ -3223,7 +3225,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // grünen Rahmen, sobald er zweimal hintereinander gleich liegt; dann „Fenster gefunden. Halt still …“ und Auslösen.
     // Findet er in TOL.rahmenWarten kein Fenster, löst er ohne Rahmen aus; das Maß kommt ohnehin vom fertigen Foto (3 Raster).
     // (Die alte schnelle Suche v2 lag im Livebild auf 8 von 9 frontalen Fotos 10–138 % daneben und ist deshalb weg.)
-    var blattWeg = function (z) { k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; return z; };
+    var blattWeg = function (z) { k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; k.rahmenLetzt = null; return z; };
     if (!e || jetzt - e.zeit > 2500 || !e.lage || e.lage.anzahl < 3) return blattWeg({ art: e && e.marker ? 'blattTeil' : 'blattSuchen' });
     var war = k.letzteArt === 'passt', z = e.lage.z / 1000;
     var soll = abstandSoll(SCHRITTE[k.i]);
@@ -3238,7 +3240,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var nBl = e.blaetter ? e.blaetter.length : 1;
     var ecken = e.rahmen ? rahmenListe(e).map(function (pk) { return pk.map(e.schirm); }) : null;
     if (!e.stabil && !war) return { art: 'halten', ecken: ecken, n: nBl };
-    if (ecken) return { art: 'passt', ecken: ecken, n: nBl };
+    if (ecken) { k.rahmenLetzt = ecken; return { art: 'passt', ecken: ecken, n: nBl }; }
+    // v3.29 (Levin 6. Nov. abends: „er versucht den Countdown nur einmal“): läuft der Countdown schon und das Blatt steht ruhig, bleibt
+    // der grüne Rahmen stehen, auch wenn die Livemessung ihn gerade nicht findet (in der Dämmerung oft jede zweite). Gemessen wird ohnehin
+    // am fertigen Foto.
+    if (war && k.passtSeit && k.rahmenLetzt && e.stabil) return { art: 'passt', ecken: k.rahmenLetzt, n: nBl, gehalten: true };
     if (arbeiter !== false && jetzt - k.blattOkSeit < TOL.rahmenWarten) return { art: 'fensterSuchen', n: nBl, m: z, ziel: soll.ziel, reihe: soll.reihe };
     // Flügel-Foto näher als fürs ganze Fenster (v3.23): kein Rahmen gefunden, dann ist der Flügel wohl nicht ganz im Bild. Weiter
     // zurück schicken statt ohne Rahmen auszulösen; ab 2,5 m wie bisher.
@@ -3276,7 +3282,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (k.lesen.n < TOL.blattLesen) return { art: 'blattLesenHalt', nr: b.nr, H: b.H };
     // Festgelegt: ab jetzt misst das Livebild nur noch dieses Blatt (massLive → opt.blattNr)
     k.blattNr = b.nr; k.gelesenSeit = jetzt; k.gelesenH = b.H; k.gelesenSchirm = e.schirm; k.ausrFest = null;
-    k.schrittStart = jetzt;   // Zeit für „Mach einfach ein Foto …“ (TOL.nachhilfe) zählt ab dem gelesenen Blatt
+    k.schrittStart = jetzt; k.abbrueche = 0;   // Zeit für „Mach einfach ein Foto …“ (TOL.nachhilfe) zählt ab dem gelesenen Blatt
     k.mass = null; k.massGen++; k.massLaeuft = false;   // laufende Messung mit allen Blättern verwerfen
     return { art: 'blattGelesen', nr: b.nr, H: b.H, schirm: e.schirm };
   }
@@ -3333,7 +3339,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var bl = $('blitz');
     bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
     var weiter = abstandSoll(s), gesamt = TOL.reihe.length;
-    k.blattOkSeit = 0; k.rahmenAlt = null; k.passtSeit = 0; k.sperre = true; k.schrittStart = performance.now();
+    k.blattOkSeit = 0; k.rahmenAlt = null; k.passtSeit = 0; k.sperre = true; k.schrittStart = performance.now(); k.abbrueche = 0; k.rahmenLetzt = null;
     k.warteBis = performance.now() + 1500;
     k.warteText = 'Foto ' + eintrag.nr + ' von ' + gesamt + ' ✓. Jetzt ' + (reiheLetzte(s) ? 'das letzte: ' : '') + 'auf ca. ' + String(Math.round(weiter.ziel * 2) / 2).replace('.', ',') + ' m zurück.';
     setStatus(k.warteText, 'passt');
@@ -3612,10 +3618,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       } else if (z.art !== 'passt') k.fastSeit = 0;
     } else z = { art: 'manuell' };
     var warten = performance.now() < (k.warteBis || 0);
-    var nachhilfe = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && z.art !== 'gerade' && z.art !== 'senkrecht' && t - k.schrittStart > TOL.nachhilfe &&
+    // v3.29: kurze Lücke im laufenden Countdown (bis TOL.haltenLuecke): Text und Rahmen bleiben wie bei „passt“
+    var luecke = z.art !== 'passt' && !!k.passtSeit && !warten && t - (k.passtZuletzt || 0) <= TOL.haltenLuecke;
+    // Hinweis zum Selbstauslösen erst nach TOL.nachhilfe ohne Foto oder nach TOL.countdownVersuche abgebrochenen Countdowns (v3.29),
+    // nie während ein Countdown läuft
+    var nachhilfe = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && z.art !== 'gerade' && z.art !== 'senkrecht' && !k.passtSeit &&
+      (t - k.schrittStart > TOL.nachhilfe || (k.abbrueche || 0) >= TOL.countdownVersuche) &&
       !/^(blattLesen|blattLesenHalt|blattGelesen|blattSchonDa|alleBlaetter)$/.test(z.art);   // v3.17: beim Blattlesen und Gesamtfoto nicht
+    if (z.art === 'passt') k.passtText = statusText(z, s);
     if (warten) setStatus(k.warteText, 'gerade');
     else if (nachhilfe) setStatus('Mach einfach ein Foto, wir messen danach genauer.', '');
+    else if (luecke) setStatus(k.passtText + (k.countdown ? ' ' + k.countdown : ''), 'passt');
     else setStatus(statusText(z, s) + (z.art === 'passt' && k.countdown ? ' ' + k.countdown : ''), z.art === 'blattGelesen' ? 'passt' : z.art);
     ablaufHinweis(warten ? 'warten' : nachhilfe ? 'nachhilfe' : z.art + (z.art === 'passt' && z.ecken ? '-rahmen' : ''), k.statusText);
     if (!$('k-nachhilfe').hidden) $('k-nachhilfe').hidden = true;
@@ -3624,13 +3637,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // v3.26 (Levin): beim Fenster/Flügel 4 s mit Countdown, damit man nach dem Zurückgehen gut steht. Fällt der grüne Rahmen nur kurz
     // weg (bis TOL.haltenLuecke), läuft der Countdown weiter; ausgelöst wird aber nur, wenn es in dem Moment passt.
     var haltenMs = blattSchritt(s) && k.modus !== 'foto' ? TOL.haltenBlatt : TOL.halten;
+    var lief = !!k.passtSeit;
     if (darf) { if (!k.passtSeit) k.passtSeit = t; k.passtZuletzt = t; }
     else if (k.sperre || k.gemacht || warten || t - (k.passtZuletzt || 0) > TOL.haltenLuecke) k.passtSeit = 0;
+    if (lief && !k.passtSeit && !k.gemacht && !k.sperre) k.abbrueche = (k.abbrueche || 0) + 1;   // Countdown abgebrochen (v3.29)
     var p = k.passtSeit ? Math.min(1, (t - k.passtSeit) / haltenMs) : 0;
     $('k-ausloeser').style.setProperty('--p', p.toFixed(3));
     countdown(k.passtSeit && haltenMs >= 2000 ? Math.max(1, Math.ceil((haltenMs - (t - k.passtSeit)) / 1000)) : 0);
     k.letzteArt = z.art;
-    zeichneHilfe(z, s);
+    zeichneHilfe(luecke && k.rahmenLetzt ? { art: 'passt', ecken: k.rahmenLetzt, n: z.n } : z, s);
     if (p >= 1 && darf) {
       if (k.ablauf) k.ablauf.ausloeser = blattSchritt(s) ? (z.gesamt ? 'gesamt' : z.ecken ? 'rahmen' : 'ohneRahmen') : 'passt';
       if (!reiheLetzte(s)) reiheFoto(); else ausloesen();   // Abstandsreihe: die ersten Fotos still, das letzte mit Prüfdialog
@@ -4292,6 +4307,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.gemacht = false;
     k.sperre = true;
     k.passtSeit = 0;
+    k.schrittStart = performance.now(); k.abbrueche = 0;   // v3.29: Hinweis zum Selbstauslösen nach „Nein“ nicht gleich wieder
     $('k-pruefen').hidden = true;
     $('k-ausloeser').focus();
   }
@@ -4597,7 +4613,15 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function entwOrdner() {
     if (!ENTW.ordner) {
       var d = new Date();
-      ENTW.ordner = 'fenster/' + d.getFullYear() + '-' + zwei(d.getMonth() + 1) + '-' + zwei(d.getDate()) + '_' + zwei(d.getHours()) + zwei(d.getMinutes()) + '_' + slug($('entw-name').value);
+      var o = 'fenster/' + d.getFullYear() + '-' + zwei(d.getMonth() + 1) + '-' + zwei(d.getDate()) + '_' + zwei(d.getHours()) + zwei(d.getMinutes()) + '_' + slug($('entw-name').value);
+      // v3.29: zwei Fenster in derselben Minute mit demselben Namen bekamen denselben Ordner, das zweite überschrieb dann das erste
+      // (auch nach Neuladen der Seite: die letzten Ordner stehen in localStorage)
+      var benutzt = [];
+      try { benutzt = JSON.parse(localStorage.getItem('foto-lotse-ordner') || '[]'); } catch (e) { benutzt = []; }
+      for (var nr = 2, basis = o; benutzt.indexOf(o) >= 0; nr++) o = basis + '-' + nr;
+      benutzt.push(o);
+      try { localStorage.setItem('foto-lotse-ordner', JSON.stringify(benutzt.slice(-20))); } catch (e) {}
+      ENTW.ordner = o;
       ENTW.nr = 0;
       $('entw-ordner').textContent = 'Ordner: ' + ENTW.ordner;
     }

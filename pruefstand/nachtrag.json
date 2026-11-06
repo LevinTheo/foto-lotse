@@ -120,5 +120,13 @@
       }
     ],
     "notiz": "Claude 6. Nov.: Blätter im Formular vertauscht. Gesamtfoto: Blatt 1 klebt links (schmaler Flügel 810), Blatt 2 rechts (1228), wie in 1203/1208. Im Formular stand Flügel 1 = Blatt 2 oben, dort wurde 810 eingetippt."
+  },
+  "2026-11-06_1429_fenster": {
+    "ignorieren": true,
+    "notiz": "Claude 6. Nov.: Analyse lief wegen gespeichertem „Selbst eingeben“ ohne Maßblatt-Ablauf (ein Foto fürs ganze Fenster), keine echten Maße; behoben in v3.27"
+  },
+  "2026-11-06_1431_fenster": {
+    "ignorieren": true,
+    "notiz": "Claude 6. Nov.: Analyse lief wegen gespeichertem „Selbst eingeben“ ohne Maßblatt-Ablauf (ein Foto fürs ganze Fenster), keine echten Maße; behoben in v3.27"
   }
 }

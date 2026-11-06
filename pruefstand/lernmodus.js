@@ -110,6 +110,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   pruef(rh.length === 4 && rh.every((d) => d.blatt && d.messung && d.ablauf && d.messung.abstand > 1300), 'Reihen-Fotos: ' + JSON.stringify(rh.map((d) => [d.schritt, d.blatt, d.messung && d.messung.abstand])));
   console.log('Abstandsreihe: ' + rh.concat(fl).map((d) => d.schritt + ' ' + (d.messung ? (d.messung.abstand / 1000).toFixed(2) + ' m ' + d.messung.breite + '×' + d.messung.hoehe : '–')).join(' · '));
   pruef(fl.length === 2 && fl.map((d) => d.blatt).sort().join() === '1,2', 'Flügel-Fotos mit Blatt: ' + fl.map((d) => d.schritt + '=' + d.blatt).join(', '));
+  // v3.28: mit Abstandsreihe ist das erste Foto der Reihe das Vergleichsfoto; das letzte Foto ist mit ihm gemessen
+  pruef(fl.every((d) => d.messung && d.messung.hinten && d.messung.hinten.ok && d.ablauf && d.ablauf.vergleich && d.ablauf.vergleich.ausReihe), 'Flügel-Fotos nicht mit Reihe-Foto 1 als Vergleich gemessen: ' + JSON.stringify(fl.map((d) => [d.messung && d.messung.hinten, d.ablauf && d.ablauf.vergleich])));
   pruef(fl.every((d) => d.quelle === 'durchlauf-lernmodus' && d.messung && d.messung.breite > 300), 'Flügel-Fotos ohne Messung oder falsche Quelle');
   // Ablaufprotokoll (v3.18): Hinweise mit Zeit, Blatt gelesen, wie ausgelöst, Livemessungen
   pruef(fl.every((d) => d.ablauf && d.ablauf.hinweise.length >= 3 && d.ablauf.blattGelesen >= 0 && /^(rahmen|ohneRahmen)$/.test(d.ablauf.ausloeser) && d.ablauf.live.n > 0 && d.ablauf.blatt === d.blatt),
@@ -174,10 +176,16 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   pruef(!(await sichtbar('#kamera')) && await sichtbar('#entw-feld'), 'nur Fenster: nach dem Gesamtfoto nicht in den Lernfotos');
   const leg2 = await page.$$eval('#entw-fluegel legend', (l) => l.map((x) => x.textContent));
   pruef(leg2.join(' | ') === 'Flügel links (Blatt 1) | Flügel rechts (Blatt 2)', 'nur Fenster, Felder je Flügel: ' + leg2.join(' | '));
-  for (let t = 0; t < 100 && Object.keys(hoch).length - vorher < 6; t++) await page.waitForTimeout(100);
+  // v3.28: dazu je Flügel das stille Vergleichsfoto (…-v), und die Flügel-Fotos sind mit ihm gemessen (messung.hinten)
+  for (let t = 0; t < 150 && Object.keys(hoch).length - vorher < 10; t++) await page.waitForTimeout(100);
   const neu = Object.keys(hoch).slice(vorher);
-  pruef(neu.filter((p) => /lauf-0[1-3]-(fl1|fl2|innen)\.(jpg|json)$/.test(p)).length === 6 && neu.length === 6, 'nur Fenster, hochgeladen: ' + neu.join(', '));
+  pruef(neu.filter((p) => /lauf-0[1-3]-(fl1|fl2|innen)\.(jpg|json)$/.test(p)).length === 6 && neu.filter((p) => /lauf-0[4-5]-fl[12]-v\.(jpg|json)$/.test(p)).length === 4 && neu.length === 10,
+    'nur Fenster, hochgeladen (erwartet 3 Fotos + 2 Vergleichsfotos): ' + neu.join(', '));
+  const flNeu = neu.filter((p) => /-fl[12]\.json$/.test(p)).map(json);
+  pruef(flNeu.length === 2 && flNeu.every((d) => d.messung && d.messung.hinten && d.messung.hinten.ok && d.ablauf && d.ablauf.vergleich && d.ablauf.vergleich.abstand >= 1300),
+    'nur Fenster: Flügel nicht mit Vergleichsfoto gemessen: ' + JSON.stringify(flNeu.map((d) => [d.messung && d.messung.hinten, d.ablauf && d.ablauf.vergleich])));
+  console.log('Vergleichsfoto: ' + flNeu.map((d) => d.schritt + ' Vergleich bei ' + (d.ablauf.vergleich.abstand / 1000).toFixed(2) + ' m, Blatt deckt sich ' + d.messung.hinten.blatt + ', dahinter ' + d.messung.hinten.anteil + ' %, ' + d.messung.hinten.ms + ' ms').join(' · '));
   await browser.close();
-  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: Abstandsreihe (2 Flügel × 3 Fotos) und Gesamtfoto mit Blatt übernommen, Felder je Flügel (links/rechts), fenster.json mit fluegelJeBlatt, blauer Knopf „nur Fenster“ endet in den Lernfotos.');
+  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: Abstandsreihe (2 Flügel × 3 Fotos) und Gesamtfoto mit Blatt übernommen, Felder je Flügel (links/rechts), fenster.json mit fluegelJeBlatt, blauer Knopf „nur Fenster“ endet in den Lernfotos, Flügel mit Vergleichsfoto gemessen.');
   process.exit(fehler.length ? 1 : 0);
 })();

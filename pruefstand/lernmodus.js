@@ -111,17 +111,20 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
 
   // Echte Maße je Flügel eintragen, Fenster fertig
   await page.fill('#entw-name', 'Testfenster');
-  await page.fill('#entw-f1-b', '450'); await page.fill('#entw-f1-h', '1240'); await page.fill('#entw-f1-rib', '320');
+  await page.fill('#entw-f1-b', '450'); await page.fill('#entw-f1-h', '1240');
+  await page.fill('#entw-rb', '65');   // Rahmen sichtbar rundum: Glas gerechnet 450 − 130 = 320 (v3.24)
   await page.fill('#entw-f2-b', '451'); await page.fill('#entw-f2-h', '1239');
   pruef(await sichtbar('#entw-zm'), 'Feld „Zwischenraum Mitte“ fehlt');
   await page.fill('#entw-zm', '0');
+  pruef(/Glas gerechnet: Blatt 1 320 × 1110, Blatt 2 321 × 1109/.test(await page.textContent('#entw-glas')), 'Glas gerechnet: ' + await page.textContent('#entw-glas'));
+  pruef((await page.$$('#entw-f1-rib, #entw-rib')).length === 0, 'Felder „Rahmen innen“ noch da');
   await page.click('#entw-neu');
   for (let t = 0; t < 100 && !hoch[ordner + '/fenster.json']; t++) await page.waitForTimeout(100);
   pruef(!!hoch[ordner + '/fenster.json'], 'fenster.json fehlt (Ordner ' + ordner + ')');
   if (hoch[ordner + '/fenster.json']) {
     const f = json(ordner + '/fenster.json').fenster;
     pruef(f.fluegelAnzahl === 2, 'fluegelAnzahl ' + f.fluegelAnzahl);
-    pruef(f.fluegelJeBlatt && f.fluegelJeBlatt.length === 2 && f.fluegelJeBlatt[0].blatt === 1 && f.fluegelJeBlatt[0].breiteMm === 450 && f.fluegelJeBlatt[0].lichtBreiteMm === 320 &&
+    pruef(f.fluegelJeBlatt && f.fluegelJeBlatt.length === 2 && f.fluegelJeBlatt[0].blatt === 1 && f.fluegelJeBlatt[0].breiteMm === 450 && f.fluegelJeBlatt[0].lichtBreiteMm === 320 && f.fluegelJeBlatt[0].lichtHoeheMm === 1110 && f.rahmenInnenBreiteMm === 320 &&
       f.fluegelJeBlatt[1].blatt === 2 && f.fluegelJeBlatt[1].hoeheMm === 1239, 'fluegelJeBlatt: ' + JSON.stringify(f.fluegelJeBlatt));
     pruef(f.fluegelBreiteMm === 450 && f.fluegelHoeheMm === 1240 && f.name === 'Testfenster', 'Einzelwerte: ' + f.fluegelBreiteMm + ' × ' + f.fluegelHoeheMm + ', ' + f.name);
     pruef(f.zwischenraumMitteMm === 0 && f.zwischenraumObenUntenMm === null, 'Zwischenraum: ' + f.zwischenraumMitteMm + ' / ' + f.zwischenraumObenUntenMm);

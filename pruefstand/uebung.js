@@ -2,7 +2,7 @@
 // Aufruf: node pruefstand/uebung.js [Pfad zum Lotsen, Standard: dieses Repo] [--bilder <Ordner>]
 // Prüft: Startseite ohne Entwickler-Sachen, Frage „Wie viele Flügel?“ (1–4), Livebild mit „Blatt … erkannt“ (grüner Rahmen ums Blatt,
 // v3.17), „Geh … zurück“ und „… gefunden“ (grüner Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ bei jedem Flügel-Foto (bei 1 Flügel
-// einmal Nein → nochmal, dann Ja), alle Fotos bis „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine
+// einmal Nein → nochmal, dann Ja; bei 2 Flügeln am ersten Flügel zweimal Nein → geht trotzdem weiter, v3.25), alle Fotos bis „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine
 // Fehler in der Konsole.
 // Läuft mit 1, 2 und 4 Flügeln. Ab 2 Flügeln Flügel für Flügel (v3.17): je Flügel ein Foto („Flügel 1 von 2“), die Übung zeichnet auf
 // jeden Flügel ein eigenes Blatt; zum Schluss „Alle 2 Flügel zusammen“ mit „Gemessen: 2 Flügel nebeneinander“. Dauert ca. 2 Minuten.
@@ -109,9 +109,23 @@ async function durchlauf(browser, nU, fehler, notizen) {
         if (!a.ok) { pruef(false, 'nach Nein löst er nicht wieder aus'); break; }
         pruef(await sichtbar(page, '#p-rahmen'), 'nach Nein und neuem Foto fehlt die Rahmen-Frage');
       }
-      await page.click('#p-rahmen-ja');
-      await page.waitForTimeout(200);
-      if (istFluegel) fluegelFotos++;
+      if (nU === 2 && n === 0) {
+        // v3.25: zweimal Nein → beim zweiten Mal geht es trotzdem weiter, Foto als „Rahmen falsch“ markiert
+        await page.click('#p-rahmen-nein');
+        await page.waitForSelector('#k-pruefen', { state: 'hidden', timeout: 5000 }).catch(() => pruef(false, 'erstes Nein schließt den Prüfdialog nicht'));
+        await page.click('#k-zeig');
+        a = await ausgeloest();
+        if (!a.ok) { pruef(false, 'nach erstem Nein löst er nicht wieder aus'); break; }
+        await page.click('#p-rahmen-nein');
+        await page.waitForTimeout(400);
+        pruef(await sichtbar(page, '#k-pruefen') && !(await sichtbar(page, '#p-rahmen')), 'nach dem zweiten Nein nicht weiter (Dialog zu oder Frage noch da)');
+        pruef(/lag nicht richtig/.test(await page.textContent('#p-mass')), 'nach dem zweiten Nein fehlt der Hinweis: ' + await page.textContent('#p-mass'));
+        if (istFluegel) fluegelFotos++;
+      } else {
+        await page.click('#p-rahmen-ja');
+        await page.waitForTimeout(200);
+        if (istFluegel) fluegelFotos++;
+      }
     }
     if (istGesamt) {
       gesamtFoto = true;
@@ -119,6 +133,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
       pruef(fluegelFotos === nU, 'Gesamtfoto kommt vor allen Flügel-Fotos (' + fluegelFotos + ' von ' + nU + ')');
       pruef(!(await sichtbar(page, '#p-rahmen')), 'Gesamtfoto fragt nach dem grünen Rahmen');
       pruef(new RegExp('Gemessen: ' + nU + ' Flügel nebeneinander').test(await page.textContent('#p-mass')), 'Gesamtfoto nennt nicht „' + nU + ' Flügel nebeneinander“: ' + await page.textContent('#p-mass'));
+      if (nU === 2) pruef(/Blatt 1 wird von Hand nachgeprüft/.test(await page.textContent('#p-mass')), 'Gesamtfoto nennt den Flügel mit falschem Rahmen nicht: ' + await page.textContent('#p-mass'));
       if (BILDER) await page.screenshot({ path: path.join(BILDER, 'gesamt-' + nU + '.png') });
     }
     const pt = await page.textContent('#p-titel'), pf = (await sichtbar(page, '#p-frage')) ? await page.textContent('#p-frage') : '';

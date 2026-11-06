@@ -73,6 +73,13 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
       pruef(/Reihe: \d,\d m \d+ × \d+, \d,\d m \d+ × \d+, jetzt \d,\d m/.test(await page.textContent('#p-mass')), schritt + ': Prüfdialog zeigt die Reihe nicht: ' + await page.textContent('#p-mass'));
     }
     await page.waitForSelector('#k-pruefen:not([hidden])', { timeout: 30000 }).catch(() => pruef(false, schritt + ': löst nicht aus'));
+    if (n === 0 && await sichtbar('#p-rahmen')) {
+      // v3.25: einmal Nein, dann nochmal; das Nein-Foto muss im Lernmodus als fl1-nein1 mitkommen
+      await page.click('#p-rahmen-nein');
+      await page.waitForSelector('#k-pruefen', { state: 'hidden', timeout: 5000 }).catch(() => pruef(false, 'Nein schließt den Prüfdialog nicht'));
+      await page.click('#k-zeig');
+      await page.waitForSelector('#k-pruefen:not([hidden])', { timeout: 30000 }).catch(() => pruef(false, schritt + ': nach Nein kein neues Foto'));
+    }
     if (await sichtbar('#p-rahmen')) await page.click('#p-rahmen-ja');
     await page.waitForTimeout(200);
     if (await sichtbar('#p-weiter')) await page.click('#p-weiter');
@@ -90,11 +97,13 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   const legenden = await page.$$eval('#entw-fluegel legend', (l) => l.map((x) => x.textContent));
   pruef(legenden.join(' | ') === 'Flügel 1 (mit Blatt 1) | Flügel 2 (mit Blatt 2)', 'Felder je Flügel: ' + legenden.join(' | '));
   pruef(!(await sichtbar('#entw-b')), 'Einzelfeld „Flügel breit“ trotz 2 Flügeln sichtbar');
-  for (let t = 0; t < 150 && Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).length < 7; t++) await page.waitForTimeout(100);
+  for (let t = 0; t < 150 && Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).length < 8; t++) await page.waitForTimeout(100);
   const lauf = Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).sort();
-  pruef(lauf.length === 7 && Object.keys(hoch).filter((p) => /lauf-.*\.jpg$/.test(p)).length === 7, 'hochgeladen (erwartet 2 × 3 Flügel-Fotos + Gesamtfoto): ' + Object.keys(hoch).join(', '));
+  pruef(lauf.length === 8 && Object.keys(hoch).filter((p) => /lauf-.*\.jpg$/.test(p)).length === 8, 'hochgeladen (erwartet 2 × 3 Flügel-Fotos + Gesamtfoto + 1 Nein-Foto): ' + Object.keys(hoch).join(', '));
   const daten = lauf.map(json);
   const fl = daten.filter((d) => /^fl\d$/.test(d.schritt)), ges = daten.find((d) => d.schritt === 'innen');
+  const nein = daten.filter((d) => /^fl1-nein1$/.test(d.schritt));
+  pruef(nein.length === 1 && nein[0].kunde && nein[0].kunde.rahmenAufFluegel === false && nein[0].blatt === 1, 'Nein-Foto fehlt oder falsch: ' + JSON.stringify(nein.map((d) => [d.schritt, d.kunde, d.blatt])));
   const rh = daten.filter((d) => /^fl\d-r\d$/.test(d.schritt));
   pruef(rh.length === 4 && rh.every((d) => d.blatt && d.messung && d.ablauf && d.messung.abstand > 1300), 'Reihen-Fotos: ' + JSON.stringify(rh.map((d) => [d.schritt, d.blatt, d.messung && d.messung.abstand])));
   console.log('Abstandsreihe: ' + rh.concat(fl).map((d) => d.schritt + ' ' + (d.messung ? (d.messung.abstand / 1000).toFixed(2) + ' m ' + d.messung.breite + '×' + d.messung.hoehe : '–')).join(' · '));

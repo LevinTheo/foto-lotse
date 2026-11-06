@@ -501,7 +501,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.24 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.25 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1391,6 +1391,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     stabilMm: 40,          // … und die Stelle vor dem Blatt so weit (mm), sonst „Halt still“
     liveRaster: [3],       // Livebild: Fenster mit v3 in einem Raster (3 mm je Pixel) suchen, sobald das Blatt passt (am Rechner ca. 0,2 s)
     rahmenWarten: 4000,    // ms: so lange sucht der Lotse das Fenster, wenn das Blatt passt; findet er keins, löst er trotzdem aus
+    rahmenNeinMax: 2,      // v3.25 (Levin): nach so vielen „Nein, Rahmen liegt falsch“ geht es trotzdem weiter, das Foto wird als falsch markiert
     mehrWarten: 6000,      // ms: beim Gesamtfoto (v3.17) so lange auf alle Maßblätter warten; sind es mind. 2, geht es dann damit weiter
     blattZeigen: 1200,     // ms: so lange steht „Blatt 2 erkannt“ mit dem grünen Rahmen ums Blatt, bevor es ans Zurückgehen geht (v3.17)
     blattLesen: 2,         // so viele Livemessungen hintereinander muss dasselbe Blatt erkannt sein (v3.17)
@@ -2652,7 +2653,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     schaerfe: null, unscharfZahl: 0, warteBis: 0, warteText: '', griffErg: null, weiterUhr: 0,
     blattNr: null, lesen: null, gelesenSeit: 0, gelesenH: null, gesamtSeit: 0,   // Flügel für Flügel (v3.17): festgelegtes Blatt
     ablauf: null,   // Ablaufprotokoll je Foto (v3.18): was im Livebild passiert ist, für Levins Lernfotos
-    reihe: null, zMinDyn: 0, neigung: null   // v3.23: Abstandsreihe, Mindestabstand nach „Flügel nicht ganz im Bild“, Neigungshinweis
+    reihe: null, zMinDyn: 0, neigung: null,   // v3.23: Abstandsreihe, Mindestabstand nach „Flügel nicht ganz im Bild“, Neigungshinweis
+    neinFotos: [], rahmenFalsch: false   // v3.25: Fotos mit „Nein“ und ob es nach dem letzten Nein trotzdem weiterging
   };
 
   /* ---------- Liste in der Anfrage ---------- */
@@ -2941,6 +2943,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
     k.blattNr = null; k.lesen = null; k.gelesenSeit = 0; k.gelesenH = null; k.gesamtSeit = 0;
     k.reihe = { fotos: [], letzte: false }; k.zMinDyn = 0; k.neigung = null; reiheKnopf();
+    k.neinFotos = []; k.rahmenFalsch = false;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
     if (k.modus === 'foto') fotoStart();
@@ -3810,11 +3813,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           : s.fl ? 'Gemessen: Flügel ' + s.fl + (typeof k.blattNr === 'number' ? ' (Blatt ' + (k.blattNr + 1) + ')' : '') + ' ca. ' + b + ' × ' + h + ' cm'
           : P.nU >= 2 ? 'Gemessen: linker Flügel ca. ' + b + ' × ' + h + ' cm, beide zusammen ca. ' + (2 * b) + ' cm breit'
           : 'Gemessen: Flügel ca. ' + b + ' × ' + h + ' cm';
+        if (m.rahmenFalsch) { warn = true; txt = (s.fl ? 'Flügel ' + s.fl + ': ' : '') + 'Der grüne Rahmen lag nicht richtig. Ich nehme das Foto trotzdem, das Maß wird von Hand nachgeprüft.'; }
         // Abstandsreihe (v3.23, nur Levin): was die stillen Fotos gemessen haben
         if (ENTWICKLER && k.reihe && k.reihe.fotos.length && fluegelSchritt(s)) txt += '. Reihe: ' + k.reihe.fotos.map(function (q) {
           return (q.abstand / 1000).toFixed(1).replace('.', ',') + ' m ' + (q.messung ? Math.round(q.messung.breite / 10) + ' × ' + Math.round(q.messung.hoehe / 10) : q.url ? 'kein Maß' : '…');
         }).join(', ') + ', jetzt ' + ((m.abstand || 0) / 1000).toFixed(1).replace('.', ',') + ' m';
-        if (blattModus() && m.massSicher === false) { warn = true; txt += '. Unsicher: am besten nochmal frontal aus 2 bis 3 m.'; }
+        var vonHand = m.gesamtFoto && m.fluegel ? m.fluegel.filter(function (q) { return q.rahmenFalsch; }).map(function (q) { return q.blatt; }) : [];
+        if (vonHand.length) { warn = true; txt += '. Flügel mit Blatt ' + vonHand.join(', ') + ' wird von Hand nachgeprüft'; }
+        else if (blattModus() && m.massSicher === false && !m.rahmenFalsch) { warn = true; txt += '. Unsicher: am besten nochmal frontal aus 2 bis 3 m.'; }
         else if (!blattModus()) {
           // Gegenprobe nur, wenn der Kunde selbst ein Maß eingetippt hat. Im Maßblatt-Modus gibt es nichts zu vergleichen:
           // P.fb/P.fh sind dann nur Startwerte oder das zuletzt gemessene Fenster (Fehler 4. Nov. 2026: „eingetippt ist 81 × 124 cm“).
@@ -3933,9 +3939,20 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   function rahmenAntwort(ja) {
     if (ja) { k.rahmenJa = true; pruefen.apply(null, k.pruefArgs); return; }
-    // Nein: dieses Foto für Levin markieren (Durchlauf-Daten) und nochmal fotografieren
+    // Nein: dieses Foto für Levin markieren (Durchlauf-Daten, im Lernmodus als …-nein1) und nochmal fotografieren
     k.rahmenNein = (k.rahmenNein || 0) + 1;
-    entwDurchlauf(k.url, SCHRITTE[k.i].id + '-rahmen-falsch', k.messung, { rahmenAufFluegel: false, nein: k.rahmenNein });
+    var nf = { nr: k.rahmenNein, url: k.url, messung: k.messung, blattNr: k.blattNr, modus: k.modus, ablauf: k.ablaufFoto || null,
+      schaerfe: k.schaerfe ? Math.round(k.schaerfe.breite * 10) / 10 : null, hoch: false };
+    nf.hoch = entwDurchlauf(k.url, SCHRITTE[k.i].id + '-rahmen-falsch', k.messung, { rahmenAufFluegel: false, nein: k.rahmenNein });
+    // v3.25 (Levin: „beim zweiten Mal Nein muss es weitergehen, sonst dreht man sich im Kreis“): ab dem zweiten Nein dieses Foto
+    // trotzdem nehmen, als „Rahmen falsch“ markieren und weiter. Das Maß gilt dann als unsicher und wird von Hand geprüft.
+    if (k.rahmenNein >= TOL.rahmenNeinMax) {
+      k.rahmenFalsch = true; k.rahmenJa = true;
+      if (k.messung) { k.messung.massSicher = false; k.messung.rahmenFalsch = true; }
+      pruefen.apply(null, k.pruefArgs);
+      return;
+    }
+    k.neinFotos.push(nf);
     nochmal();
     // Rahmen neu suchen lassen, sonst bleibt der alte stehen und der Lotse löst nicht wieder aus
     k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; if (k.mass) k.mass.rahmen = false;
@@ -3972,6 +3989,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (s.fl) { /* Flügel-Foto: Maß steht in fotos[s.id].mass */ }
     else if (gesamtSchritt(s)) { if (m && fluegelUebernehmen(m) || fluegelNebeneinander()) { merken(); G = geometrie(P); skizze(); formFuellen(); } }
     else if (m && blattModus() && m.fluegel && fluegelUebernehmen(m)) { merken(); G = geometrie(P); skizze(); formFuellen(); }
+    else if (m && m.rahmenFalsch) { /* v3.25: Rahmen laut Kunde falsch, Maß nicht übernehmen */ }
     else if (m && blattModus()) {
       var b = Math.round(m.breite / 10) * (P.nU >= 2 ? P.nU : 1), h = Math.round(m.hoehe / 10);
       if (b >= 30 && b <= 240 && h >= 40 && h <= 250) {
@@ -3989,12 +4007,13 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand || 0), ecken: m.ecken,
         fluegel: m.fluegel ? m.fluegel.map(function (q) { return { blatt: q.blatt, ok: q.ok, breite: q.ok ? Math.round(q.breite) : null, hoehe: q.ok ? Math.round(q.hoehe) : null, ecken: q.ecken }; }) : null,
         anordnung: m.anordnung || null, blattNr: blattNr, blatt: blattNr === null ? null : blattNr + 1, rel: rel, sicher: m.massSicher !== false,
-        griff: s.fl && m.griff ? m.griff : null } : null,
-      rahmen: fluegelSchritt(s) && m ? { aufFluegel: !!k.rahmenJa, vorherNein: k.rahmenNein || 0 } : null };
+        griff: s.fl && m.griff ? m.griff : null, rahmenFalsch: !!m.rahmenFalsch } : null,
+      rahmen: fluegelSchritt(s) && m ? { aufFluegel: !!k.rahmenJa && !k.rahmenFalsch, vorherNein: k.rahmenNein || 0, trotzdemWeiter: !!k.rahmenFalsch } : null };
     // Für den Lernmodus (v3.18): volle Messung, Kundenantwort und Blatt bleiben am Foto (nur im Speicher, nichts wird gespeichert)
     var fo = fotos[s.id];
     fo.messung = m || (messSchritt(s) ? k.messung : null);
-    fo.kunde = fluegelSchritt(s) && k.rahmenJa ? { rahmenAufFluegel: true, vorherNein: k.rahmenNein || 0 } : null;
+    fo.kunde = fluegelSchritt(s) && k.rahmenJa ? { rahmenAufFluegel: !k.rahmenFalsch, vorherNein: k.rahmenNein || 0, trotzdemWeiter: !!k.rahmenFalsch } : null;
+    fo.nein = k.neinFotos.length ? k.neinFotos.slice() : null;   // v3.25: die Fotos mit „Nein“ davor (Lernmodus: …-nein1)
     fo.blattNr = typeof k.blattNr === 'number' ? k.blattNr : blattNr;
     fo.ablauf = k.ablaufFoto || null;
     fo.hoch = entwDurchlauf(k.url, s.id, fo.messung, fo.kunde, { blattNr: fo.blattNr, ablauf: fo.ablauf });
@@ -4034,7 +4053,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       var f = fluegelFoto(b.nr), q = { blatt: b.nr + 1, ok: false, mitte: b.mitte, breite: null, hoehe: null, ecken: null, massSicher: false, sicher: false };
       if (f && f.mass && f.mass.rel && b.mitte) {
         var r = f.mass.rel, R = [b.mitte[0] + r[0], b.mitte[1] + r[1], b.mitte[0] + r[2], b.mitte[1] + r[3]];
-        q.ok = true; q.breite = f.mass.breite; q.hoehe = f.mass.hoehe; q.massSicher = q.sicher = !!f.mass.sicher; q.rand = R; q.griff = f.mass.griff || null;
+        q.ok = true; q.breite = f.mass.breite; q.hoehe = f.mass.hoehe; q.massSicher = q.sicher = !!f.mass.sicher && !f.mass.rahmenFalsch; q.rand = R; q.griff = f.mass.griff || null;
+        q.rahmenFalsch = !!f.mass.rahmenFalsch;
         q.ecken = Hv ? [[R[0], R[1]], [R[2], R[1]], [R[2], R[3]], [R[0], R[3]]].map(function (p) { return MASS.abb(Hv, p[0], p[1]); }) : null;
         if (r[2] > r[0]) k2s.push(f.mass.breite / (r[2] - r[0]));   // Tiefe: Flügel liegt etwas vor der Glasebene
       }
@@ -4077,7 +4097,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function nochmal() {
     clearTimeout(k.weiterUhr);
     if (k.ablauf) { k.ablauf.versuche++; ablaufHinweis('nochmal', ''); delete k.ablauf.ausgeloest; delete k.ablauf.ausloeser; }
-    k.rahmenJa = false;
+    k.rahmenJa = false; k.rahmenFalsch = false;
     k.griffErg = null;
     k.unscharfZahl = 0;
     k.pruefen = false;
@@ -4579,6 +4599,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var n = P.mehr ? P.flZahl : 1, reihen = [];
     SCHRITTE.forEach(function (s) { var f = fotos[s.id]; if (f && f.reihe) f.reihe.forEach(function (q) { if (!q.hoch) reihen.push([s.id, q]); }); });
     if (k.pruefen && k.reihe) k.reihe.fotos.forEach(function (q) { if (!q.hoch) reihen.push([SCHRITTE[k.i].id, q]); });
+    // v3.25: Fotos, bei denen der Rahmen laut „Nein“ falsch lag (als …-nein1)
+    var neins = [];
+    SCHRITTE.forEach(function (s) { var f = fotos[s.id]; if (f && f.nein) f.nein.forEach(function (q) { if (!q.hoch) neins.push([s.id, q]); }); });
+    if (k.pruefen && k.neinFotos) k.neinFotos.forEach(function (q) { if (!q.hoch) neins.push([SCHRITTE[k.i].id, q]); });
     schliessen();
     $('entw-feld').hidden = false; $('entw').setAttribute('aria-expanded', 'true');
     // Neuer Ordner, außer der Durchlauf liegt schon (mit „alle Fotos mit hochladen“) in einem
@@ -4590,7 +4614,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (entwDurchlauf(q.url, q.id, q.messung, q.kunde, { immer: true, blattNr: q.blattNr, modus: q.modus, schaerfe: q.schaerfe, ablauf: q.ablauf }) && q.f) q.f.hoch = true;
     });
     reihen.forEach(function (r) { reiheHoch(r[0], r[1], true); });
-    $('entw-ordner').textContent = 'Lernmodus: ' + (liste.length + reihen.length) + ' Fotos aus der Analyse übernommen' + (ENTW.ordner ? ' (' + ENTW.ordner + ')' : '') +
+    neins.forEach(function (r) {
+      var q = r[1];
+      if (q.url) q.hoch = entwDurchlauf(q.url, r[0] + '-nein' + q.nr, q.messung, { rahmenAufFluegel: false, nein: q.nr }, { immer: true, blattNr: q.blattNr, modus: q.modus, schaerfe: q.schaerfe, ablauf: q.ablauf });
+    });
+    $('entw-ordner').textContent = 'Lernmodus: ' + (liste.length + reihen.length + neins.length) + ' Fotos aus der Analyse übernommen' + (ENTW.ordner ? ' (' + ENTW.ordner + ')' : '') +
       '. Jetzt Name und echte Maße je Flügel eintragen, dann weitere Fotos (links, rechts, nah). Zum Schluss „Fenster fertig“.';
     $('entw-feld').scrollIntoView({ behavior: RUHIG ? 'auto' : 'smooth', block: 'start' });
     $('entw-name').focus();

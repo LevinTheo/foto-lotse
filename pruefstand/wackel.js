@@ -1,9 +1,12 @@
 // Wackeltest: jedes Lernfoto in 5 Varianten (Original, 90 %, 75 %, JPEG 70 %, leicht weich [1 2 1]-Kern) durch v3,
 // misst, ob dasselbe Foto auf verschiedenen Handys dasselbe Maß ergäbe.
-// Aufruf: node pruefstand/wackel.js <Pfad zu foto-lotse-daten> [Pfad zum Lotsen, Standard: dieses Repo]
+// Seit v3.31 (Fable F4) auch die Fotos aus der Analyse (lauf-…), Flügel-Fotos wie im Prüfstand nur am gelesenen Blatt. Zusammenfassung
+// für alle, nur foto-* (Basis bis v3.30) und nur lauf-*. --nur-foto: wie bis v3.30 nur foto-*.
+// Aufruf: node pruefstand/wackel.js <Pfad zu foto-lotse-daten> [Pfad zum Lotsen, Standard: dieses Repo] [--nur-foto]
 // Braucht Playwright mit Chromium. Holzbreiten je Bauart kommen aus TYPEN in index.html.
 const fs = require('fs'), path = require('path'); const { chromium } = require('playwright');
-const DATEN = process.argv[2] || '/home/claude/foto-lotse-daten', LOTSE = process.argv[3] || path.join(__dirname, '..');
+const ARGS = process.argv.slice(2).filter((a) => !a.startsWith('--')), NUR_FOTO = process.argv.includes('--nur-foto');
+const DATEN = ARGS[0] || '/home/claude/foto-lotse-daten', LOTSE = ARGS[1] || path.join(__dirname, '..');
 const NT = JSON.parse(fs.readFileSync(path.join(LOTSE, 'pruefstand/nachtrag.json'), 'utf8'));
 // Ab 2 Flügeln (v3.18) kann es ein echtes Maß je Blatt geben (fluegelJeBlatt); verglichen wird mit dem Flügel, dessen Blatt gemessen wurde
 const echt = (w, blatt) => { const q = (w.fluegelJeBlatt || []).find((x) => x.blatt === blatt && x.breiteMm && x.hoeheMm); return q ? [q.breiteMm, q.hoeheMm] : [w.fluegelBreiteMm, w.fluegelHoeheMm]; };
@@ -14,13 +17,17 @@ const echt = (w, blatt) => { const q = (w.fluegelJeBlatt || []).find((x) => x.bl
     route.fulfill({ status: 200, body: fs.readFileSync(f), contentType: f.endsWith('.html') ? 'text/html' : f.endsWith('.jpg') ? 'image/jpeg' : 'text/javascript' }); });
   await p.goto('http://lotse.test/index.html?test');
   const TY = await p.evaluate(() => { const T = window.__lotse.TYPEN, r = {}; Object.keys(T).forEach((k) => { r[k] = { fs: T[k].s * 10, fu: T[k].u * 10, tiefe: T[k].tiefe }; }); return r; });
-  let zeilen = [], spreads = [], fehler = [];
+  let zeilen = [], spreads = [], fehler = [], art = [], artF = [];
   for (const o of fs.readdirSync(path.join(DATEN, 'fenster')).sort()) {
     let w = {}; try { w = JSON.parse(fs.readFileSync(path.join(DATEN, 'fenster', o, 'fenster.json'))).fenster; } catch (e) {}
     w = Object.assign({}, Object.fromEntries(Object.entries(w).filter(([, v]) => v !== null && v !== '')), NT[o] || {});
     if (w.ignorieren) continue;
     const opt = Object.assign({ v3: true, nU: w.fluegelAnzahl || 1 }, TY[w.bauart] || TY.holz);
-    for (const f of fs.readdirSync(path.join(DATEN, 'fenster', o)).filter(x => /^foto-.*\.jpg$/.test(x)).sort()) {
+    for (const f of fs.readdirSync(path.join(DATEN, 'fenster', o)).filter(x => (NUR_FOTO ? /^foto-.*\.jpg$/ : /^(foto|lauf)-.*\.jpg$/).test(x)).sort()) {
+      // Flügel-Foto aus der Analyse: nur das gelesene Blatt, genau wie der Prüfstand (pruefstand.js)
+      const fj = path.join(DATEN, 'fenster', o, f.replace(/\.jpg$/, '.json'));
+      const lauf = /^lauf-/.test(f) && fs.existsSync(fj) ? JSON.parse(fs.readFileSync(fj, 'utf8')) : null;
+      const optFoto = lauf && /^(fl\d|innen)(-r\d)?$/.test(lauf.schritt || '') && lauf.blatt ? Object.assign({}, opt, { blattNr: lauf.blatt - 1 }) : opt;
       const r = await p.evaluate(async ({ url, opt }) => {
         const L = window.__lotse, img = new Image(); img.src = url; await img.decode();
         async function variante(sk, q, blur) {
@@ -51,19 +58,28 @@ const echt = (w, blatt) => { const q = (w.fluegelJeBlatt || []).find((x) => x.bl
           return e.ok ? [Math.round(e.breite), Math.round(e.hoehe), blatt] : null;
         }
         return [await variante(1, 0, 0), await variante(0.9, 0, 0), await variante(0.75, 0, 0), await variante(1, 0.7, 0), await variante(1, 0, 1)];
-      }, { url: 'http://lotse.test/_daten/fenster/' + o + '/' + f, opt });
+      }, { url: 'http://lotse.test/_daten/fenster/' + o + '/' + f, opt: optFoto });
       const ok = r.filter(Boolean);
       const sb = ok.length ? Math.max(...ok.map(x => x[0])) - Math.min(...ok.map(x => x[0])) : null, sh = ok.length ? Math.max(...ok.map(x => x[1])) - Math.min(...ok.map(x => x[1])) : null;
       const e0 = echt(w, ok.length ? ok[0][2] : null);
-      if (ok.length) spreads.push(Math.max(sb / e0[0], sh / e0[1]));
-      r.forEach(x => { if (x) { const e = echt(w, x[2]); fehler.push(Math.max(Math.abs(x[0] - e[0]) / e[0], Math.abs(x[1] - e[1]) / e[1])); } });
+      const a = /^lauf-/.test(f) ? 'lauf' : 'foto';
+      if (ok.length) { spreads.push(Math.max(sb / e0[0], sh / e0[1])); art.push(a); }
+      r.forEach(x => { if (x) { const e = echt(w, x[2]); fehler.push(Math.max(Math.abs(x[0] - e[0]) / e[0], Math.abs(x[1] - e[1]) / e[1])); artF.push(a); } });
       zeilen.push(`${(w.name || o).padEnd(22)} ${f}  echt ${e0.join('x')}  ` + r.map(x => x ? x.slice(0, 2).join('x') + (w.fluegelJeBlatt && x[2] ? ' (Bl ' + x[2] + ')' : '') : '—').join('  ') + `  | Streuung B ${sb} H ${sh}  (${ok.length}/5)`);
       process.stderr.write('.');
     }
   }
   console.log('\n' + zeilen.join('\n'));
-  spreads.sort((a, c) => a - c); fehler.sort((a, c) => a - c);
   const q = (a, t) => a[Math.floor((a.length - 1) * t)];
-  console.log(`\nStreuung (größte Abweichung zwischen Varianten, relativ): Median ${(q(spreads, .5) * 100).toFixed(1)} %, 80 % ${(q(spreads, .8) * 100).toFixed(1)} %; stabil (<1 %): ${spreads.filter(x => x < 0.01).length}/${spreads.length}`);
-  console.log(`Fehler aller Varianten: Median ${(q(fehler, .5) * 100).toFixed(1)} %, ±2 %: ${fehler.filter(x => x <= .02).length}/${fehler.length}, ±5 %: ${fehler.filter(x => x <= .05).length}/${fehler.length}`);
+  const zusammen = (titel, sp, fe) => {
+    sp = sp.slice().sort((a, c) => a - c); fe = fe.slice().sort((a, c) => a - c);
+    if (!sp.length) return;
+    console.log(`\n${titel}\nStreuung (größte Abweichung zwischen Varianten, relativ): Median ${(q(sp, .5) * 100).toFixed(1)} %, 80 % ${(q(sp, .8) * 100).toFixed(1)} %; stabil (<1 %): ${sp.filter(x => x < 0.01).length}/${sp.length}`);
+    console.log(`Fehler aller Varianten: Median ${(q(fe, .5) * 100).toFixed(1)} %, ±2 %: ${fe.filter(x => x <= .02).length}/${fe.length}, ±5 %: ${fe.filter(x => x <= .05).length}/${fe.length}`);
+  };
+  zusammen('Alle Fotos', spreads, fehler);
+  if (!NUR_FOTO) {
+    zusammen('Nur foto-* (Lernfotos, Basis bis v3.30)', spreads.filter((x, i) => art[i] === 'foto'), fehler.filter((x, i) => artF[i] === 'foto'));
+    zusammen('Nur lauf-* (aus der Analyse, wie beim Kunden)', spreads.filter((x, i) => art[i] === 'lauf'), fehler.filter((x, i) => artF[i] === 'lauf'));
+  }
   await b.close(); })();

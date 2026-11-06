@@ -156,6 +156,9 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   await page.waitForTimeout(500);
   if (await sichtbar('#k-karte')) await page.click('#k-karte-ok');
   const schritte = [];
+  // v3.27: nur die Fenster-Fotos in der Leiste oben und im Zähler (kein Griff, keine Bänder, kein Kippen)
+  const chips = await page.$$eval('#k-chips li', (l) => l.length);
+  pruef(chips === 3 && /^1 von 3/.test(await page.textContent('#k-nr')), 'nur Fenster: Leiste oben ' + chips + ' Schritte, Zähler „' + await page.textContent('#k-nr') + '“ (erwartet 3)');
   for (let n = 0; n < 4 && await sichtbar('#kamera'); n++) {
     const schritt = await page.textContent('#k-titel');
     schritte.push(schritt);

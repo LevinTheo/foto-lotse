@@ -4,6 +4,7 @@
 // v3.17), „Geh … zurück“ und „… gefunden“ (grüner Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ bei jedem Flügel-Foto (bei 1 Flügel
 // einmal Nein → nochmal, dann Ja; bei 2 Flügeln am ersten Flügel zweimal Nein → geht trotzdem weiter, v3.25), alle Fotos bis „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine
 // Fehler in der Konsole. Ab v3.26: Countdown 4 … 1 vor jedem Fenster-, Flügel- und Gesamtfoto, blauer Knopf nur mit ?test.
+// Ab v3.27: vorher „Manuelles Aufmaß“ mit „Selbst eingeben“ und Kunststoff übernommen, die Analyse läuft trotzdem mit Maßblatt.
 // Läuft mit 1, 2 und 4 Flügeln. Ab 2 Flügeln Flügel für Flügel (v3.17): je Flügel ein Foto („Flügel 1 von 2“), die Übung zeichnet auf
 // jeden Flügel ein eigenes Blatt; zum Schluss „Alle 2 Flügel zusammen“ mit „Gemessen: 2 Flügel nebeneinander“. Dauert ca. 2 Minuten.
 // Mit --bilder legt es Bildschirmfotos ab.
@@ -42,7 +43,11 @@ async function durchlauf(browser, nU, fehler, notizen) {
   pruef(!(await sichtbar(page, '#start-fenster')), 'Blauer Knopf „Analyse nur Fenster“ ist für den Kunden sichtbar');
   await page.click('#manuell');
   pruef(!(await sichtbar(page, '#f-werte-feld')), 'Schalter „Messwerte zeigen“ ist für den Kunden sichtbar');
-  await page.click('#manuell');
+  // v3.27: „Manuelles Aufmaß“ mit „Selbst eingeben“ und Kunststoff übernehmen; die Analyse muss trotzdem mit Maßblatt laufen
+  // (Levin 6. Nov.: danach lief jede Analyse ohne Blatt, ein Foto fürs ganze Fenster)
+  await page.check('#typ-kunststoff');
+  await page.click('#form button[type=submit]');
+  pruef(!(await sichtbar(page, '#form')), 'Formular „Manuelles Aufmaß“ geht nach „Übernehmen“ nicht zu');
   if (BILDER) await page.screenshot({ path: path.join(BILDER, 'start.png') });
 
   // 2. Analyse starten → Frage nach den Flügeln (1, 2, 3, 4)
@@ -167,6 +172,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
   const st = await page.evaluate(() => JSON.parse(localStorage.getItem('foto-lotse-fenster') || '{}'));
   pruef(st.nU === nU, 'Flügelanzahl nicht übernommen (gemerkt: ' + st.nU + ')');
   pruef(!!st.mehr === (nU > 1) && st.flZahl === nU, 'Mehrere Flügel / Zahl nicht gemerkt (' + st.mehr + ', ' + st.flZahl + ')');
+  pruef(st.mass === 'blatt' && st.typ === 'holz', 'Analyse nicht mit Maßblatt und Holz gemerkt (' + st.mass + ', ' + st.typ + ')');
   notizen.push(nU + ' Flügel: ' + titel.length + ' Schritte\n  ' + titel.join('\n  '));
 
   // 4. Mit ?test: Entwickler-Knopf und Messwerte da

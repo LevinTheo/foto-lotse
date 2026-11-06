@@ -47,5 +47,36 @@
     "gesamtBreiteMm": 2062,
     "notizGesamt": "Levin 5. Nov. abends, Laser: beide Flügel zusammen außen 2062/2063 mm (linke Kante Flügel 1 bis rechte Kante Flügel 2). Diagonalen am Glas gemessen (bestätigt). Zwischenraum Mitte errechnet: 2062 − 810 − 1228 = 24 mm",
     "zwischenraumMitteMm": 24
+  },
+  "2026-11-05_1812_fenster": {
+    "name": "Fenster WZ (2. Durchlauf, Blatt 1/2)",
+    "bauart": "kunststoff",
+    "griff": "mitte",
+    "fluegelAnzahl": 2,
+    "fluegelBreiteMm": 810,
+    "fluegelHoeheMm": 1245,
+    "rahmenInnenBreiteMm": 670,
+    "rahmenInnenHoeheMm": 1108,
+    "rahmenSichtbarMm": 70,
+    "fluegelJeBlatt": [
+      {
+        "blatt": 1,
+        "breiteMm": 810,
+        "hoeheMm": 1245,
+        "lichtBreiteMm": 670,
+        "lichtHoeheMm": 1108,
+        "diagonaleMm": 1290
+      },
+      {
+        "blatt": 2,
+        "breiteMm": 1228,
+        "hoeheMm": 1245,
+        "lichtBreiteMm": 1085,
+        "lichtHoeheMm": 1108,
+        "diagonaleMm": 1550
+      }
+    ],
+    "zwischenraumMitteMm": 24,
+    "notiz": "Levin 6. Nov.: „das erste Wohnzimmer“ = dasselbe Fenster wie 2026-11-05_1549 (Fenster WZ). Blatt 1 links (810 breit), Blatt 2 rechts (1228), Lage aus dem Gesamtfoto (Blatt 2 ca. 1,1 m rechts von Blatt 1). Nur Analyse-Fotos, im Lernmodus hochgeladen, „Fenster fertig“ nicht getippt. Maße aus 1549 übernommen"
   }
 }

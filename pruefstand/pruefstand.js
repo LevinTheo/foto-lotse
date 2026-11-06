@@ -69,7 +69,8 @@ function wahrheit(ordner) {
       // Flügel-Foto aus der Analyse (v3.17, lauf-…-fl1): die App hat nur das gelesene Blatt gemessen, der Prüfstand auch
       const fj = path.join(DATEN, 'fenster', ordner, foto.replace(/\.jpg$/, '.json'));
       const lauf = /^lauf-/.test(foto) && fs.existsSync(fj) ? JSON.parse(fs.readFileSync(fj, 'utf8')) : null;
-      const optFoto = lauf && /^fl\d$/.test(lauf.schritt || '') && lauf.blatt ? Object.assign({}, opt, { blattNr: lauf.blatt - 1 }) : opt;
+      // v3.23 auch die Fotos der Abstandsreihe (lauf-…-fl1-r1) und bei 1 Flügel „innen“ mit Blatt
+      const optFoto = lauf && /^(fl\d|innen)(-r\d)?$/.test(lauf.schritt || '') && lauf.blatt ? Object.assign({}, opt, { blattNr: lauf.blatt - 1 }) : opt;
       const r = await page.evaluate(async ({ url, opt }) => {
         const L = window.__lotse, img = new Image(); img.src = url; await img.decode();
         const q = Math.min(1, 2576 / Math.max(img.naturalWidth, img.naturalHeight));

@@ -57,7 +57,21 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
     const schritt = await page.textContent('#k-titel');
     pruef(n === 0 ? !(await sichtbar('#k-lern')) : await sichtbar('#k-lern'), schritt + ': Knopf „Lernmodus“ ' + (n === 0 ? 'schon vor dem ersten Foto da' : 'fehlt'));
     if (/^Flügel/.test(schritt)) pruef(await warteStatus(/Blatt \d erkannt/, 5000), schritt + ': kein „Blatt … erkannt“');
-    await page.click('#k-zeig');
+    // Abstandsreihe (v3.23, Levin): je Flügel 3 Fotos; „Zeig’s mir“ fährt jeweils auf die nächste Stufe, die ersten beiden löst er still aus
+    let still = 0;
+    for (let v = 0; v < 4 && !(await sichtbar('#k-pruefen')); v++) {
+      await page.click('#k-zeig');
+      let t = 0;
+      for (; t < 300 && !(await sichtbar('#k-pruefen')); t++) {
+        if (/Foto \d von 3 ✓/.test(await page.textContent('#k-status'))) { still++; await page.waitForTimeout(1700); break; }
+        await page.waitForTimeout(100);
+      }
+      if (t >= 300) break;
+    }
+    if (/^Flügel/.test(schritt)) {
+      pruef(still === 2, schritt + ': Abstandsreihe mit ' + still + ' stillen Fotos statt 2');
+      pruef(/Reihe: \d,\d m \d+ × \d+, \d,\d m \d+ × \d+, jetzt \d,\d m/.test(await page.textContent('#p-mass')), schritt + ': Prüfdialog zeigt die Reihe nicht: ' + await page.textContent('#p-mass'));
+    }
     await page.waitForSelector('#k-pruefen:not([hidden])', { timeout: 30000 }).catch(() => pruef(false, schritt + ': löst nicht aus'));
     if (await sichtbar('#p-rahmen')) await page.click('#p-rahmen-ja');
     await page.waitForTimeout(200);
@@ -76,11 +90,14 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   const legenden = await page.$$eval('#entw-fluegel legend', (l) => l.map((x) => x.textContent));
   pruef(legenden.join(' | ') === 'Flügel 1 (mit Blatt 1) | Flügel 2 (mit Blatt 2)', 'Felder je Flügel: ' + legenden.join(' | '));
   pruef(!(await sichtbar('#entw-b')), 'Einzelfeld „Flügel breit“ trotz 2 Flügeln sichtbar');
-  for (let t = 0; t < 100 && Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).length < 3; t++) await page.waitForTimeout(100);
+  for (let t = 0; t < 150 && Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).length < 7; t++) await page.waitForTimeout(100);
   const lauf = Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).sort();
-  pruef(lauf.length === 3 && Object.keys(hoch).filter((p) => /lauf-.*\.jpg$/.test(p)).length === 3, 'hochgeladen: ' + Object.keys(hoch).join(', '));
+  pruef(lauf.length === 7 && Object.keys(hoch).filter((p) => /lauf-.*\.jpg$/.test(p)).length === 7, 'hochgeladen (erwartet 2 × 3 Flügel-Fotos + Gesamtfoto): ' + Object.keys(hoch).join(', '));
   const daten = lauf.map(json);
   const fl = daten.filter((d) => /^fl\d$/.test(d.schritt)), ges = daten.find((d) => d.schritt === 'innen');
+  const rh = daten.filter((d) => /^fl\d-r\d$/.test(d.schritt));
+  pruef(rh.length === 4 && rh.every((d) => d.blatt && d.messung && d.ablauf && d.messung.abstand > 1300), 'Reihen-Fotos: ' + JSON.stringify(rh.map((d) => [d.schritt, d.blatt, d.messung && d.messung.abstand])));
+  console.log('Abstandsreihe: ' + rh.concat(fl).map((d) => d.schritt + ' ' + (d.messung ? (d.messung.abstand / 1000).toFixed(2) + ' m ' + d.messung.breite + '×' + d.messung.hoehe : '–')).join(' · '));
   pruef(fl.length === 2 && fl.map((d) => d.blatt).sort().join() === '1,2', 'Flügel-Fotos mit Blatt: ' + fl.map((d) => d.schritt + '=' + d.blatt).join(', '));
   pruef(fl.every((d) => d.quelle === 'durchlauf-lernmodus' && d.messung && d.messung.breite > 300), 'Flügel-Fotos ohne Messung oder falsche Quelle');
   // Ablaufprotokoll (v3.18): Hinweise mit Zeit, Blatt gelesen, wie ausgelöst, Livemessungen
@@ -113,6 +130,6 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   pruef(!(await sichtbar('#entw-fluegel')) && (await page.$$('#entw-fluegel fieldset')).length === 0, 'Felder je Flügel nach „Fenster fertig“ nicht geleert');
   await browser.close();
   console.log('Hochgeladen: ' + Object.keys(hoch).sort().join(', '));
-  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: 3 Fotos mit Blatt übernommen, Felder je Flügel, fenster.json mit fluegelJeBlatt.');
+  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: Abstandsreihe (2 Flügel × 3 Fotos) und Gesamtfoto mit Blatt übernommen, Felder je Flügel, fenster.json mit fluegelJeBlatt.');
   process.exit(fehler.length ? 1 : 0);
 })();

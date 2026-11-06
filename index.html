@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.31 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.32 · Test</span>
   </header>
 
   <div class="kopf">
@@ -3032,46 +3032,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       return '<li class="' + cls + '" aria-label="' + esc(name) + '"' + (i === k.i ? ' aria-current="step"' : '') + '>' + pikto(s.id, 24) + '</li>';
     }).join('');
   }
-  /* Ablaufprotokoll (v3.18, Levin: „wäre gut, dass die Daten bei der Erkennung und im Prozess mitgenommen werden“): je Foto, was im
-     Livebild passiert ist: welche Hinweise wann kamen (ms seit Schrittbeginn), wann das Blatt gelesen war, wann der grüne Rahmen kam,
-     wie ausgelöst wurde (Rahmen, ohne Rahmen nach Wartezeit, Gesamtfoto, selbst getippt), Livemessungen (Zahl, Rechenzeit), das Livemaß
-     beim Auslösen, Wiederholungen. Bleibt nur im Speicher und geht nur mit Levins Lernfotos hoch (lauf-….json → ablauf). */
-  function ablaufNeu() { k.ablaufFoto = null; k.ablauf = { start: Date.now(), t0: performance.now(), hinweise: [], live: { n: 0, ms: 0, msMax: 0 }, versuche: 1 }; }
-  function ablaufMs() { return k.ablauf ? Math.round(performance.now() - k.ablauf.t0) : null; }
-  function ablaufHinweis(art, text) {
-    var a = k.ablauf;
-    if (!a) return;
-    var letzter = a.hinweise[a.hinweise.length - 1];
-    if (letzter && letzter[1] === art) return;
-    if (a.hinweise.length < 80) a.hinweise.push([ablaufMs(), art, text]);
-    if (art === 'blattGelesen' && a.blattGelesen === undefined) a.blattGelesen = ablaufMs();
-    if (art === 'passt' && a.passtErst === undefined) a.passtErst = ablaufMs();
-  }
-  function ablaufFertig() {
-    var a = k.ablauf;
-    if (!a) return null;
-    var e = blattMessung();
-    a.ausgeloest = a.ausgeloest === undefined ? ablaufMs() : a.ausgeloest;
-    a.live.msMittel = a.live.n ? Math.round(a.live.ms / a.live.n) : null;
-    a.blatt = typeof k.blattNr === 'number' ? k.blattNr + 1 : null;
-    a.unscharf = k.unscharfZahl || 0; a.rahmenNein = k.rahmenNein || 0;
-    a.liveMass = e && e.ok ? { breite: Math.round(e.breite), hoehe: Math.round(e.hoehe), abstand: Math.round(e.abstand || (e.lage ? e.lage.z : 0)), rahmen: !!e.rahmen } : e && e.lage ? { abstand: Math.round(e.lage.z) } : null;
-    a.kamera = kameraInfo();
-    var c = {}; for (var key in a) if (key !== 't0') c[key] = a[key];
-    return JSON.parse(JSON.stringify(c));
-  }
-  /* Was die Kamera im Browser liefert (v3.22, für Levins Lernfotos): Größe des Videobilds, aus dem das Foto entsteht, was die Kamera
-     höchstens könnte (getCapabilities) und ob es die Foto-Funktion in voller Auflösung gibt (ImageCapture.takePhoto). Ändert nichts am
-     Messen; zeigt, ob sich 4K oder takePhoto auf Levins iPhone lohnen würden. */
-  function kameraInfo() {
-    var v = $('video'), t = k.stream && k.stream.getVideoTracks ? k.stream.getVideoTracks()[0] : null, i = { modus: k.modus };
-    if (v && v.videoWidth) i.video = [v.videoWidth, v.videoHeight];
-    if (k.aufnahmeGroesse) i.foto = [k.aufnahmeGroesse.w, k.aufnahmeGroesse.h];
-    try { var st = t && t.getSettings ? t.getSettings() : null; if (st) i.einstellung = { breite: st.width || null, hoehe: st.height || null, bps: st.frameRate || null }; } catch (e) {}
-    try { var cp = t && t.getCapabilities ? t.getCapabilities() : null; if (cp && cp.width) i.hoechstens = [cp.width.max || null, cp.height ? cp.height.max || null : null]; } catch (e) {}
-    i.takePhoto = typeof window.ImageCapture === 'function' && !!window.ImageCapture.prototype && typeof window.ImageCapture.prototype.takePhoto === 'function';
-    return i;
-  }
   function schritt(i) {
     k.i = i;
     ablaufNeu();
@@ -3266,12 +3226,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     }
     return { art: 'passt', n: nBl };
   }
-  // Vorsatz bei der Abstandsreihe (v3.23): „Foto 2 von 3 (ca. 2 m): “
-  function reiheVor(z) {
-    if (!z.reihe || !k.reihe) return '';
-    var n = k.reihe.fotos.length + 1;
-    return 'Foto ' + (k.reihe.letzte ? n : Math.min(n, TOL.reihe.length)) + ' von ' + (k.reihe.letzte ? n : TOL.reihe.length) + ' (ca. ' + String(Math.round(z.ziel * 2) / 2).replace('.', ',') + ' m): ';
-  }
   /* Flügel für Flügel (v3.17, Levins Ablauf): Der Kunde geht nah an ein Maßblatt. Erkennt der Lotse dasselbe Blatt in TOL.blattLesen
      Livemessungen hintereinander (mind. 3 Marker) und ist sein Flügel noch nicht fotografiert, legt er sich auf dieses Blatt fest und
      zeigt es TOL.blattZeigen lang grün umrandet („Blatt 2 erkannt“). Danach geht es weiter wie bisher (zurück, mittig, grüner Rahmen um
@@ -3323,51 +3277,6 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (r.letzte) return { min: Math.max(TOL.abstandMinFluegel - TOL.reiheUnter, dyn), max: TOL.abstandMax + 0.1, ziel: Math.max(vor, TOL.abstandFluegel), reihe: true };
     var st = TOL.reihe[Math.min(n, TOL.reihe.length - 1)];
     return { min: Math.max(st - TOL.reiheUnter, n ? vor + TOL.reiheMehr : 0, dyn), max: Math.max(st + TOL.reiheSpanne, vor + TOL.reiheMehr + 0.4), ziel: Math.max(st, n ? vor + TOL.reiheMehr : 0, dyn + 0.2), reihe: true };
-  }
-  // Abstandsreihe nur für Levin (Entwickler) und nur, solange „3 Fotos je Flügel“ an ist; nicht mit Fotos aus der Galerie
-  function reiheAktiv(s) { return ENTWICKLER && ENTW.reihe !== false && fluegelSchritt(s) && k.modus !== 'foto'; }
-  function reiheLetzte(s) { return !reiheAktiv(s) || k.reihe.letzte || k.reihe.fotos.length >= TOL.reihe.length - 1; }
-  function reiheKnopf() {
-    var s = SCHRITTE[k.i], b = $('k-reihe');
-    if (b) b.hidden = !(s && reiheAktiv(s) && k.reihe && k.reihe.fotos.length >= 1 && !k.reihe.letzte);
-  }
-  /* Abstandsreihe (v3.23, Levin: „für die Testphase wäre es gut immer 3 Bilder zu haben, so kann der Lotse besser geschult werden“):
-     Das Foto bei 1,5 und bei 2 m wird still gemessen und gemerkt, nur das letzte (ca. 3 m) kommt in den Prüfdialog. Alle gehen mit den
-     Lernfotos hoch (lauf-…-fl1-r1 usw.). Geht es nicht weiter zurück: „Weiter geht's nicht“, dann ist das nächste Foto das letzte. */
-  function reiheFoto() {
-    if (k.gemacht || k.pruefen) return;
-    var s = SCHRITTE[k.i], modus = k.modus, cv = null;
-    try { cv = modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { cv = null; }
-    if (!cv) return;
-    var sch = schaerfeVon(cv);
-    if (modus === 'kamera' && unscharf(sch)) {
-      k.passtSeit = 0; k.warteBis = performance.now() + 1200; k.warteText = 'Unscharf geworden. Handy ganz ruhig halten.';
-      setStatus(k.warteText, 'gerade');
-      return;
-    }
-    var e = blattMessung(), z = e && e.lage ? e.lage.z : 0;
-    k.aufnahmeGroesse = { w: cv.width, h: cv.height };
-    var abl = null;
-    if (k.ablauf) { k.ablauf.ausgeloest = ablaufMs(); abl = ablaufFertig(); }
-    var eintrag = { nr: k.reihe.fotos.length + 1, url: null, abstand: Math.round(z), messung: null, ablauf: abl, blattNr: k.blattNr, modus: modus,
-      schaerfe: sch ? Math.round(sch.breite * 10) / 10 : null, hoch: false };
-    k.reihe.fotos.push(eintrag);
-    var bl = $('blitz');
-    bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
-    var weiter = abstandSoll(s), gesamt = TOL.reihe.length;
-    k.blattOkSeit = 0; k.rahmenAlt = null; k.passtSeit = 0; k.sperre = true; k.schrittStart = performance.now(); k.abbrueche = 0; k.rahmenLetzt = null;
-    k.warteBis = performance.now() + 1500;
-    k.warteText = 'Foto ' + eintrag.nr + ' von ' + gesamt + ' ✓. Jetzt ' + (reiheLetzte(s) ? 'das letzte: ' : '') + 'auf ca. ' + String(Math.round(weiter.ziel * 2) / 2).replace('.', ',') + ' m zurück.';
-    setStatus(k.warteText, 'passt');
-    ablaufHinweis('reiheFoto' + eintrag.nr, k.warteText);
-    reiheKnopf();
-    var pruef = modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0), mess = fotoMessen(cv, modus);
-    if (!k.vergleich) vergleichMerken(cv, z, true);   // v3.28: das erste Foto der Reihe ist das Vergleichsfoto für die nächsten
-    Promise.all([pruef, mess]).then(function (r) {
-      var m = r[1] && r[1].ok ? r[1] : null;
-      eintrag.messung = m;
-      try { eintrag.url = cv.toDataURL('image/jpeg', 0.9); } catch (x) { eintrag.url = null; }
-    });
   }
   // Wohin soll die Kamera zielen (mm waagerecht in Blattkoordinaten des Hauptblatts)? Mehrere Blätter: in die Mitte zwischen allen
   // Blättern (v3.14). Ein Blatt: auf das Blatt; bei 2 Flügeln aus dem Formular (Blatt links) wie bisher etwas rechts davon.
@@ -4578,6 +4487,110 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     massHinweis();
   }
   formFuellen();
+
+  /* ========== Ab hier: nur für Levin (Entwickler) ==========
+     Aufgeräumt in v3.32 (Fable F6): Was der Kunde nicht braucht, steht ab hier gesammelt, damit eine Änderung am Kundenablauf nicht
+     durch Levins Werkzeuge hindurch muss. Nur verschoben, nichts geändert (Funktionen gelten in der ganzen Datei, die Reihenfolge ist egal).
+     Hier: Ablaufprotokoll (läuft auch beim Kunden still mit, geht aber nur mit Levins Lernfotos hoch), Kamera-Angaben, Abstandsreihe
+     (reiheAktiv ist ohne ENTWICKLER immer false), danach Lernfotos/Lernmodus, Felder je Flügel, blauer Knopf „Analyse nur Fenster“.
+     Im Kundenteil bleiben nur kurze Weichen mit ENTWICKLER bzw. ENTW: Knopf „Lernmodus“ (schritt), zeigeWerte (bei setStatus), das
+     JPEG des Vergleichsfotos (vergleichMerken), gestrichelte Glaskante (mitUmriss), „(Blatt n)“ und Reihe-Text im Maß (massZeigen),
+     „Als Lernfoto“ (pruefen), Vergleichs- und Reihe-Fotos mitnehmen (weiter), blauer Knopf ein/aus (fluFrage, Startseite). */
+
+  /* ---------- Ablaufprotokoll und Kamera-Angaben ---------- */
+  /* Ablaufprotokoll (v3.18, Levin: „wäre gut, dass die Daten bei der Erkennung und im Prozess mitgenommen werden“): je Foto, was im
+     Livebild passiert ist: welche Hinweise wann kamen (ms seit Schrittbeginn), wann das Blatt gelesen war, wann der grüne Rahmen kam,
+     wie ausgelöst wurde (Rahmen, ohne Rahmen nach Wartezeit, Gesamtfoto, selbst getippt), Livemessungen (Zahl, Rechenzeit), das Livemaß
+     beim Auslösen, Wiederholungen. Bleibt nur im Speicher und geht nur mit Levins Lernfotos hoch (lauf-….json → ablauf). */
+  function ablaufNeu() { k.ablaufFoto = null; k.ablauf = { start: Date.now(), t0: performance.now(), hinweise: [], live: { n: 0, ms: 0, msMax: 0 }, versuche: 1 }; }
+  function ablaufMs() { return k.ablauf ? Math.round(performance.now() - k.ablauf.t0) : null; }
+  function ablaufHinweis(art, text) {
+    var a = k.ablauf;
+    if (!a) return;
+    var letzter = a.hinweise[a.hinweise.length - 1];
+    if (letzter && letzter[1] === art) return;
+    if (a.hinweise.length < 80) a.hinweise.push([ablaufMs(), art, text]);
+    if (art === 'blattGelesen' && a.blattGelesen === undefined) a.blattGelesen = ablaufMs();
+    if (art === 'passt' && a.passtErst === undefined) a.passtErst = ablaufMs();
+  }
+  function ablaufFertig() {
+    var a = k.ablauf;
+    if (!a) return null;
+    var e = blattMessung();
+    a.ausgeloest = a.ausgeloest === undefined ? ablaufMs() : a.ausgeloest;
+    a.live.msMittel = a.live.n ? Math.round(a.live.ms / a.live.n) : null;
+    a.blatt = typeof k.blattNr === 'number' ? k.blattNr + 1 : null;
+    a.unscharf = k.unscharfZahl || 0; a.rahmenNein = k.rahmenNein || 0;
+    a.liveMass = e && e.ok ? { breite: Math.round(e.breite), hoehe: Math.round(e.hoehe), abstand: Math.round(e.abstand || (e.lage ? e.lage.z : 0)), rahmen: !!e.rahmen } : e && e.lage ? { abstand: Math.round(e.lage.z) } : null;
+    a.kamera = kameraInfo();
+    var c = {}; for (var key in a) if (key !== 't0') c[key] = a[key];
+    return JSON.parse(JSON.stringify(c));
+  }
+  /* Was die Kamera im Browser liefert (v3.22, für Levins Lernfotos): Größe des Videobilds, aus dem das Foto entsteht, was die Kamera
+     höchstens könnte (getCapabilities) und ob es die Foto-Funktion in voller Auflösung gibt (ImageCapture.takePhoto). Ändert nichts am
+     Messen; zeigt, ob sich 4K oder takePhoto auf Levins iPhone lohnen würden. */
+  function kameraInfo() {
+    var v = $('video'), t = k.stream && k.stream.getVideoTracks ? k.stream.getVideoTracks()[0] : null, i = { modus: k.modus };
+    if (v && v.videoWidth) i.video = [v.videoWidth, v.videoHeight];
+    if (k.aufnahmeGroesse) i.foto = [k.aufnahmeGroesse.w, k.aufnahmeGroesse.h];
+    try { var st = t && t.getSettings ? t.getSettings() : null; if (st) i.einstellung = { breite: st.width || null, hoehe: st.height || null, bps: st.frameRate || null }; } catch (e) {}
+    try { var cp = t && t.getCapabilities ? t.getCapabilities() : null; if (cp && cp.width) i.hoechstens = [cp.width.max || null, cp.height ? cp.height.max || null : null]; } catch (e) {}
+    i.takePhoto = typeof window.ImageCapture === 'function' && !!window.ImageCapture.prototype && typeof window.ImageCapture.prototype.takePhoto === 'function';
+    return i;
+  }
+
+  /* ---------- Abstandsreihe (v3.23) ---------- */
+  // Vorsatz bei der Abstandsreihe (v3.23): „Foto 2 von 3 (ca. 2 m): “
+  function reiheVor(z) {
+    if (!z.reihe || !k.reihe) return '';
+    var n = k.reihe.fotos.length + 1;
+    return 'Foto ' + (k.reihe.letzte ? n : Math.min(n, TOL.reihe.length)) + ' von ' + (k.reihe.letzte ? n : TOL.reihe.length) + ' (ca. ' + String(Math.round(z.ziel * 2) / 2).replace('.', ',') + ' m): ';
+  }
+  // Abstandsreihe nur für Levin (Entwickler) und nur, solange „3 Fotos je Flügel“ an ist; nicht mit Fotos aus der Galerie
+  function reiheAktiv(s) { return ENTWICKLER && ENTW.reihe !== false && fluegelSchritt(s) && k.modus !== 'foto'; }
+  function reiheLetzte(s) { return !reiheAktiv(s) || k.reihe.letzte || k.reihe.fotos.length >= TOL.reihe.length - 1; }
+  function reiheKnopf() {
+    var s = SCHRITTE[k.i], b = $('k-reihe');
+    if (b) b.hidden = !(s && reiheAktiv(s) && k.reihe && k.reihe.fotos.length >= 1 && !k.reihe.letzte);
+  }
+  /* Abstandsreihe (v3.23, Levin: „für die Testphase wäre es gut immer 3 Bilder zu haben, so kann der Lotse besser geschult werden“):
+     Das Foto bei 1,5 und bei 2 m wird still gemessen und gemerkt, nur das letzte (ca. 3 m) kommt in den Prüfdialog. Alle gehen mit den
+     Lernfotos hoch (lauf-…-fl1-r1 usw.). Geht es nicht weiter zurück: „Weiter geht's nicht“, dann ist das nächste Foto das letzte. */
+  function reiheFoto() {
+    if (k.gemacht || k.pruefen) return;
+    var s = SCHRITTE[k.i], modus = k.modus, cv = null;
+    try { cv = modus === 'kamera' ? fotoKamera() : fotoSzene(); } catch (e) { cv = null; }
+    if (!cv) return;
+    var sch = schaerfeVon(cv);
+    if (modus === 'kamera' && unscharf(sch)) {
+      k.passtSeit = 0; k.warteBis = performance.now() + 1200; k.warteText = 'Unscharf geworden. Handy ganz ruhig halten.';
+      setStatus(k.warteText, 'gerade');
+      return;
+    }
+    var e = blattMessung(), z = e && e.lage ? e.lage.z : 0;
+    k.aufnahmeGroesse = { w: cv.width, h: cv.height };
+    var abl = null;
+    if (k.ablauf) { k.ablauf.ausgeloest = ablaufMs(); abl = ablaufFertig(); }
+    var eintrag = { nr: k.reihe.fotos.length + 1, url: null, abstand: Math.round(z), messung: null, ablauf: abl, blattNr: k.blattNr, modus: modus,
+      schaerfe: sch ? Math.round(sch.breite * 10) / 10 : null, hoch: false };
+    k.reihe.fotos.push(eintrag);
+    var bl = $('blitz');
+    bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
+    var weiter = abstandSoll(s), gesamt = TOL.reihe.length;
+    k.blattOkSeit = 0; k.rahmenAlt = null; k.passtSeit = 0; k.sperre = true; k.schrittStart = performance.now(); k.abbrueche = 0; k.rahmenLetzt = null;
+    k.warteBis = performance.now() + 1500;
+    k.warteText = 'Foto ' + eintrag.nr + ' von ' + gesamt + ' ✓. Jetzt ' + (reiheLetzte(s) ? 'das letzte: ' : '') + 'auf ca. ' + String(Math.round(weiter.ziel * 2) / 2).replace('.', ',') + ' m zurück.';
+    setStatus(k.warteText, 'passt');
+    ablaufHinweis('reiheFoto' + eintrag.nr, k.warteText);
+    reiheKnopf();
+    var pruef = modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0), mess = fotoMessen(cv, modus);
+    if (!k.vergleich) vergleichMerken(cv, z, true);   // v3.28: das erste Foto der Reihe ist das Vergleichsfoto für die nächsten
+    Promise.all([pruef, mess]).then(function (r) {
+      var m = r[1] && r[1].ok ? r[1] : null;
+      eintrag.messung = m;
+      try { eintrag.url = cv.toDataURL('image/jpeg', 0.9); } catch (x) { eintrag.url = null; }
+    });
+  }
 
   /* ---------- Entwickler: Lernfotos ----------
      Fotos (Original aus der Kamera-App oder Galerie) plus echtes Maß plus das, was der Lotse darin erkennt,

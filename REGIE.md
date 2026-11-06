@@ -301,6 +301,26 @@ Speicher (6. Nov. früh): 13 Ordner, 51 Fotos, 69 MB, im Mittel 1,4 MB je Lernfo
 
 Lücken im Bestand: 0 Kastenfenster, 0 Verbundfenster, 0 dunkles Holz. **Fenster WZ hat ungleiche Flügel** (810 und 1228 mm): die frühere Annahme „bei 2 Flügeln beide gleich, Maß × 2“ (bis v3.16) wäre dort 22 % zu schmal gewesen; Flügel für Flügel misst jeden einzeln. Erstes Fenster mit Flügeln übereinander (Flur, 5. Nov.). Die `TYPEN`-Werte für Kasten und Verbund sind laut Code geschätzt und an keinem Foto geprüft.
 
+## Prüfen ohne Code lesen (Levins Frage 6. Nov.)
+
+Levin kann den Code nicht selbst lesen. Kontrolle geht so:
+1. **Am Handy:** tut der Lotse, was im Bericht steht?
+2. **GitHub:** unter „Commits“ steht jede Version mit dem, was sich geändert hat (grün dazu, rot weg). Man sieht, welche Datei und wie viel, auch ohne den Code zu verstehen.
+3. **Zurückbauen:** jede Version liegt als Branch `stand-vX.Y`; „bau zurück auf vX.Y“ reicht.
+4. **Unabhängige Prüfung** durch einen zweiten Chat, der nichts weiß und nichts ändert (zuletzt 4. Nov., siehe unten; fand 8 Punkte, darunter echte Fehler). Die Testzahlen in diesem Bericht muss er mit denselben Tests selbst wieder herausbekommen. Am besten alle paar Versionen. Start-Text (kopieren, die Versionen anpassen):
+
+```
+Du prüfst den Foto-Lotsen von Holtcraft unabhängig. Hol dir LevinTheo/foto-lotse (Code) und LevinTheo/foto-lotse-daten (Lernfotos; nur lesen). Lies CLAUDE.md und REGIE.md. Ändere nichts, lade nichts hoch, du prüfst nur.
+Prüfe alles seit dem Branch stand-v3.3 bis main:
+1. Passt jede Zeile im Änderungsprotokoll zu dem, was sich im Code wirklich geändert hat (git diff zwischen den stand-Branches)? Gibt es Änderungen oder Löschungen, die nicht im Protokoll stehen?
+2. Lass Ablauf-Test, Lernmodus-Test, Prüfstand und Wackeltest laufen. Kommen dieselben Zahlen heraus wie in REGIE.md?
+3. Sieht der Kunde etwas, das nur für Levin gedacht ist? Gehen Fotos oder Daten irgendwohin, wo sie nicht hin sollen?
+4. Was ist falsch, riskant oder unnötig kompliziert?
+Schreib das Ergebnis kurz und einfach für Levin (kein Programmierer, liest am Handy): was stimmt, was nicht, was du empfiehlst.
+```
+
+Das Ergebnis gibt Levin dem Bau-Chat; der trägt es unter „Prüfung …“ ein und setzt es um.
+
 ## Prüfung 4. Nov. 2026 (unabhängiger Chat „Foto Lotse Check“)
 
 Ein zweiter Chat hat Code, REGIE und Tests ohne Vorwissen geprüft. Prüfstand und Wackeltest reproduzierten die REGIE-Zahlen exakt; der Übungsmodus läuft mit Playwright (iPhone-Viewport) durch alle 6 Fotos ohne Fehler. Umgesetzt sind daraus die Punkte 1, 3, 4 und 8, in v3.4 auch 2 und 7 (siehe Änderungsprotokoll). Der Rest steht als Befund hier, damit der nächste Chat ihn aufgreifen kann; „gemessen“ heißt mit Prüfstand, Wackeltest oder Playwright belegt, „Vermutung“ heißt noch nicht.

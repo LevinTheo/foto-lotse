@@ -188,6 +188,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 .knopf--haupt { background: var(--primary); color: var(--on-primary); width: 100%; }
 .knopf--haupt:hover { background: var(--primary-hover); }
 .knopf--haupt:active { background: var(--primary-pressed); }
+.knopf--blau { background: #2a5db0; color: #fff; width: 100%; }
+.knopf--blau:hover { background: #234f97; }
 .knopf--rand { background: transparent; border-color: var(--ink); color: var(--ink); min-height: 48px; }
 .knopf--klein { min-height: 48px; font-size: 16px; }
 .knopf--manuell { width: 100%; min-height: 56px; }
@@ -434,6 +436,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 }
 .ausloeser span { width: 64px; height: 64px; border-radius: 50%; background: var(--cam-ink); box-shadow: 0 0 0 4px var(--cam-bg); transition: transform 0.12s; }
 .ausloeser:active span { transform: scale(0.92); }
+.ausloeser span { display: grid; place-items: center; }
+.ausloeser b { font-size: 30px; font-weight: 700; line-height: 1; color: var(--cam-bg); font-variant-numeric: tabular-nums; }
 
 .k-karte {
   position: absolute;
@@ -501,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.25 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.26 · Test</span>
   </header>
 
   <div class="kopf">
@@ -526,6 +530,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   <button class="knopf knopf--haupt" id="start" type="button">
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/></svg>
     <span id="start-text">Analyse starten</span>
+  </button>
+  <!-- Nur für Levin (v3.26): nur die Fenster-Fotos (Flügel für Flügel, Gesamtfoto), danach gleich die echten Maße eintippen -->
+  <button class="knopf knopf--blau" id="start-fenster" type="button" hidden>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="4" y="3" width="16" height="18"/><path d="M12 3v18M4 12h16"/></svg>
+    <span>Analyse nur Fenster</span>
   </button>
 
   <!-- Frage vor dem Start (Prüfung 4. Nov. 2026, Punkt 2): ohne sie lief jede Analyse mit 1 Flügel -->
@@ -735,7 +744,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
           <button class="k-text" id="k-galerie" type="button">Galerie</button>
           <button class="k-text" id="k-zeig" type="button" hidden>Zeig’s mir</button>
         </div>
-        <button class="ausloeser" id="k-ausloeser" type="button" aria-label="Foto machen"><span></span></button>
+        <button class="ausloeser" id="k-ausloeser" type="button" aria-label="Foto machen"><span><b id="k-zahl" aria-hidden="true"></b></span></button>
         <div class="k-rechts">
           <button class="k-text" id="k-skip" type="button" hidden>Überspringen</button>
           <!-- Nur für Levin (v3.18): mitten in der Analyse in die Lernfotos wechseln, alle Fotos dieses Durchlaufs gehen mit -->
@@ -1373,6 +1382,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
      schraeg / kipp: so viel schräge Sicht ist noch in Ordnung, gefunden / passt: Anteil der Linien, der auf Kanten liegen muss,
      halten: so lange (ms) muss es passen, bis das Foto ausgelöst wird. */
   var TOL = { groesse: 0.15, lage: 0.09, schraeg: 0.16, kipp: 0.15, gefunden: 0.4, passt: 0.55, halten: 800,
+    haltenBlatt: 4000,     // v3.26 (Levin): beim Fenster und bei jedem Flügel so lange still halten, mit Countdown 4, 3, 2, 1
+    haltenLuecke: 700,     // ms: so lange darf der grüne Rahmen kurz wegfallen, ohne dass der Countdown neu anfängt
     fastHalten: 1500,      // so lange „Fast“ ruhig gehalten zählt auch als passt
     neigungSeite: 10, neigungKipp: 20,   // Grad, ab dann kommt „Handy gerade halten“ bzw. „senkrecht halten“
     neigungZurueck: 3, neigungHalten: 1000,   // v3.23: Hinweis geht erst 3° unter der Grenze und bleibt mind. 1 s (vorher Flackern)
@@ -2647,7 +2658,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   var k = {
     offen: false, i: 0, basis: 'uebung', modus: 'uebung', stream: null, raf: 0, box: null, loch: null, s0: 1,
     cam: { x: 40, y: 50, s: 3 }, zeiger: new Map(), anim: null, bild: null, formen: [],
-    passtSeit: 0, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
+    passtSeit: 0, passtZuletzt: 0, countdown: 0, passtZaehler: 0, letzteArt: '', gemacht: false, pruefen: false, sperre: false,
     letzteAnalyse: 0, treffer: null, lage: null, zuNah: -1e9, statusText: '', statusArt: '', karte: true, zurueck: null,
     mass: null, massGen: 0, massLaeuft: false, massZeit: 0, messung: null, fotoMessung: null, fotoCv: null,
     schaerfe: null, unscharfZahl: 0, warteBis: 0, warteText: '', griffErg: null, weiterUhr: 0,
@@ -3430,10 +3441,17 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return t[z.art] || '';
   }
 
+  // Countdown (v3.26) im Auslöser und hinter dem Text: 4, 3, 2, 1. 0 = aus.
+  function countdown(n) {
+    if (n === k.countdown) return;
+    k.countdown = n;
+    var el = $('k-zahl');
+    el.textContent = n ? String(n) : '';
+  }
   function schleife(t) {
     if (!k.offen) return;
     k.raf = requestAnimationFrame(schleife);
-    if (k.pruefen) return;
+    if (k.pruefen) { countdown(0); return; }
     var s = SCHRITTE[k.i], z;
     if (k.anim) animieren(t);
     if (k.modus !== 'kamera') zeichneSzene(sctx, W, H, mitWackeln(t), k.modus === 'foto' ? 'foto' : s.szene, DPR);
@@ -3463,17 +3481,22 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       !/^(blattLesen|blattLesenHalt|blattGelesen|blattSchonDa|alleBlaetter)$/.test(z.art);   // v3.17: beim Blattlesen und Gesamtfoto nicht
     if (warten) setStatus(k.warteText, 'gerade');
     else if (nachhilfe) setStatus('Mach einfach ein Foto, wir messen danach genauer.', '');
-    else setStatus(statusText(z, s), z.art === 'blattGelesen' ? 'passt' : z.art);
+    else setStatus(statusText(z, s) + (z.art === 'passt' && k.countdown ? ' ' + k.countdown : ''), z.art === 'blattGelesen' ? 'passt' : z.art);
     ablaufHinweis(warten ? 'warten' : nachhilfe ? 'nachhilfe' : z.art + (z.art === 'passt' && z.ecken ? '-rahmen' : ''), k.statusText);
     if (!$('k-nachhilfe').hidden) $('k-nachhilfe').hidden = true;
     if (z.art !== 'passt') k.sperre = false;
     var darf = z.art === 'passt' && !k.sperre && !k.gemacht && !warten;
-    if (darf) { if (!k.passtSeit) k.passtSeit = t; } else k.passtSeit = 0;
-    var p = k.passtSeit ? Math.min(1, (t - k.passtSeit) / TOL.halten) : 0;
+    // v3.26 (Levin): beim Fenster/Flügel 4 s mit Countdown, damit man nach dem Zurückgehen gut steht. Fällt der grüne Rahmen nur kurz
+    // weg (bis TOL.haltenLuecke), läuft der Countdown weiter; ausgelöst wird aber nur, wenn es in dem Moment passt.
+    var haltenMs = blattSchritt(s) && k.modus !== 'foto' ? TOL.haltenBlatt : TOL.halten;
+    if (darf) { if (!k.passtSeit) k.passtSeit = t; k.passtZuletzt = t; }
+    else if (k.sperre || k.gemacht || warten || t - (k.passtZuletzt || 0) > TOL.haltenLuecke) k.passtSeit = 0;
+    var p = k.passtSeit ? Math.min(1, (t - k.passtSeit) / haltenMs) : 0;
     $('k-ausloeser').style.setProperty('--p', p.toFixed(3));
+    countdown(k.passtSeit && haltenMs >= 2000 ? Math.max(1, Math.ceil((haltenMs - (t - k.passtSeit)) / 1000)) : 0);
     k.letzteArt = z.art;
     zeichneHilfe(z, s);
-    if (p >= 1) {
+    if (p >= 1 && darf) {
       if (k.ablauf) k.ablauf.ausloeser = blattSchritt(s) ? (z.gesamt ? 'gesamt' : z.ecken ? 'rahmen' : 'ohneRahmen') : 'passt';
       if (!reiheLetzte(s)) reiheFoto(); else ausloesen();   // Abstandsreihe: die ersten Fotos still, das letzte mit Prüfdialog
     }
@@ -4022,6 +4045,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (fo.reihe && ENTW.mit) fo.reihe.forEach(function (q) { reiheHoch(s.id, q, false); });
     k.pruefen = false;
     $('k-pruefen').hidden = true;
+    if (nurFenster && s.id === 'innen') { nurFenster = false; lernmodus(); return; }   // v3.26: nur Fenster, jetzt die echten Maße
     var n = naechster(k.i);
     if (n < 0) { schliessen(); return; }
     if (k.modus === 'foto') { k.bild = null; modusSetzen(k.basis); }
@@ -4238,6 +4262,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function fluFrage(an) {
     $('flu-frage').hidden = !an;
     if (an) $('start').hidden = true;   // sonst stellt liste() den Startknopf wieder her
+    $('start-fenster').hidden = an || !ENTWICKLER;
     if (an) $('flu-wahl-1').focus();
   }
   [1, 2, 3, 4].forEach(function (n) { $('flu-bild-' + n).innerHTML = pikto('flu' + n, 56); });
@@ -4254,6 +4279,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   }
   [1, 2, 3, 4].forEach(function (n) { $('flu-wahl-' + n).addEventListener('click', function () { fluGewaehlt(n); }); });
   $('start').addEventListener('click', function () {
+    nurFenster = false;
     if (!Object.keys(fotos).length) { fluFrage(true); return; }
     lageSensor(); oeffnen(ersterOffen(), this);
   });
@@ -4267,6 +4293,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     G = geometrie(P); skizze(); liste();
   }
   $('neu').addEventListener('click', function () { vonVorn(); fluFrage(true); });
+  /* Analyse nur Fenster (v3.26, Levin): Frage nach den Flügeln, Flügel für Flügel, Gesamtfoto, dann gleich in den Lernmodus zu den
+     echten Maßen. Griff, Bänder und Kippen fallen weg. Fängt immer frisch an. */
+  var nurFenster = false;
+  $('start-fenster').addEventListener('click', function () {
+    if (Object.keys(fotos).length) vonVorn();
+    nurFenster = true;
+    fluFrage(true);
+  });
   $('k-zu').addEventListener('click', schliessen);
   $('k-ausloeser').addEventListener('click', function () {
     if (k.ablauf && !k.gemacht && !k.pruefen) k.ablauf.ausloeser = 'selbst';
@@ -4327,6 +4361,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   $('entw-repo').value = ENTW.repo; $('entw-token').value = ENTW.token; $('entw-mit').checked = ENTW.mit; $('entw-reihe').checked = ENTW.reihe !== false;
   $('entw-zugang').open = !ENTW.token;
   $('entw').hidden = !ENTWICKLER;
+  $('start-fenster').hidden = !ENTWICKLER;
   $('f-werte-feld').hidden = !ENTWICKLER;
   $('entw').addEventListener('click', function () {
     var auf = $('entw-feld').hidden;
@@ -4366,7 +4401,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         ['entw-name', 'entw-zm', 'entw-zou', 'entw-b', 'entw-h', 'entw-rb', 'entw-rb-l', 'entw-rb-r', 'entw-rb-o', 'entw-rb-u', 'entw-d', 'entw-d1', 'entw-d2', 'entw-notiz'].forEach(function (id) { $(id).value = ''; });
         $('entw-rb-ungleich').checked = false; rahmenUngleich(); $('entw-d-ungleich').checked = false; diagUngleich();
         $('entw-typ').value = ''; $('entw-griff').value = ''; $('entw-nu').value = ''; $('entw-hinter').value = ''; $('entw-licht').value = '';
-        $('entw-fluegel').innerHTML = ''; fluegelFelder(1); glasZeigen();
+        $('entw-fluegel').innerHTML = ''; ENTW.lagen = {}; fluegelFelder(1); glasZeigen();
         Array.prototype.forEach.call(document.querySelectorAll('#entw-dran input'), function (c) { c.checked = false; });
         $('entw-liste').innerHTML = '';
         $('entw-ordner').textContent = 'Gespeichert ✓ (' + meta.fotos + ' Fotos in ' + ordner + '). Nächstes Fenster: erst Name und Maß, dann Fotos.';
@@ -4596,6 +4631,16 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var blaetter = [];
     liste.concat(SCHRITTE.map(function (s) { return fotos[s.id] && fotos[s.id].hoch ? { blattNr: fotos[s.id].blattNr, id: s.id } : null; }).filter(Boolean))
       .forEach(function (q) { if (/^fl\d$/.test(q.id) && typeof q.blattNr === 'number' && blaetter.indexOf(q.blattNr) < 0) blaetter.push(q.blattNr); });
+    // v3.26: Reihenfolge und Lage (links, rechts …) der Flügel aus dem Gesamtfoto, damit die Maße beim richtigen Blatt landen
+    // (SZ 6. Nov.: Flügel 1 war Blatt 2 rechts, eingetippt wurde dort das Maß vom linken Flügel)
+    var gm = fotos.innen && fotos.innen.messung || (k.pruefen && SCHRITTE[k.i] && SCHRITTE[k.i].id === 'innen' ? k.messung : null);
+    ENTW.lagen = {};
+    if (gm && gm.fluegel && gm.fluegel.length >= 2) {
+      var mitPlatz = gm.fluegel.filter(function (q) { return q.mitte && q.blatt; }), namen = lageNamen(gm.anordnung, mitPlatz.length);
+      mitPlatz.forEach(function (q, j) { if (namen[j]) ENTW.lagen[q.blatt - 1] = namen[j]; });
+      var reihenfolge = mitPlatz.map(function (q) { return q.blatt - 1; });
+      blaetter = reihenfolge.filter(function (nr) { return blaetter.indexOf(nr) >= 0; }).concat(blaetter.filter(function (nr) { return reihenfolge.indexOf(nr) < 0; }));
+    }
     var n = P.mehr ? P.flZahl : 1, reihen = [];
     SCHRITTE.forEach(function (s) { var f = fotos[s.id]; if (f && f.reihe) f.reihe.forEach(function (q) { if (!q.hoch) reihen.push([s.id, q]); }); });
     if (k.pruefen && k.reihe) k.reihe.fotos.forEach(function (q) { if (!q.hoch) reihen.push([SCHRITTE[k.i].id, q]); });
@@ -4633,6 +4678,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   $('p-lernfoto').addEventListener('click', lernmodus);
   /* Felder je Flügel (v3.18): ab 2 Flügeln ein Block je Flügel, benannt nach seinem Maßblatt (aus den Flügel-Fotos, sonst Blatt 1, 2, …).
      Bei 1 Flügel die bisherigen Einzelfelder. Schon eingetragene Werte bleiben beim Umbauen stehen. */
+  // Lage der Flügel in Leserichtung (Reihe für Reihe von oben, darin von links), wie gesamtZusammen sie sortiert
+  function lageNamen(anordnung, n) {
+    if (anordnung === 'nebeneinander') return n === 2 ? ['links', 'rechts'] : n === 3 ? ['links', 'Mitte', 'rechts'] : n === 4 ? ['ganz links', 'Mitte links', 'Mitte rechts', 'ganz rechts'] : [];
+    if (anordnung === 'uebereinander') return n === 2 ? ['oben', 'unten'] : n === 3 ? ['oben', 'Mitte', 'unten'] : [];
+    return [];
+  }
   function fluegelFelder(n, blaetter) {
     var box = $('entw-fluegel'), alt = fluegelWerte();
     n = Math.max(1, Math.min(4, +n || 1));
@@ -4643,7 +4694,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var feld = function (id, name) { return '<label class="feld"><span class="feld__name">' + name + '</span><span class="feld__eingabe"><input id="' + id + '" type="number" inputmode="numeric"><span class="feld__einheit">mm</span></span></label>'; };
     box.innerHTML = nrs.map(function (nr, i) {
       var b = nr + 1, p = 'entw-f' + b + '-';
-      return '<fieldset data-blatt="' + b + '"><legend>Flügel ' + (i + 1) + ' (mit Blatt ' + b + ')</legend><div class="felder">' +
+      var lg = ENTW.lagen && ENTW.lagen[nr];
+      return '<fieldset data-blatt="' + b + '"><legend>' + (lg ? 'Flügel ' + lg + ' (Blatt ' + b + ')' : 'Flügel ' + (i + 1) + ' (mit Blatt ' + b + ')') + '</legend><div class="felder">' +
         feld(p + 'b', 'Flügel breit') + feld(p + 'h', 'Flügel hoch') +
         feld(p + 'd', 'Diagonale Glas (beide gleich)') + '</div></fieldset>';
     }).join('');

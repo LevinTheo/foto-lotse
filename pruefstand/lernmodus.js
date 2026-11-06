@@ -2,7 +2,8 @@
 // unten rechts mit „Lernmodus“ in die Lernfotos und prüft:
 //   - der Knopf erscheint erst, wenn der Durchlauf Fotos hat
 //   - alle Fotos des Durchlaufs (Flügel 1, Flügel 2, Gesamtfoto) gehen hoch, je Foto mit dem richtigen Blatt
-//   - das Formular hat Felder je Flügel („Flügel 1 (mit Blatt 1)“, „Flügel 2 (mit Blatt 2)“)
+//   - das Formular hat Felder je Flügel in der Reihenfolge vom Gesamtfoto („Flügel links (Blatt 1)“, „Flügel rechts (Blatt 2)“, v3.26)
+//   - blauer Knopf „Analyse nur Fenster“ (v3.26): Flügel 1, Flügel 2, Gesamtfoto, dann gleich die Lernfotos
 //   - „Fenster fertig“ schreibt fenster.json mit fluegelJeBlatt
 // GitHub wird nachgestellt: nichts geht ins echte Repo.
 // Aufruf: node pruefstand/lernmodus.js [Pfad zum Lotsen]   (Playwright mit Chromium, ca. 1 Minute)
@@ -95,7 +96,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   pruef(!(await sichtbar('#kamera')), 'Kamera bleibt offen');
   pruef((await page.inputValue('#entw-nu')) === '2', 'Flügelanzahl im Formular nicht 2');
   const legenden = await page.$$eval('#entw-fluegel legend', (l) => l.map((x) => x.textContent));
-  pruef(legenden.join(' | ') === 'Flügel 1 (mit Blatt 1) | Flügel 2 (mit Blatt 2)', 'Felder je Flügel: ' + legenden.join(' | '));
+  // v3.26: Reihenfolge und Lage aus dem Gesamtfoto (SZ 6. Nov.: Maß vom linken Flügel beim rechten Blatt eingetippt)
+  pruef(legenden.join(' | ') === 'Flügel links (Blatt 1) | Flügel rechts (Blatt 2)', 'Felder je Flügel: ' + legenden.join(' | '));
   pruef(!(await sichtbar('#entw-b')), 'Einzelfeld „Flügel breit“ trotz 2 Flügeln sichtbar');
   for (let t = 0; t < 150 && Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).length < 8; t++) await page.waitForTimeout(100);
   const lauf = Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).sort();
@@ -140,8 +142,39 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   }
   await page.waitForFunction(() => /Gespeichert/.test(document.getElementById('entw-ordner').textContent), null, { timeout: 5000 }).catch(() => pruef(false, 'kein „Gespeichert ✓“ nach „Fenster fertig“'));
   pruef(!(await sichtbar('#entw-fluegel')) && (await page.$$('#entw-fluegel fieldset')).length === 0, 'Felder je Flügel nach „Fenster fertig“ nicht geleert');
-  await browser.close();
   console.log('Hochgeladen: ' + Object.keys(hoch).sort().join(', '));
-  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: Abstandsreihe (2 Flügel × 3 Fotos) und Gesamtfoto mit Blatt übernommen, Felder je Flügel, fenster.json mit fluegelJeBlatt.');
+
+  // v3.26: blauer Knopf „Analyse nur Fenster“ (ohne Abstandsreihe): 2 Flügel und Gesamtfoto, dann gleich die Lernfotos, kein Griff
+  const vorher = Object.keys(hoch).length;
+  await page.evaluate(() => { const e = JSON.parse(localStorage.getItem('foto-lotse-entw')); e.reihe = false; localStorage.setItem('foto-lotse-entw', JSON.stringify(e)); });
+  await page.goto('http://lotse.test/index.html?entw');
+  pruef(await sichtbar('#start-fenster'), 'blauer Knopf „Analyse nur Fenster“ fehlt');
+  await page.click('#start-fenster');
+  pruef(await sichtbar('#flu-frage') && !(await sichtbar('#start-fenster')), 'nur Fenster: Frage nach den Flügeln kommt nicht (oder blauer Knopf bleibt)');
+  await page.click('#flu-wahl-2');
+  await page.waitForSelector('#kamera:not([hidden])');
+  await page.waitForTimeout(500);
+  if (await sichtbar('#k-karte')) await page.click('#k-karte-ok');
+  const schritte = [];
+  for (let n = 0; n < 4 && await sichtbar('#kamera'); n++) {
+    const schritt = await page.textContent('#k-titel');
+    schritte.push(schritt);
+    await page.click('#k-zeig');
+    await page.waitForSelector('#k-pruefen:not([hidden])', { timeout: 30000 }).catch(() => pruef(false, 'nur Fenster, ' + schritt + ': löst nicht aus'));
+    if (await sichtbar('#p-rahmen')) await page.click('#p-rahmen-ja');
+    await page.waitForTimeout(200);
+    if (await sichtbar('#p-weiter')) await page.click('#p-weiter');
+    for (let t = 0; t < 100 && await sichtbar('#k-pruefen'); t++) await page.waitForTimeout(100);
+    await page.waitForTimeout(300);
+  }
+  pruef(schritte.join(' | ') === 'Flügel 1 von 2 | Flügel 2 von 2 | Alle 2 Flügel zusammen', 'nur Fenster, Schritte: ' + schritte.join(' | '));
+  pruef(!(await sichtbar('#kamera')) && await sichtbar('#entw-feld'), 'nur Fenster: nach dem Gesamtfoto nicht in den Lernfotos');
+  const leg2 = await page.$$eval('#entw-fluegel legend', (l) => l.map((x) => x.textContent));
+  pruef(leg2.join(' | ') === 'Flügel links (Blatt 1) | Flügel rechts (Blatt 2)', 'nur Fenster, Felder je Flügel: ' + leg2.join(' | '));
+  for (let t = 0; t < 100 && Object.keys(hoch).length - vorher < 6; t++) await page.waitForTimeout(100);
+  const neu = Object.keys(hoch).slice(vorher);
+  pruef(neu.filter((p) => /lauf-0[1-3]-(fl1|fl2|innen)\.(jpg|json)$/.test(p)).length === 6 && neu.length === 6, 'nur Fenster, hochgeladen: ' + neu.join(', '));
+  await browser.close();
+  console.log(fehler.length ? '\nFEHLER (' + fehler.length + '):\n- ' + fehler.join('\n- ') : '\nLernmodus-Test bestanden: Abstandsreihe (2 Flügel × 3 Fotos) und Gesamtfoto mit Blatt übernommen, Felder je Flügel (links/rechts), fenster.json mit fluegelJeBlatt, blauer Knopf „nur Fenster“ endet in den Lernfotos.');
   process.exit(fehler.length ? 1 : 0);
 })();

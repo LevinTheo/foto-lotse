@@ -99,5 +99,26 @@
       }
     ],
     "notiz": "Levin 6. Nov.: Diagonale Glas Blatt 1 war ein Tippfehler (1209), richtig 1290"
+  },
+  "2026-11-06_1340_fenster": {
+    "fluegelJeBlatt": [
+      {
+        "blatt": 1,
+        "breiteMm": 810,
+        "hoeheMm": 1245,
+        "lichtBreiteMm": 670,
+        "lichtHoeheMm": 1105,
+        "diagonaleMm": 1290
+      },
+      {
+        "blatt": 2,
+        "breiteMm": 1228,
+        "hoeheMm": 1245,
+        "lichtBreiteMm": 1088,
+        "lichtHoeheMm": 1105,
+        "diagonaleMm": 1550
+      }
+    ],
+    "notiz": "Claude 6. Nov.: Blätter im Formular vertauscht. Gesamtfoto: Blatt 1 klebt links (schmaler Flügel 810), Blatt 2 rechts (1228), wie in 1203/1208. Im Formular stand Flügel 1 = Blatt 2 oben, dort wurde 810 eingetippt."
   }
 }

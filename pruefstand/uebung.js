@@ -3,7 +3,7 @@
 // Prüft: Startseite ohne Entwickler-Sachen, Frage „Wie viele Flügel?“ (1–4), Livebild mit „Blatt … erkannt“ (grüner Rahmen ums Blatt,
 // v3.17), „Geh … zurück“ und „… gefunden“ (grüner Rahmen, v3.9), Frage „Liegt der grüne Rahmen …?“ bei jedem Flügel-Foto (bei 1 Flügel
 // einmal Nein → nochmal, dann Ja; bei 2 Flügeln am ersten Flügel zweimal Nein → geht trotzdem weiter, v3.25), alle Fotos bis „Alle Pflichtfotos sind da“, Griff-Frage nur bei 1 Flügel (einmal gestellt), keine
-// Fehler in der Konsole.
+// Fehler in der Konsole. Ab v3.26: Countdown 4 … 1 vor jedem Fenster-, Flügel- und Gesamtfoto, blauer Knopf nur mit ?test.
 // Läuft mit 1, 2 und 4 Flügeln. Ab 2 Flügeln Flügel für Flügel (v3.17): je Flügel ein Foto („Flügel 1 von 2“), die Übung zeichnet auf
 // jeden Flügel ein eigenes Blatt; zum Schluss „Alle 2 Flügel zusammen“ mit „Gemessen: 2 Flügel nebeneinander“. Dauert ca. 2 Minuten.
 // Mit --bilder legt es Bildschirmfotos ab.
@@ -39,6 +39,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
   await page.goto('http://lotse.test/index.html');
   pruef(!(await sichtbar(page, '#entw')), 'Knopf „Entwickler: Lernfotos“ ist für den Kunden sichtbar');
   pruef(await sichtbar(page, '#start'), 'Knopf „Analyse starten“ fehlt');
+  pruef(!(await sichtbar(page, '#start-fenster')), 'Blauer Knopf „Analyse nur Fenster“ ist für den Kunden sichtbar');
   await page.click('#manuell');
   pruef(!(await sichtbar(page, '#f-werte-feld')), 'Schalter „Messwerte zeigen“ ist für den Kunden sichtbar');
   await page.click('#manuell');
@@ -81,19 +82,27 @@ async function durchlauf(browser, nU, fehler, notizen) {
     if (await sichtbar(page, '#k-skip')) { titel.push(schritt + ' (übersprungen)'); await page.click('#k-skip'); continue; }
     await page.click('#k-zeig');
     // Auf den Prüfdialog warten; mitlesen, ob „… gefunden“ (grüner Rahmen) bzw. „Alle … Maßblätter im Bild“ kam
+    // v3.26: beim Fenster/Flügel und beim Gesamtfoto Countdown 4, 3, 2, 1 (im Auslöser und im Text), erst dann das Foto
     const ausgeloest = async () => {
-      let gefunden = false, alle = false;
+      let gefunden = false, alle = false, zahlen = new Set(), seit = 0, imText = false;
       for (let t = 0; t < 300; t++) {
-        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden, alle };
-        const st = await page.textContent('#k-status');
+        if (await sichtbar(page, '#k-pruefen')) return { ok: true, gefunden, alle, zahlen: [...zahlen].sort().join(''), dauer: seit ? Date.now() - seit : 0, imText };
+        const st = await page.textContent('#k-status'), z = await page.textContent('#k-zahl');
         if (/gefunden/.test(st)) gefunden = true;
         if (/Alle \d Maßblätter im Bild/.test(st)) alle = true;
+        if (z) { zahlen.add(z); if (!seit) seit = Date.now(); if (/ [1-4]$/.test(st)) imText = true; }
         await page.waitForTimeout(100);
       }
       return { ok: false, gefunden, alle };
     };
+    const countdownOk = (a, wo) => {
+      pruef(/1/.test(a.zahlen) && /3/.test(a.zahlen) && /4/.test(a.zahlen), wo + ': kein Countdown 4 … 1 im Auslöser (gesehen: ' + (a.zahlen || 'nichts') + ')');
+      pruef(a.dauer >= 3000, wo + ': Countdown zu kurz (' + a.dauer + ' ms)');
+      pruef(a.imText, wo + ': Countdown fehlt im Text');
+    };
     let a = await ausgeloest();
     if (!a.ok) { pruef(false, 'Foto „' + schritt + '“ löst nicht aus'); break; }
+    if (mitBlatt || istGesamt) countdownOk(a, schritt);
     if (mitBlatt) {
       pruef(a.gefunden, schritt + ': kein „… gefunden“ (grüner Rahmen) vor dem Auslösen');
       pruef(await sichtbar(page, '#p-rahmen') && /grüne Rahmen genau auf der Kante/.test(await page.textContent('#p-titel')),
@@ -163,6 +172,7 @@ async function durchlauf(browser, nU, fehler, notizen) {
   // 4. Mit ?test: Entwickler-Knopf und Messwerte da
   await page.goto('http://lotse.test/index.html?test');
   pruef(await sichtbar(page, '#entw'), 'mit ?test fehlt der Entwickler-Knopf');
+  pruef(await sichtbar(page, '#start-fenster'), 'mit ?test fehlt der blaue Knopf „Analyse nur Fenster“');
   await ctx.close();
 }
 

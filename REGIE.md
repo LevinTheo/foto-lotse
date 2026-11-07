@@ -78,6 +78,8 @@ Ziel am Ende, nach Prüfung durch Tim und Einbau in die Website:
 - Beschläge, später auch das Getriebe bei geöffnetem Flügel
 - grobe Schadenserkennung und daraus in wenigen Klicks ein Preis
 
+**Laborbedingungen zuerst (Levin, 7. Nov. 2026):** „Ich möchte jetzt erstmal den Lotse so genau wie es geht zum Laufen bekommen und nicht gleich von Anfang an alle Möglichkeiten abdecken.“ Der Kunde darf es etwas unbequem haben (er spart viel Zeit und sieht Preise) und bekommt klare Bedingungen gesagt; direkte Sonne gehört nicht dazu. Fotos unter anderen Bedingungen werden trotzdem als Lernfotos gesammelt. Die Bedingungen nach den bisherigen Fotos: Tageslicht ohne direkte Sonne auf Scheibe und Blatt (bewölkt oder Schattenseite), Gardine ganz zur Seite, Rollo und Jalousie ganz hoch, Maßblatt in 100 % gedruckt, flach und gerade mittig auf das Glas des Flügels, Flügel-Foto frontal und mittig vor dem Flügel aus ca. 2,5–3 m, Handy senkrecht und gerade auf Höhe des Blatts, vorher langsam vom Blatt zurückgehen (Vergleichsfoto ab 1,5 m), ca. 3 m Platz vor dem Fenster.
+
 Die Maße der Profile (IV 68, 78, 92) und der Aufbau von Kastenfenstern sind weitgehend genormt und können als hinterlegte Werte dienen. Langfristig soll eine wachsende Sammlung echter Fenster (Fotos plus Levins Aufmaß vor Ort) die Erkennung genauer machen.
 
 ## Stand und Ablage

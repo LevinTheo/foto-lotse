@@ -17,7 +17,7 @@ const { chromium } = require('playwright');
 
 const ARGS = process.argv.slice(2);
 const nurI = ARGS.indexOf('--nur'), NUR = nurI >= 0 ? ARGS[nurI + 1] : null;
-const appI = ARGS.indexOf('--app'), APP = appI >= 0, ALLE = ARGS.includes('--alle');
+const appI = ARGS.indexOf('--app'), APP = appI >= 0, ALLE = ARGS.includes('--alle'), ZWEIT = ARGS.includes('--zweit');
 const zahlNach = (i) => (i >= 0 && ARGS[i + 1] && /^[0-9.]+$/.test(ARGS[i + 1]) ? Number(ARGS[i + 1]) : null);
 const AB = (APP && zahlNach(appI)) || 1.5, MEHR = APP && zahlNach(appI) !== null && zahlNach(appI + 1) !== null ? zahlNach(appI + 1) : 0.3;
 const appZahl = (i) => APP && (i === appI + 1 || i === appI + 2) && /^[0-9.]+$/.test(ARGS[i]);
@@ -123,8 +123,11 @@ const pz = (x) => (x === null ? '–' : (x >= 0 ? '+' : '') + (x * 100).toFixed(
         if (!kand.length) continue;
         const ref = kand[0], wf = wf0(p);
         const m = await messe(p.url, Object.assign({}, p.o, { blattNr: p.r.blatt - 1 }), ref.url);
+        // --zweit (v3.34): auch das Vergleichsfoto selbst messen, mit dem Hauptfoto als Partner (Zweitmessung)
+        const m2 = ZWEIT ? await messe(ref.url, Object.assign({}, ref.o, { blattNr: p.r.blatt - 1 }), p.url) : null;
         zeilen.push({ ordner, foto: p.foto, ref: ref.foto, blatt: p.r.blatt, abstand: p.r.abstand, refAbstand: ref.r.abstand, seitlich: seitlich(p, ref),
-          echt: wf.fluegelBreiteMm ? wf.fluegelBreiteMm + ' × ' + wf.fluegelHoeheMm : '?', ohne: p.r, mit: m, fOhne: fehlVon(wf, p.r), fMit: fehlVon(wf, m) });
+          echt: wf.fluegelBreiteMm ? wf.fluegelBreiteMm + ' × ' + wf.fluegelHoeheMm : '?', ohne: p.r, mit: m, fOhne: fehlVon(wf, p.r), fMit: fehlVon(wf, m),
+          zweit: m2, fZweit: m2 ? fehlVon(wf, m2) : null });
         process.stdout.write('+');
       }
       continue;

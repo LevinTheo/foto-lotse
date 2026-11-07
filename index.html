@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.33 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.34 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1423,6 +1423,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     gegenprobe: 0.08,      // ab so viel Abweichung zur Eingabe kommt „Bitte nachmessen“
     blattPixel: 1280,      // lange Seite des Bildes für die Messung im Livebild
     blattTakt: 150,        // ms Pause zwischen zwei Messungen im Livebild
+    zweitAbw: 0.05,        // v3.34 Zweitmessung: weichen Flügel-Foto und Vergleichsfoto (gegenseitig als Partner gemessen) um mehr als
+                           // so viel ab (Breite oder Höhe), gilt das Maß als unsicher. Paar-Prüfstand --zweit (34 Paare): von 6 falschen
+                           // Maßen (alle bisher „sicher“) warnt es bei 5, von 28 richtigen bei 4
+    blattAussetzer: 1000,  // v3.34: ms; so lange gilt die letzte gute Livemessung weiter, wenn das Blatt kurz nicht lesbar ist (Gegenlicht
+                           // durchs Papier, SZ 7. Nov.: „Geh zurück“ ↔ „Das ganze Maßblatt ins Bild“ 20-mal, nie ein grüner Rahmen)
     // Schärfe: Breite des Übergangs an den stärksten Kanten in Pixeln (Bild auf 1600 px lange Seite). Darüber gilt das Foto als unscharf.
     // Erster Wert aus Versuchen am Rechner, muss mit echten Handyfotos nachgestellt werden (der Wert steht in den Messwerten).
     schaerfe: 3.6,
@@ -3062,7 +3067,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.passtSeit = 0; k.passtZaehler = 0; k.letzteArt = ''; k.gemacht = false; k.sperre = false; k.treffer = null; k.deutung = null; k.anim = null;
     k.fastSeit = 0; k.schrittStart = performance.now(); k.vergleich = null; k.abbrueche = 0; k.rahmenLetzt = null; k.zeigNach = null;
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; k.rahmenJa = false; k.rahmenNein = 0; clearTimeout(k.weiterUhr);
-    k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
+    k.massGen++; k.mass = null; k.massGut = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
     k.blattNr = null; k.lesen = null; k.gelesenSeit = 0; k.gelesenH = null; k.gesamtSeit = 0;
     k.reihe = { fotos: [], letzte: false }; k.zMinDyn = 0; k.neigung = null; k.hzeig = null; k.hroh = null; reiheKnopf();
     k.neinFotos = []; k.rahmenFalsch = false;
@@ -3151,11 +3156,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       k.massZeit = performance.now();
       if (!k.offen) return;
       var e = (r && r.erg) || { ok: false, marker: 0 }, alt = k.mass;
+      // v3.34: nach einem kurzen Aussetzer (Blatt nicht lesbar) mit der letzten guten Messung vergleichen, sonst wird es nie „ruhig“
+      if ((!alt || !alt.lage) && k.massGut && performance.now() - k.massGut.zeit <= TOL.blattAussetzer) alt = k.massGut;
       if (k.ablauf) { var lv = k.ablauf.live; lv.n++; lv.ms += r ? r.ms || 0 : 0; lv.msMax = Math.max(lv.msMax, r ? r.ms || 0 : 0); }
       e.ms = r ? r.ms : 0; e.schirm = b.schirm; e.zeit = performance.now(); e.bw = b.w; e.bh = b.h;
       // Ruhig = Abstand und Stelle vor dem Blatt springen zwischen zwei Messungen kaum
       e.stabil = !!(e.lage && alt && alt.lage && Math.abs(e.lage.z - alt.lage.z) < TOL.stabil * e.lage.z &&
         Math.hypot(e.lage.fuss[0] - alt.lage.fuss[0], e.lage.fuss[1] - alt.lage.fuss[1]) < TOL.stabilMm);
+      if (e.lage && e.lage.anzahl >= 3) k.massGut = e;
       // Grüner Rahmen (v3.9): das Fenster gilt als gefunden, wenn v3 zweimal dasselbe Maß liefert
       // Mehrere Blätter (v3.14): jeder Flügel muss gefunden sein und zweimal gleich liegen
       // v3.24: gleich mit einer der letzten beiden Livemessungen reicht; ein Ausreißer dazwischen löscht den Rahmen nicht mehr
@@ -3191,6 +3199,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var ng = lesen ? null : neigungHinweis(jetzt);
     if (ng) return ng;
     var e = blattMessung();
+    // v3.34: einzelne Aussetzer beim Markerlesen nicht als „Blatt weg“ werten (sonst fing die Rahmensuche jedes Mal von vorn an)
+    if (k.modus !== 'foto' && e && (!e.lage || e.lage.anzahl < 3) && k.massGut && jetzt - k.massGut.zeit <= TOL.blattAussetzer) e = k.massGut;
     // Flügel für Flügel (v3.17): erst ein Blatt lesen (grüner Rahmen ums Blatt), Gesamtfoto: alle Blätter ins Bild
     if (k.modus !== 'foto' && fluegelSchritt(s)) { var gl = blattLesen(e, jetzt); if (gl) return gl; }
     if (k.modus !== 'foto' && gesamtSchritt(s)) return deutenGesamt(e, jetzt);
@@ -3303,7 +3313,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   function blattText(z) {
     switch (z.art) {
       case 'blattSuchen': return performance.now() - k.schrittStart > 6000 ? 'Maßblatt nicht zu sehen? Geh etwas näher ran.' : 'Maßblatt ins Bild';
-      case 'blattTeil': return 'Das ganze Maßblatt ins Bild';
+      case 'blattTeil': return 'Ich kann das Maßblatt nicht ganz lesen. Ganz ins Bild und Handy ruhig halten';   // v3.34: kam auch bei Gegenlicht
       case 'zurueckM': return reiheVor(z) + 'Geh ' + meterText((z.ziel || TOL.abstand) - z.m) + ' zurück';
       case 'naeherM': return reiheVor(z) + 'Geh ' + meterText(z.m - (z.ziel || TOL.abstand)) + ' näher ran';
       case 'zurueckRahmen': return 'Ich sehe den Flügel nicht ganz. Geh ' + meterText(z.ziel - z.m) + ' zurück';
@@ -3568,11 +3578,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var luecke = z.art !== 'passt' && !!k.passtSeit && !warten && lueckeKurz;
     // Hinweis zum Selbstauslösen erst nach TOL.nachhilfe ohne Foto oder nach TOL.countdownVersuche abgebrochenen Countdowns (v3.29),
     // nie während ein Countdown läuft
-    var nachhilfe = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && z.art !== 'gerade' && z.art !== 'senkrecht' && !k.passtSeit &&
+    var zh = ruhigerHinweis(z, t);   // v3.33: nur für den Text; Countdown, Rahmen und Auslösen gehen weiter nach z
+    // v3.34: Neigung nach dem ruhigen Hinweis (zh), sonst sprang es zwischen „Mach einfach ein Foto“ und „Handy gerade halten“
+    var nachhilfe = k.modus !== 'uebung' && s.auto && z.art !== 'passt' && zh.art !== 'gerade' && zh.art !== 'senkrecht' && !k.passtSeit &&
       (t - k.schrittStart > TOL.nachhilfe || (k.abbrueche || 0) >= TOL.countdownVersuche) &&
       !/^(blattLesen|blattLesenHalt|blattGelesen|blattSchonDa|alleBlaetter)$/.test(z.art);   // v3.17: beim Blattlesen und Gesamtfoto nicht
     if (z.art === 'passt') k.passtText = statusText(z, s);
-    var zh = ruhigerHinweis(z, t);   // v3.33: nur für den Text; Countdown, Rahmen und Auslösen gehen weiter nach z
     if (warten) setStatus(k.warteText, 'gerade');
     else if (nachhilfe) setStatus('Mach einfach ein Foto, wir messen danach genauer.', '');
     else if (luecke) setStatus(k.passtText + (k.countdown ? ' ' + k.countdown : ''), 'passt');
@@ -3867,7 +3878,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     // v3.31 (Fable F3, F6): das JPEG nur für Levins Lernfotos (der Kunde braucht nur das Graubild zum Messen) und erst nach dem
     // Verpixeln der Gesichter (bis v3.30 sofort, also unverpixelt). Das Graubild ist vorher gezogen, Gesichter liegen nicht auf dem Glas.
     var info = { url: null, abstand: Math.round(z || 0), blattNr: k.blattNr, modus: k.modus, hoch: false };
-    k.vergleich = { g: g, w: w, h: h, f: f, abstand: info.abstand, blattNr: k.blattNr, ausReihe: !!ausReihe, modus: k.modus, info: info };
+    // v3.34: auch die Farben, die Zweitmessung braucht sie (v3 misst ohne Farben nicht); ca. 12 MB, nur bis zum nächsten Schritt
+    var rgb = null;
+    try { rgb = rgbVon(cv.getContext('2d', { willReadFrequently: true }), w, h); } catch (e) { rgb = null; }
+    k.vergleich = { g: g, rgb: rgb, w: w, h: h, f: f, abstand: info.abstand, blattNr: k.blattNr, ausReihe: !!ausReihe, modus: k.modus, info: info };
     if (!ausReihe && ENTWICKLER) {
       (k.modus !== 'uebung' ? gesichterVerpixeln(cv) : Promise.resolve(0)).then(function () {
         try { info.url = cv.toDataURL('image/jpeg', 0.9); } catch (e) { info.url = null; }
@@ -3902,7 +3916,28 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (fluegelSchritt(s) && k.vergleich && k.vergleich.blattNr === k.blattNr) opt.zweit = { g: k.vergleich.g, w: k.vergleich.w, h: k.vergleich.h, f: k.vergleich.f };
     var rgb = null;
     try { rgb = rgbVon(cv.getContext('2d'), w, h); } catch (e) { rgb = null; }
+    // v3.34: Kopie fürs Zweitmessen, denn massRechnen gibt den Speicher von g an den Hintergrund-Thread ab (danach ist g leer, und ein
+    // leeres Bild im Auftrag schaltet den Hintergrund-Thread ab: kein grüner Rahmen mehr)
+    var gZweit = opt.zweit ? new Uint8Array(g) : null;
     var arbeit = massRechnen(g, w, h, f, opt, rgb).then(function (r) { return r && r.erg; });
+    // v3.34 Zweitmessung (Levin 7. Nov., „zweimal messen“): das Vergleichsfoto auch selbst messen, mit diesem Foto als Partner. Weichen
+    // beide um mehr als TOL.zweitAbw ab, ist das Maß unsicher (bis v3.33 galten alle 6 falschen Maße der Paare als sicher).
+    var vg = opt.zweit ? k.vergleich : null;
+    if (vg) arbeit = arbeit.then(function (erg) {
+      if (!erg || !erg.ok || erg.fluegel) return erg;
+      var o2 = massOpt(modus === 'uebung');
+      o2.v3 = true; o2.blattNr = opt.blattNr; o2.zweit = { g: gZweit, w: w, h: h, f: f };
+      // Kopie des Vergleichsfotos abgeben, das Original bleibt für ein neues Foto in diesem Schritt (nach „Nein“)
+      if (!vg.rgb) { erg.zweitmessung = { ok: false, grund: 'farben' }; return erg; }
+      return massRechnen(new Uint8Array(vg.g), vg.w, vg.h, vg.f, o2, new Uint8Array(vg.rgb)).then(function (r2) {
+        var e2 = r2 && r2.erg;
+        if (!e2 || !e2.ok) { erg.zweitmessung = { ok: false }; return erg; }
+        var abw = Math.max(Math.abs(e2.breite - erg.breite) / erg.breite, Math.abs(e2.hoehe - erg.hoehe) / erg.hoehe);
+        erg.zweitmessung = { ok: true, breite: Math.round(e2.breite), hoehe: Math.round(e2.hoehe), abw: Math.round(abw * 1000) / 10, abstand: Math.round(vg.abstand) };
+        if (abw > TOL.zweitAbw) erg.massSicher = false;
+        return erg;
+      }, function () { return erg; });
+    });
     var zeit = new Promise(function (ja) { setTimeout(function () { ja(null); }, 25000); });   // v3 braucht auf dem Handy ein paar Sekunden
     return Promise.race([arbeit, zeit]);
   }
@@ -4085,6 +4120,9 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (messSchritt(s) && messung && messung.fluegel) werte.push('Maßblätter: ' + messung.blaetter.map(function (q) { return q.blatt + ' (' + q.marker + ' Marker)'; }).join(', ') +
         ' · ' + messung.anordnung + ' · ' + messung.fluegel.map(function (q) { return 'Blatt ' + q.blatt + ': ' + (q.ok ? Math.round(q.breite) + ' × ' + Math.round(q.hoehe) + ' mm' + (q.massSicher ? '' : ' unsicher') : 'kein Flügel'); }).join(' · '));
       if (messSchritt(s) && messung && messung.massSicher === false && !messung.fluegel) werte.push('Maß unsicher: Durchgänge einig je Seite (L/O/R/U) ' + (messung.einig || []).join('/') + ' von 3');
+      // v3.34: Zweitmessung (nur für Levin sichtbar)
+      if (messung && messung.zweitmessung) werte.push(messung.zweitmessung.ok ? 'Zweitmessung (Vergleichsfoto ' + (messung.zweitmessung.abstand / 1000).toFixed(2).replace('.', ',') + ' m): ' +
+        messung.zweitmessung.breite + ' × ' + messung.zweitmessung.hoehe + ' mm, Abweichung ' + String(messung.zweitmessung.abw).replace('.', ',') + ' %' + (messung.zweitmessung.abw > TOL.zweitAbw * 100 ? ' → unsicher' : '') : 'Zweitmessung: kein Maß');
     }
     $('p-werte').textContent = werte.join('\n');
     $('p-werte').hidden = !werte.length;
@@ -5064,7 +5102,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       schaerfe: 'schaerfe' in zusatz ? zusatz.schaerfe : k.schaerfe, messung: messung ? { breite: Math.round(messung.breite), hoehe: Math.round(messung.hoehe), abstand: Math.round(messung.abstand || 0),
         ecken: messung.ecken, griff: messung.griff || null, stimmig: messung.sicher === undefined ? null : !!messung.sicher,
         massSicher: messung.massSicher === undefined ? null : messung.massSicher, geometrie: messung.geometrie || null, version: messung.version || 'v2',
-        hinten: messung.hinten || null } : null,
+        hinten: messung.hinten || null, zweitmessung: messung.zweitmessung || null } : null,
       kunde: kunde || null, geraet: { ua: navigator.userAgent },
       // Flügel für Flügel (v3.17): welches Blatt dieses Flügel-Foto hatte, und beim Gesamtfoto wie die Flügel liegen
       blatt: 'blattNr' in zusatz ? (typeof zusatz.blattNr === 'number' ? zusatz.blattNr + 1 : null) : typeof k.blattNr === 'number' ? k.blattNr + 1 : null, flZahl: P.mehr ? P.flZahl : 1,

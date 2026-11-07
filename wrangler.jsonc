@@ -1,0 +1,12 @@
+// Cloudflare: der Foto-Lotse als reine statische Seite (Worker mit Dateien, ohne eigenen Code, ohne Build-Schritt).
+// Hochladen: `npx wrangler deploy` im Repo-Ordner, oder automatisch über Workers Builds bei jedem Push auf `main`.
+// Was nicht öffentlich werden soll (Prüfstand, Berichte), steht in `.assetsignore`.
+{
+  "name": "foto-lotse",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "."
+  },
+  "workers_dev": true,
+  "preview_urls": false
+}

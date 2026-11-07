@@ -1,0 +1,15 @@
+# Cloudflare: Kopfzeilen für die Seite (GitHub Pages beachtet die Datei nicht)
+# index.html immer frisch holen, damit eine neue Version sofort ankommt
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+# Gesichtserkennung, Modell und Schrift ändern sich selten
+/vendor/*
+  Cache-Control: public, max-age=86400
+/fonts/*
+  Cache-Control: public, max-age=604800
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(), geolocation=()

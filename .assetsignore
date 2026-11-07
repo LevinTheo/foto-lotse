@@ -1,0 +1,12 @@
+# Nicht mit auf Cloudflare hochladen (nur Repo, nicht öffentlich)
+.git
+.github
+.wrangler
+node_modules
+pruefstand
+REGIE.md
+CLAUDE.md
+README.md
+wrangler.jsonc
+.assetsignore
+.nojekyll

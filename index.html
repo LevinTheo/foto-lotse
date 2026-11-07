@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.32 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.33 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1394,6 +1394,10 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     fastHalten: 1500,      // so lange „Fast“ ruhig gehalten zählt auch als passt
     neigungSeite: 10, neigungKipp: 20,   // Grad, ab dann kommt „Handy gerade halten“ bzw. „senkrecht halten“
     neigungZurueck: 3, neigungHalten: 1000,   // v3.23: Hinweis geht erst 3° unter der Grenze und bleibt mind. 1 s (vorher Flackern)
+    hinweisMin: 1000,      // v3.33: ein Hinweis (außer „passt“ und „Blatt erkannt“) bleibt mind. so viele ms stehen …
+    hinweisStabil: 300,    // … und der neue muss so lange anliegen, sonst bleibt der alte (Protokolle 6./7. Nov.: 63 % der Hinweise < 1 s)
+    abstandHyst: 0.1,      // v3.33: m Spielraum am Rand des Abstands, sobald man drin ist (vorher erst ab „passt“; „Geh ein kleines Stück
+                           // zurück“ ↔ „erreicht“ sprang hin und her, und jedes Mal fing die Rahmensuche von vorn an)
     nachhilfe: 15000,      // nach so vielen ms ohne Foto kommt der Hinweis, selbst auszulösen (v3.29: war 8000, kam beim Zurückgehen
                            // schon, bevor der erste Countdown durch war; zählt ab „Blatt erkannt“, nach jedem Reihe-Foto und nach „Nein“ neu)
     countdownVersuche: 3,  // v3.29 (Levin): so oft darf der Countdown abbrechen, bevor der Hinweis zum Selbstauslösen kommt
@@ -3060,7 +3064,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     k.unscharfZahl = 0; k.warteBis = 0; k.griffErg = null; k.rahmenJa = false; k.rahmenNein = 0; clearTimeout(k.weiterUhr);
     k.massGen++; k.mass = null; k.messung = null; k.massLaeuft = false; k.massZeit = 0; k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null;
     k.blattNr = null; k.lesen = null; k.gelesenSeit = 0; k.gelesenH = null; k.gesamtSeit = 0;
-    k.reihe = { fotos: [], letzte: false }; k.zMinDyn = 0; k.neigung = null; reiheKnopf();
+    k.reihe = { fotos: [], letzte: false }; k.zMinDyn = 0; k.neigung = null; k.hzeig = null; k.hroh = null; reiheKnopf();
     k.neinFotos = []; k.rahmenFalsch = false;
     if (k.modus !== 'foto') { k.fotoMessung = null; k.fotoCv = null; }
     messen();
@@ -3180,9 +3184,13 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return 'ca. ' + String(r).replace('.', ',') + ' m';
   }
   function deutenBlatt(jetzt) {
-    var ng = neigungHinweis(jetzt);
+    var s = SCHRITTE[k.i];
+    // v3.33: beim Blattlesen (und solange „Blatt erkannt“ steht) keine Neigungs-Hinweise: das Blatt liest der Lotse auch schräg, und dort
+    // sprang es am häufigsten zwischen „Handy gerade halten“ und „Geh nah an das Maßblatt“
+    var lesen = k.modus !== 'foto' && fluegelSchritt(s) && (typeof k.blattNr !== 'number' || jetzt - (k.gelesenSeit || 0) < TOL.blattZeigen);
+    var ng = lesen ? null : neigungHinweis(jetzt);
     if (ng) return ng;
-    var e = blattMessung(), s = SCHRITTE[k.i];
+    var e = blattMessung();
     // Flügel für Flügel (v3.17): erst ein Blatt lesen (grüner Rahmen ums Blatt), Gesamtfoto: alle Blätter ins Bild
     if (k.modus !== 'foto' && fluegelSchritt(s)) { var gl = blattLesen(e, jetzt); if (gl) return gl; }
     if (k.modus !== 'foto' && gesamtSchritt(s)) return deutenGesamt(e, jetzt);
@@ -3200,13 +3208,14 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     var blattWeg = function (z) { k.blattOkSeit = 0; k.rahmenAlt = null; k.ausrFest = null; k.rahmenLetzt = null; return z; };
     if (!e || jetzt - e.zeit > 2500 || !e.lage || e.lage.anzahl < 3) return blattWeg({ art: e && e.marker ? 'blattTeil' : 'blattSuchen' });
     var war = k.letzteArt === 'passt', z = e.lage.z / 1000;
+    var drin = war || k.letzteArt === 'halten' || k.letzteArt === 'fensterSuchen';   // v3.33: schon im richtigen Abstand
     var soll = abstandSoll(SCHRITTE[k.i]);
-    var zMin = soll.min - (war ? 0.15 : 0), zMax = soll.max + (war ? 0.15 : 0);
+    var zMin = soll.min - (war ? 0.15 : drin ? TOL.abstandHyst : 0), zMax = soll.max + (war ? 0.15 : drin ? TOL.abstandHyst : 0);
     if (z < zMin) return blattWeg({ art: 'zurueckM', m: z, ziel: soll.ziel, reihe: soll.reihe });
     if (z > zMax) return blattWeg({ art: 'naeherM', m: z, ziel: soll.ziel, reihe: soll.reihe });
     // Wo steht die Kamera vor dem Blatt? fuss = Stelle auf der Scheibe genau vor der Kamera (mm, Blattkoordinaten)
     var v = e.lage.fuss[0] - zielMitteX(e);
-    if (Math.abs(v) > TOL.versatz + (war ? 100 : 0)) return blattWeg({ art: v > 0 ? 'mitteLinks' : 'mitteRechts' });
+    if (Math.abs(v) > TOL.versatz + (war ? 100 : drin ? 50 : 0)) return blattWeg({ art: v > 0 ? 'mitteLinks' : 'mitteRechts' });
     if (!k.blattOkSeit) k.blattOkSeit = jetzt;
     // (Bis v3.16 wartete „Mehrere Flügel“ hier auf ein zweites Blatt; seit v3.17 hat jeder Flügel sein eigenes Foto.)
     var nBl = e.blaetter ? e.blaetter.length : 1;
@@ -3443,7 +3452,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     if (k.modus !== 'kamera' || !k.lage) return null;
     var war = k.neigung ? k.neigung.art : null, d = TOL.neigungZurueck;
     var art = k.lage.roll > TOL.neigungSeite - (war === 'gerade' ? d : 0) ? 'gerade' : k.lage.pitch > TOL.neigungKipp - (war === 'senkrecht' ? d : 0) ? 'senkrecht' : null;
-    if (art) { if (war !== art) k.neigung = { art: art, bis: jetzt + TOL.neigungHalten }; return { art: art }; }
+    if (art) {
+      // v3.33: nicht zwischen „gerade“ und „senkrecht“ hin und her (häufigster schneller Wechsel in den Protokollen)
+      if (war && war !== art && jetzt < k.neigung.bis) return { art: war };
+      if (war !== art) k.neigung = { art: art, bis: jetzt + TOL.neigungHalten };
+      return { art: art };
+    }
     if (k.neigung && jetzt < k.neigung.bis) return { art: k.neigung.art };
     k.neigung = null;
     return null;
@@ -3558,11 +3572,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       (t - k.schrittStart > TOL.nachhilfe || (k.abbrueche || 0) >= TOL.countdownVersuche) &&
       !/^(blattLesen|blattLesenHalt|blattGelesen|blattSchonDa|alleBlaetter)$/.test(z.art);   // v3.17: beim Blattlesen und Gesamtfoto nicht
     if (z.art === 'passt') k.passtText = statusText(z, s);
+    var zh = ruhigerHinweis(z, t);   // v3.33: nur für den Text; Countdown, Rahmen und Auslösen gehen weiter nach z
     if (warten) setStatus(k.warteText, 'gerade');
     else if (nachhilfe) setStatus('Mach einfach ein Foto, wir messen danach genauer.', '');
     else if (luecke) setStatus(k.passtText + (k.countdown ? ' ' + k.countdown : ''), 'passt');
-    else setStatus(statusText(z, s) + (z.art === 'passt' && k.countdown ? ' ' + k.countdown : ''), z.art === 'blattGelesen' ? 'passt' : z.art);
-    ablaufHinweis(warten ? 'warten' : nachhilfe ? 'nachhilfe' : z.art + (z.art === 'passt' && z.ecken ? '-rahmen' : ''), k.statusText);
+    else setStatus(statusText(zh, s) + (zh.art === 'passt' && k.countdown ? ' ' + k.countdown : ''), zh.art === 'blattGelesen' ? 'passt' : zh.art);
+    ablaufHinweis(warten ? 'warten' : nachhilfe ? 'nachhilfe' : zh.art + (zh.art === 'passt' && zh.ecken ? '-rahmen' : ''), k.statusText);
     if (!$('k-nachhilfe').hidden) $('k-nachhilfe').hidden = true;
     if (z.art !== 'passt') k.sperre = false;
     var darf = z.art === 'passt' && !k.sperre && !k.gemacht && !warten && !k.zeigNach;   // v3.30: „Zeig’s mir“ ist noch unterwegs
@@ -3582,6 +3597,23 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       if (k.ablauf) k.ablauf.ausloeser = blattSchritt(s) ? (z.gesamt ? 'gesamt' : z.ecken ? 'rahmen' : 'ohneRahmen') : 'passt';
       if (!reiheLetzte(s)) reiheFoto(); else ausloesen();   // Abstandsreihe: die ersten Fotos still, das letzte mit Prüfdialog
     }
+  }
+
+  /* Ruhiger Hinweis (v3.33, Levin 7. Nov.: Hinweise sprangen bis 47-mal je Foto): Ein neuer Hinweis ersetzt den gezeigten erst, wenn der
+     gezeigte mind. TOL.hinweisMin stand und der neue mind. TOL.hinweisStabil anliegt; springt es schneller hin und her, bleibt der alte
+     stehen. Gute Nachrichten („passt“, „Blatt erkannt“, Foto aus der Galerie) und der Wechsel weg von ihnen gehen sofort, damit Text
+     und Countdown nie auseinanderlaufen. Nur der Text wird ruhiger, gemessen und ausgelöst wird wie vorher. */
+  var HINWEIS_SOFORT = /^(passt|blattGelesen|blattSchonDa|fotoMessen|fotoOhneBlatt|fotoOhneFenster|manuell)$/;
+  function ruhigerHinweis(z, t) {
+    var g = k.hzeig, r = k.hroh;
+    if (!r || r.art !== z.art) k.hroh = r = { art: z.art, seit: t };
+    if (!g || g.z.art === z.art || HINWEIS_SOFORT.test(z.art) || HINWEIS_SOFORT.test(g.z.art) ||
+        (t - g.seit >= TOL.hinweisMin && t - r.seit >= TOL.hinweisStabil)) {
+      if (!g || g.z.art !== z.art) k.hzeig = { z: z, seit: t };
+      else g.z = z;   // gleicher Hinweis: neue Werte (z. B. Meter) übernehmen
+      return z;
+    }
+    return g.z;
   }
 
   function zeichneHilfe(z, s) {

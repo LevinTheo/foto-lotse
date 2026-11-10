@@ -36,10 +36,13 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
     await page.waitForTimeout(300);
   }
   console.log('Schritt:', await page.textContent('#k-titel'));
-  // Nah vor Blatt 1 (linker Flügel), Blatt 2 außerhalb des Bildes
-  await page.evaluate(() => { const L = window.__lotse, G = L.G(), r = G.glaeser[0]; const k = L.k; k.cam = { x: r[0] + r[2] / 2, y: r[1] + r[3] / 2, s: k.cam && k.cam.s ? k.cam.s * 1.0 : 2 }; });
-  // Maßstab so, dass ein Flügel ins Bild passt: s aus der Breite des Bildschirms
-  await page.evaluate(() => { const L = window.__lotse, G = L.G(), r = G.glaeser[0], k = L.k; k.cam.s = (window.innerWidth * 0.9) / (r[2] * 1.6); });
+  // Flügel 1 ganz im Bild (mit Rand, v3.36 prüft das), Blatt 2 knapp rechts außerhalb des Bildes
+  await page.evaluate(() => {
+    const L = window.__lotse, G = L.G(), r = G.glaeser[0], r2 = G.glaeser[1], k = L.k;
+    const s = (window.innerHeight * 0.7) / (r[3] * 1.35), V = window.innerWidth / s;
+    const rechts = r2[0] + r2[2] / 2 - 12;   // knapp links vom linken Rand von Blatt 2 (Blatt 21 cm breit)
+    k.cam = { x: rechts - V / 2, y: r[1] + r[3] / 2, s: s };
+  });
   const texte = new Set(), t0 = Date.now();
   let ausgeloest = false;
   for (let t = 0; t < 250; t++) {

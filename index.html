@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.40 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.41 · Test</span>
   </header>
 
   <div class="kopf">
@@ -4391,6 +4391,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       mass: m ? { breite: Math.round(m.breite), hoehe: Math.round(m.hoehe), abstand: Math.round(m.abstand || 0), ecken: m.ecken,
         fluegel: m.fluegel ? m.fluegel.map(function (q) { return { blatt: q.blatt, ok: q.ok, breite: q.ok ? Math.round(q.breite) : null, hoehe: q.ok ? Math.round(q.hoehe) : null, ecken: q.ecken }; }) : null,
         anordnung: m.anordnung || null, blattNr: blattNr, blatt: blattNr === null ? null : blattNr + 1, rel: rel, sicher: m.massSicher !== false,
+        drehung: s.fl && typeof m.drehung === 'number' ? m.drehung : 0,   // v3.41 (Fable G6): Drehung des Messrasters gegen das Blatt, fürs Gesamtfoto
+        schief: s.fl ? schiefVon(m) : 0,   // v3.41: gemessene Schräge des Blatts gegen das Fenster, auch unter V3.ausrAb (dort wird nicht gedreht)
         griff: s.fl && m.griff ? m.griff : null, rahmenFalsch: !!m.rahmenFalsch } : null,
       rahmen: fluegelSchritt(s) && m ? { aufFluegel: !!k.rahmenJa && !k.rahmenFalsch, vorherNein: k.rahmenNein || 0, trotzdemWeiter: !!k.rahmenFalsch } : null };
     // Für den Lernmodus (v3.18): volle Messung, Kundenantwort und Blatt bleiben am Foto (nur im Speicher, nichts wird gespeichert)
@@ -4434,8 +4436,70 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
   /* Gesamtfoto (v3.17): Jedes Flügel-Foto hat einen Flügel genau gemessen, als Rechteck um die Mitte seines Blatts (rel). Das
      Gesamtfoto zeigt, wo die Blattmitten zueinander liegen. Zusammen: jeder Flügel an seinem Platz (auch als Rahmen im Prüfbild),
      Anordnung (neben-, übereinander) und Gesamtmaß. Flügel-Fotos, deren Blatt auf dem Gesamtfoto fehlt, zählen mit, aber ohne Platz. */
+  /* Gemeinsame Fensterebene fürs Gesamtfoto (v3.41, Fable G6): Die Perspektive eines kleinen Blatts reicht im Gesamtfoto (ca. 3 m) nicht bis an
+     die Flügelränder (WZ 1226: Rahmen von Blatt 4 als schiefes Trapez; über das Hauptblatt kippte in v3.36 der andere Flügel, SZ 1359
+     58 px). Auf seiner eigenen Fläche liegt jedes Blatt aber genau. Also: je Blatt 9 Punkte auf dem Blatt (über sein b.H ins Bild). Das
+     Hauptblatt ist das Raster der Ebene; jedes andere Blatt liegt darin um eine Drehung θ und Verschiebung t versetzt (wie es eben geklebt
+     ist). Abwechselnd: eine Homographie für alle Punkte, dann θ und t je Blatt (starr, ohne Maßstab). Zwei Blätter weit auseinander legen
+     die Schräge der Ebene gut fest. Ab 2 Blättern mit Flügel-Foto, sonst null (dann zeichnet jedes Blatt selbst wie in v3.37). */
+  function inv3m(m) {
+    var a = m[0][0], b = m[0][1], c = m[0][2], d = m[1][0], e = m[1][1], f = m[1][2], g = m[2][0], h = m[2][1], i = m[2][2];
+    var A = e * i - f * h, B = -(d * i - f * g), C = d * h - e * g, det = a * A + b * B + c * C;
+    if (!det) return null;
+    return [[A / det, -(b * i - c * h) / det, (b * f - c * e) / det], [B / det, (a * i - c * g) / det, -(a * f - c * d) / det], [C / det, -(a * h - b * g) / det, (a * e - b * d) / det]];
+  }
+  // v3.41: Schräge des Blatts gegen das Fenster (Grad) aus dem Flügel-Foto: gemessen (blattAusrichten), auch wenn sie unter V3.ausrAb (1,3°)
+  // nicht angewendet wurde (SZ 1359 Blatt 1: −1,27°), sobald mind. 3 Teile einig sind; sonst die angewendete Drehung
+  function schiefVon(m) {
+    var a = m && m.ausrichtung;
+    if (a && typeof a.phi === 'number' && (a.einig || 0) >= 3) return (a.viertel || 0) * 90 + a.phi;
+    return m && typeof m.drehung === 'number' ? m.drehung : 0;
+  }
+  function drehUm(c, grad, p) { var w = grad * Math.PI / 180, cs = Math.cos(w), sn = Math.sin(w), x = p[0] - c[0], y = p[1] - c[1]; return [c[0] + cs * x - sn * y, c[1] + sn * x + cs * y]; }
+  function gesamtEbene(roh) {
+    var c = [MASS.MB.b / 2, MASS.MB.h / 2], bl = [];
+    (roh.blaetter || []).forEach(function (b) {
+      var f = fluegelFoto(b.nr);
+      if (!b.H || !b.mitte || !f || !f.mass || !f.mass.rel) return;
+      var phi = typeof f.mass.schief === 'number' ? f.mass.schief : (f.mass.drehung || 0), pts = [];
+      // Blattpunkt → Fensterraster (am Fenster ausgerichtet, Ursprung beim Hauptblatt): um −phi um die Blattmitte, dann + t
+      [0, c[0], 2 * c[0]].forEach(function (x) { [0, c[1], 2 * c[1]].forEach(function (y) { pts.push({ w: drehUm(c, -phi, [x, y]), p: MASS.abb(b.H, x, y) }); }); });
+      bl.push({ nr: b.nr, b: b, phi: phi, pts: pts, t: [0, 0], haupt: Math.abs(b.mitte[0] - c[0]) < 1 && Math.abs(b.mitte[1] - c[1]) < 1 });
+    });
+    if (bl.length < 2) return null;
+    var hb = bl.filter(function (q) { return q.haupt; })[0] || bl[0];
+    hb.haupt = true;
+    var H = MASS.homographie(hb.pts.map(function (o) { return o.w; }), hb.pts.map(function (o) { return o.p; }));
+    for (var runde = 0; H && runde < 8; runde++) {
+      var Hi = inv3m(H);
+      if (!Hi) return null;
+      bl.forEach(function (q) {
+        if (q.haupt) return;
+        var sx = 0, sy = 0;
+        q.pts.forEach(function (o) { var w = MASS.abb(Hi, o.p[0], o.p[1]); sx += w[0] - o.w[0]; sy += w[1] - o.w[1]; });
+        q.t = [sx / q.pts.length, sy / q.pts.length];
+      });
+      var von = [], nach = [];
+      bl.forEach(function (q) { q.pts.forEach(function (o) { von.push([o.w[0] + q.t[0], o.w[1] + q.t[1]]); nach.push(o.p); }); });
+      H = MASS.homographie(von, nach);
+    }
+    if (!H) return null;
+    // Rest: wie weit die Blattpunkte im Bild von der gemeinsamen Ebene abweichen (Pixel), im Vergleich zur Blattgröße im Bild
+    var rest = 0, n = 0, groesse = 0;
+    bl.forEach(function (q) {
+      q.pts.forEach(function (o) { var p = MASS.abb(H, o.w[0] + q.t[0], o.w[1] + q.t[1]); rest += Math.hypot(p[0] - o.p[0], p[1] - o.p[1]); n++; });
+      groesse += Math.hypot(q.pts[8].p[0] - q.pts[0].p[0], q.pts[8].p[1] - q.pts[0].p[1]);
+    });
+    rest /= n; groesse /= bl.length;
+    if (!(rest < V3G.ebeneRest * groesse)) return null;
+    var lage = {};
+    bl.forEach(function (q) { lage[q.nr] = { t: q.t, phi: q.phi }; });
+    return { H: H, lage: lage, rest: Math.round(rest * 10) / 10, anteil: Math.round(rest / groesse * 1000) / 10,
+      schief: bl.map(function (q) { return { blatt: q.nr + 1, grad: Math.round(q.phi * 100) / 100 }; }) };
+  }
+  var V3G = { ebeneRest: 0.04 };   // v3.41: gemeinsame Ebene nur, wenn die Blattpunkte im Mittel unter 4 % der Blattdiagonale (im Bild) abweichen
   function gesamtZusammen(roh) {
-    var Hv = roh.lage && roh.lage.H, liste = [], k2s = [];
+    var Hv = roh.lage && roh.lage.H, liste = [], k2s = [], ebene = gesamtEbene(roh);
     (roh.blaetter || []).forEach(function (b) {
       var f = fluegelFoto(b.nr), q = { blatt: b.nr + 1, ok: false, mitte: b.mitte, breite: null, hoehe: null, ecken: null, massSicher: false, sicher: false };
       if (f && f.mass && f.mass.rel && b.mitte) {
@@ -4444,8 +4508,20 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         q.rahmenFalsch = !!f.mass.rahmenFalsch;
         // v3.37: gezeichnet über die Perspektive des eigenen Blatts (liegt mitten im Flügel); über das Hauptblatt kippte der Rahmen des
         // anderen Flügels sichtbar (SZ 1359: rechte Kante des rechten Flügels 58 px schief). Das Gesamtmaß rechnet weiter über Hv.
-        var cx = MASS.MB.b / 2, cy = MASS.MB.h / 2, Hq = b.H || null;
-        q.ecken = Hq ? [[cx + r[0], cy + r[1]], [cx + r[2], cy + r[1]], [cx + r[2], cy + r[3]], [cx + r[0], cy + r[3]]].map(function (p) { return MASS.abb(Hq, p[0], p[1]); })
+        // v3.41 (Fable G6): rel liegt im am Fenster ausgerichteten Raster des Flügel-Fotos (um f.mass.drehung gegen das Blatt gedreht),
+        // b.H ist das ungedrehte Blatt. Ohne diese Drehung bekam ein schief geklebtes Blatt (SZ Blatt 2 ca. 1,5°) eine Stufe von 2–3 cm in
+        // der Mitte, ein quer geklebtes einen um 90° verdrehten Rahmen. Gedreht wird um die Blattmitte, wie in blattAusrichten.
+        var cx = MASS.MB.b / 2, cy = MASS.MB.h / 2, Hq = b.H || null, psi = (f.mass.drehung || 0) * Math.PI / 180;
+        if (Hq && psi) { var cs = Math.cos(psi), sn = Math.sin(psi); Hq = MASS.mal3(Hq, [[cs, -sn, cx - cs * cx + sn * cy], [sn, cs, cy - sn * cx - cs * cy], [0, 0, 1]]); }
+        // v3.41: mit gemeinsamer Ebene: Mitte des Rahmens aus dem Raster des Flügel-Fotos ins Blatt (Drehung f.mass.drehung) und von dort ins
+        // Fensterraster (−Schräge, + t). Der Rahmen selbst liegt dort am Fenster ausgerichtet (Breite und Höhe wie gemessen).
+        var Lq = ebene && ebene.lage[b.nr];
+        if (Lq) {
+          var mq = drehUm([cx, cy], (f.mass.drehung || 0) - Lq.phi, [cx + (r[0] + r[2]) / 2, cy + (r[1] + r[3]) / 2]), hw = (r[2] - r[0]) / 2, hh = (r[3] - r[1]) / 2;
+          mq = [mq[0] + Lq.t[0], mq[1] + Lq.t[1]];
+        }
+        q.ecken = Lq ? [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].map(function (d) { return MASS.abb(ebene.H, mq[0] + d[0], mq[1] + d[1]); })
+          : Hq ? [[cx + r[0], cy + r[1]], [cx + r[2], cy + r[1]], [cx + r[2], cy + r[3]], [cx + r[0], cy + r[3]]].map(function (p) { return MASS.abb(Hq, p[0], p[1]); })
           : Hv ? [[R[0], R[1]], [R[2], R[1]], [R[2], R[3]], [R[0], R[3]]].map(function (p) { return MASS.abb(Hv, p[0], p[1]); }) : null;
         if (r[2] > r[0]) k2s.push(f.mass.breite / (r[2] - r[0]));   // Tiefe: Flügel liegt etwas vor der Glasebene
       }
@@ -4461,7 +4537,8 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       return Math.abs(a.mitte[1] - b.mitte[1]) > MASS._v3.V3.blattLuecke ? a.mitte[1] - b.mitte[1] : a.mitte[0] - b.mitte[0];
     });
     var ok = liste.filter(function (q) { return q.ok; }), erg = { ok: ok.length > 0, fluegel: liste, blaetter: roh.blaetter, lage: roh.lage, marker: roh.marker,
-      spalten: roh.spalten, reihen: roh.reihen, anordnung: roh.anordnung, abstand: roh.lage ? roh.lage.z : 0, gesamtFoto: true };
+      spalten: roh.spalten, reihen: roh.reihen, anordnung: roh.anordnung, abstand: roh.lage ? roh.lage.z : 0, gesamtFoto: true,
+      ebene: ebene ? { rest: ebene.rest, anteil: ebene.anteil, schief: ebene.schief } : null };
     if (!ok.length) return erg;
     var k2 = k2s.length ? k2s.reduce(function (a, x) { return a + x; }, 0) / k2s.length : 1;
     var x0 = Math.min.apply(null, ok.map(function (q) { return q.rand[0]; })), y0 = Math.min.apply(null, ok.map(function (q) { return q.rand[1]; }));
@@ -5302,7 +5379,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 
   // Nur für Tests: mit ?test in der Adresse ist der Zustand von außen lesbar
   if (/[?&]test\b/.test(location.search)) window.__lotse = { k: k, MASS: MASS, TYPEN: TYPEN, P: function () { return P; }, G: function () { return G; }, fotos: function () { return fotos; },
-    rechnen: massRechnen, fotoMessen: fotoMessen, schaerfeVon: schaerfeVon, pruefen: pruefen, konsens: konsens, nurFenster: function () { return nurFenster; }, setzeBand: function (b) { P.band = b; G = geometrie(P); skizze(); } };
+    rechnen: massRechnen, fotoMessen: fotoMessen, schaerfeVon: schaerfeVon, pruefen: pruefen, konsens: konsens, gesamtZusammen: gesamtZusammen, nurFenster: function () { return nurFenster; }, setzeBand: function (b) { P.band = b; G = geometrie(P); skizze(); } };
 
   skizze();
   liste();

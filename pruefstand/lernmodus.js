@@ -103,6 +103,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   const lauf = Object.keys(hoch).filter((p) => /lauf-.*\.json$/.test(p)).sort();
   pruef(lauf.length === 8 && Object.keys(hoch).filter((p) => /lauf-.*\.jpg$/.test(p)).length === 8, 'hochgeladen (erwartet 2 × 3 Flügel-Fotos + Gesamtfoto + 1 Nein-Foto): ' + Object.keys(hoch).join(', '));
   const daten = lauf.map(json);
+  // v3.44 (Fable G9): jedes hochgeladene Durchlauf-Foto ist vorher auf Gesichter geprüft, das Ergebnis steht in der .json
+  pruef(daten.every((d) => d.gesichter && d.gesichter.geprueft === true && d.gesichter.verpixelt === 0), 'Gesichter-Prüfung fehlt in der .json: ' + JSON.stringify(daten.map((d) => [d.schritt, d.gesichter])));
   const fl = daten.filter((d) => /^fl\d$/.test(d.schritt)), ges = daten.find((d) => d.schritt === 'innen');
   const nein = daten.filter((d) => /^fl1-nein1$/.test(d.schritt));
   pruef(nein.length === 1 && nein[0].kunde && nein[0].kunde.rahmenAufFluegel === false && nein[0].blatt === 1, 'Nein-Foto fehlt oder falsch: ' + JSON.stringify(nein.map((d) => [d.schritt, d.kunde, d.blatt])));

@@ -35,14 +35,14 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   for (let t = 0; t < 220; t++) {
     const st = (await page.textContent('#k-status')) || '';
     if (!texte.length || texte[texte.length - 1] !== st) texte.push(st);
-    if (/Maßblatt nicht lesen/.test(st)) { hilfeNach = (Date.now() - t0) / 1000; break; }
+    if (/Maßblatt nicht lesen/.test(st)) { hilfeNach = await page.evaluate(() => (performance.now() - window.__lotse.k.schrittStart) / 1000); break; }
     await page.waitForTimeout(100);
   }
   console.log('Hinweise:', texte.join(' | '));
   if (hilfeNach === null) fehler.push('kein Ausweg-Hinweis nach 22 s');
   else {
-    console.log('Ausweg nach', hilfeNach.toFixed(1), 's');
-    if (hilfeNach < 13) fehler.push('Ausweg zu früh (' + hilfeNach.toFixed(1) + ' s)');
+    console.log('Ausweg nach', hilfeNach.toFixed(1), 's seit Schrittbeginn');
+    if (hilfeNach < 14.5) fehler.push('Ausweg zu früh (' + hilfeNach.toFixed(1) + ' s)');
     if (!/vom Flügel/.test(texte[texte.length - 1])) fehler.push('Text nennt den Flügel nicht');
   }
   if (!texte.some((x) => /Geh nah an das Maßblatt/.test(x))) fehler.push('vorher kein „Geh nah an das Maßblatt“');

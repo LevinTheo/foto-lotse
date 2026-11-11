@@ -505,7 +505,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
 <main class="seite">
   <header class="marke">
     <svg class="marke__logo" viewBox="0 0 582.4 326.8" width="61" height="34" role="img" aria-label="Holtcraft"><path d="M5.6 140V0H30.8V56.8H34.4Q38.2 47.8 45.6 42.9Q53 38 63.8 38Q78.6 38 88.3 47.6Q98 57.2 98 77.6V140H72.8V83.6Q72.8 73 67.7 66.9Q62.6 60.8 53 60.8Q42 60.8 36.4 68.3Q30.8 75.8 30.8 88.4V140Z M173.2 142.8Q159.6 142.8 147.8 136.8Q136 130.8 128.8 119.4Q121.6 108 121.6 91.6V89.2Q121.6 73 128.8 61.5Q136 50 147.8 44Q159.6 38 173.2 38Q186.8 38 198.6 44Q210.4 50 217.6 61.5Q224.8 73 224.8 89.2V91.6Q224.8 108 217.6 119.4Q210.4 130.8 198.6 136.8Q186.8 142.8 173.2 142.8ZM173.2 118.8Q184.2 118.8 191.9 111.7Q199.6 104.6 199.6 92.4V88.4Q199.6 76 191.9 69Q184.2 62 173.2 62Q162.2 62 154.5 69Q146.8 76 146.8 88.4V92.4Q146.8 104.6 154.5 111.7Q162.2 118.8 173.2 118.8Z M249.4 140V116H284.2V24H250.6V0H309.4V116H341.8V140Z M414.4 140Q407.6 140 403.3 135.6Q399 131.2 399 124.4V64.8H369.6V40.8H399V0H424.2V40.8H460V64.8H424.2V110Q424.2 116 429.6 116H456.4V140Z M52 326.8Q37.4 326.8 25.6 320.9Q13.8 315 6.9 303.7Q0 292.4 0 276.4V274Q0 258 7 246.3Q14 234.6 25.8 228.3Q37.6 222 52 222Q72.8 222 85.8 232.8Q98.8 243.6 102 261.2L77.2 267.6Q76 258.8 69.6 252.4Q63.2 246 51.6 246Q40.8 246 33 253.6Q25.2 261.2 25.2 274.6V275.8Q25.2 289.2 33 296Q40.8 302.8 51.6 302.8Q63.2 302.8 69.3 297Q75.4 291.2 77.2 281.4L102 287.6Q98.8 305.2 86 316Q73.2 326.8 52 326.8Z M120.4 324V300H140.8V248.8H122.8V224.8H164.8V239.2H168.4Q171.2 231 178 226.5Q184.8 222 194 222Q208.8 222 217.8 231.3Q226.8 240.6 226.8 259.6V264L200.8 266.4V263.6Q200.8 255.4 196.6 250.5Q192.4 245.6 184 245.6Q175.6 245.6 170.8 251.4Q166 257.2 166 268V300H188.8V324Z M286.2 326.8Q274.4 326.8 264.4 320.8Q254.4 314.8 248.4 303.4Q242.4 292 242.4 276V272.8Q242.4 257 248.2 245.6Q254 234.2 263.7 228.1Q273.4 222 285 222Q295.6 222 302.1 225.6Q308.6 229.2 312.4 236.8H316V224.8H341.2V294Q341.2 300 346.6 300H350.4V324H333.2Q326.4 324 322.1 319.9Q317.8 315.8 317.8 309.6H314.2Q310.4 318.8 303.1 322.8Q295.8 326.8 286.2 326.8ZM291.8 302.8Q302.8 302.8 309.4 295.5Q316 288.2 316 275.6V273.2Q316 260.6 309.4 253.3Q302.8 246 291.8 246Q280.8 246 274.2 253.3Q267.6 260.6 267.6 273.2V275.6Q267.6 288.2 274.2 295.5Q280.8 302.8 291.8 302.8Z M399.8 324V248.8H371.6V224.8H399.8V204.4Q399.8 195.8 405.6 189.9Q411.4 184 420 184H460.4V208H430.4Q425 208 425 214V224.8H464V248.8H425V324Z M536.8 324Q530 324 525.7 319.6Q521.4 315.2 521.4 308.4V248.8H492V224.8H521.4V184H546.6V224.8H582.4V248.8H546.6V294Q546.6 300 552 300H578.8V324Z" fill="currentColor"/><circle cx="533.9" cy="123.8" r="19" fill="#E3803E"/></svg>
-    <span class="marke__label">Foto-Lotse v3.43 · Test</span>
+    <span class="marke__label">Foto-Lotse v3.44 · Test</span>
   </header>
 
   <div class="kopf">
@@ -1406,6 +1406,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
                            // zurück“ ↔ „erreicht“ sprang hin und her, und jedes Mal fing die Rahmensuche von vorn an)
     nachhilfe: 15000,      // nach so vielen ms ohne Foto kommt der Hinweis, selbst auszulösen (v3.29: war 8000, kam beim Zurückgehen
                            // schon, bevor der erste Countdown durch war; zählt ab „Blatt erkannt“, nach jedem Reihe-Foto und nach „Nein“ neu)
+    gesichterHoch: 20000,  // v3.44 (Fable G9): so lange darf die Gesichtserkennung vor dem Hochladen brauchen (beim Auslösen 8 s)
     blattHilfe: 15000,     // v3.40 (Fable G5): so lange ohne gelesenes Maßblatt (verdeckt, Gardine, nicht gedruckt), dann der Hinweis, selbst
                            // ein Foto zu machen (bis v3.39 stand 45 s und länger nur „Geh nah an das Maßblatt …“, ohne Ausweg)
     countdownVersuche: 3,  // v3.29 (Levin): so oft darf der Countdown abbrechen, bevor der Hinweis zum Selbstauslösen kommt
@@ -3815,7 +3816,7 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
     return gesichtLaden;
   }
   // Gibt die Zahl der verpixelten Gesichter zurück, oder -1, wenn die Erkennung nicht lief
-  function gesichterVerpixeln(cv) {
+  function gesichterVerpixeln(cv, ms) {
     var arbeit = gesichterBereit().then(function (ok) {
       if (!ok || !window.faceapi) return -1;
       var fa = window.faceapi;
@@ -3836,8 +3837,29 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         return treffer.length;
       });
     }).catch(function () { return -1; });
-    var zeit = new Promise(function (ja) { setTimeout(function () { ja(-1); }, 8000); });
+    var zeit = new Promise(function (ja) { setTimeout(function () { ja(-1); }, ms || 8000); });
     return Promise.race([arbeit, zeit]);
+  }
+  /* v3.44 (Fable G9): vor jedem Hochladen (Levins Durchläufe und Lernfotos) noch einmal auf Gesichter prüfen, diesmal mit bis zu
+     TOL.gesichterHoch ms. Bis v3.43 ging ein Foto unverpixelt hoch, wenn die Erkennung beim Auslösen nicht lief oder länger als 8 s
+     brauchte, und das Vergleichsfoto wurde gar nicht geprüft. Das Ergebnis steht in der .json (gesichter: geprüft ja/nein, wie viele
+     verpixelt). Gilt ein Foto danach als ungeprüft, geht es bei Levin trotzdem hoch (eigene Wohnung, privates Datenrepo), aber markiert.
+     Für Kunden gilt später: ohne Prüfung kein Upload (REGIE, Zielbild). */
+  function gesichterVorUpload(url) {
+    return new Promise(function (ja) {
+      var img = new Image();
+      img.onload = function () { ja(img); };
+      img.onerror = function () { ja(null); };
+      img.src = url;
+    }).then(function (img) {
+      if (!img) return { url: url, gesichter: { geprueft: false, verpixelt: null, grund: 'Bild nicht lesbar' } };
+      var cv = document.createElement('canvas');
+      cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+      cv.getContext('2d').drawImage(img, 0, 0);
+      return gesichterVerpixeln(cv, TOL.gesichterHoch).then(function (n) {
+        return { url: n > 0 ? cv.toDataURL('image/jpeg', 0.9) : url, gesichter: { geprueft: n >= 0, verpixelt: n >= 0 ? n : null, grund: n < 0 ? 'Erkennung lief nicht oder zu lange' : null } };
+      });
+    }).catch(function () { return { url: url, gesichter: { geprueft: false, verpixelt: null, grund: 'Fehler' } }; });
   }
 
   /* ---------- Die Totale als Karte ----------
@@ -5372,7 +5394,12 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
         fenster: entwFenster(), lotse: sieht, geraet: { ua: navigator.userAgent, bildschirm: screen.width + 'x' + screen.height + '@' + (window.devicePixelRatio || 1) },
         version: 'foto-lotse ' + (document.lastModified || '') };
       // Verkleinert hochladen: so groß, wie der Lotse rechnet (lange Seite 2576 px). Spart gut die Hälfte Platz, für die Messung geht nichts verloren.
-      var bildDaten = klein ? new Promise(function (ja) { klein.toBlob(function (bl) { ja(bl || datei); }, 'image/jpeg', 0.92); }) : Promise.resolve(datei);
+      // v3.44 (G9): vorher Gesichter verpixeln (bis v3.43 gingen Lernfotos ungeprüft hoch); ohne verkleinertes Bild bleibt es ungeprüft
+      var pruefung = klein ? gesichterVerpixeln(klein, TOL.gesichterHoch) : Promise.resolve(-1);
+      var bildDaten = pruefung.then(function (n) {
+        meta.gesichter = { geprueft: n >= 0, verpixelt: n >= 0 ? n : null, grund: n < 0 ? (klein ? 'Erkennung lief nicht oder zu lange' : 'Bild nicht lesbar') : null };
+        return klein ? new Promise(function (ja) { klein.toBlob(function (bl) { ja(bl || datei); }, 'image/jpeg', 0.92); }) : datei;
+      });
       return bildDaten.then(function (bl) { meta.hochgeladen = { bytes: bl.size, verkleinert: bl !== datei }; return b64VonBlob(bl); }).then(function (b64) {
         return ghPut(ordner + '/' + name + '.' + endung, b64, 'Lernfoto ' + ordner + '/' + name);
       }).then(function () {
@@ -5405,7 +5432,11 @@ h1 { margin: 0; font-size: clamp(28px, 7vw, 36px); line-height: 1.12; font-weigh
       ablauf: 'ablauf' in zusatz ? zusatz.ablauf : k.ablaufFoto || null,   // v3.18: was im Livebild passiert ist
       fluegel: messung && messung.fluegel ? messung.fluegel.map(function (q) { return { blatt: q.blatt, ok: !!q.ok, breite: q.breite ? Math.round(q.breite) : null, hoehe: q.hoehe ? Math.round(q.hoehe) : null, mitte: q.mitte || null }; }) : null };
     entwZeile(name + ': lädt hoch …').then(function (li) {
-      ghPut(ordner + '/' + name + '.jpg', url.split(',')[1], 'Durchlauf ' + ordner + '/' + name)
+      gesichterVorUpload(url).then(function (g) {
+        meta.gesichter = g.gesichter;
+        if (!g.gesichter.geprueft) li.textContent = name + ': lädt hoch … (Gesichter nicht geprüft)';
+        return ghPut(ordner + '/' + name + '.jpg', g.url.split(',')[1], 'Durchlauf ' + ordner + '/' + name);
+      })
         .then(function () { return ghPut(ordner + '/' + name + '.json', textB64(JSON.stringify(meta, null, 2)), 'Durchlauf-Daten ' + ordner + '/' + name); })
         .then(function () { li.textContent = name + ': hochgeladen ✓'; }, function (x) { li.textContent = name + ': Fehler (' + (x && x.message ? x.message : x) + ')'; li.classList.add('fehler'); });
     });

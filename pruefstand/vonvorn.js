@@ -4,6 +4,8 @@
 // startet den Flügel neu (Blatt, Vergleichsfoto, Abstand zurückgesetzt, Hinweis „Nochmal von vorn …“), das unsichere Foto bleibt für Levin;
 // (3) das nächste Foto (806 × 1254) stimmt auf 2 % mit der Zweitmessung des ersten Versuchs (815 × 1243) überein → sicher, Rahmen-Frage;
 // (4) nach TOL.vonVornMax Versuchen keine Frage mehr; (5) „Nein“ beim Rahmen startet ebenfalls von vorn, ohne „ca. 3 m“.
+// v3.38 (Fable G1): die ausgedachten Messungen haben jetzt ein wirksames Vergleichsfoto (hinten.ok) und Kamera-Standorte (lage.kamera,
+// zweitmessung.kamera), denn ohne die ist ein Flügel-Maß nie sicher und Einigkeit zählt nur mit Versatz (siehe pruefstand/stehen.js).
 // Aufruf: node pruefstand/vonvorn.js [Pfad zum Lotsen]. Dauert ca. 15 s.
 const fs = require('fs'), path = require('path');
 const { chromium, devices } = require('playwright');
@@ -34,7 +36,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   const zustand = () => page.evaluate(() => { const k = window.__lotse.k; return { vonVorn: k.vonVornZahl, blattNr: k.blattNr, vergleich: k.vergleich, zMin: k.zMinDyn, nein: k.neinFotos.length,
     warte: k.warteText, pool: (k.messPool || []).length, sicher: k.messung && k.messung.massSicher }; });
   // (1) unsicher → Frage
-  await zeige({ breite: 991, hoehe: 1514, massSicher: false, zweitmessung: { ok: true, breite: 815, hoehe: 1243, abw: 17.9 } });
+  await zeige({ breite: 991, hoehe: 1514, massSicher: false, hinten: { ok: true, versatz: 700 }, lage: { kamera: [0, 0, 2300] },
+    zweitmessung: { ok: true, breite: 815, hoehe: 1243, abw: 17.9, kamera: [0, 0, 1600] } });
   const t1 = await page.textContent('#p-titel');
   if (!(await sicht('#p-neu')) || !/passt noch nicht/.test(t1)) fehler.push('(1) keine Frage „Nochmal von vorn“: ' + t1);
   if (await sicht('#p-rahmen')) fehler.push('(1) Rahmen-Frage zugleich sichtbar');
@@ -46,7 +49,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   if (z.vonVorn !== 1 || z.blattNr !== null || z.vergleich !== null || z.zMin !== 0) fehler.push('(2) Flügel nicht neu gestartet: ' + JSON.stringify(z));
   if (z.nein !== 1 || !/von vorn/.test(z.warte || '')) fehler.push('(2) unsicheres Foto nicht aufgehoben oder Hinweis fehlt: ' + JSON.stringify(z));
   // (3) nächstes Foto einig mit der Zweitmessung von Versuch 1 → sicher, Rahmen-Frage
-  await zeige({ breite: 806, hoehe: 1254, massSicher: false, zweitmessung: { ok: true, breite: 760, hoehe: 1200, abw: 6 } });
+  await zeige({ breite: 806, hoehe: 1254, massSicher: false, hinten: { ok: true, versatz: 600 }, lage: { kamera: [100, 0, 2400] },
+    zweitmessung: { ok: true, breite: 760, hoehe: 1200, abw: 6, kamera: [100, 0, 1800] } });
   z = await zustand();
   if (!z.sicher) fehler.push('(3) trotz Einigkeit mit Versuch 1 nicht sicher');
   if (!(await sicht('#p-rahmen')) || (await sicht('#p-neu'))) fehler.push('(3) Rahmen-Frage fehlt oder Frage „von vorn“ kommt trotzdem');
@@ -56,7 +60,8 @@ const LOTSE = path.resolve(process.argv[2] || path.join(__dirname, '..'));
   z = await zustand();
   if (z.vonVorn !== 2 || z.blattNr !== null || /3 m/.test(z.warte || '') || !/von vorn/.test(z.warte || '')) fehler.push('(5) Nein startet nicht von vorn: ' + JSON.stringify(z));
   // (4) nach TOL.vonVornMax (2) keine Frage mehr
-  await zeige({ breite: 1100, hoehe: 1600, massSicher: false, zweitmessung: { ok: true, breite: 900, hoehe: 1300, abw: 22 } });
+  await zeige({ breite: 1100, hoehe: 1600, massSicher: false, hinten: { ok: true, versatz: 600 }, lage: { kamera: [0, 0, 2500] },
+    zweitmessung: { ok: true, breite: 900, hoehe: 1300, abw: 22, kamera: [0, 0, 1900] } });
   if (await sicht('#p-neu')) fehler.push('(4) nach 2-mal von vorn kommt die Frage noch');
   if (!(await sicht('#p-rahmen'))) fehler.push('(4) Rahmen-Frage fehlt');
   if (!/Unsicher/.test(await page.textContent('#p-mass'))) fehler.push('(4) „Unsicher“ fehlt: ' + await page.textContent('#p-mass'));

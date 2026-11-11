@@ -6,10 +6,10 @@ Stand: 10. Nov. 2026 · Levin (Holtcraft) · **Version v3.37** (grüne Rahmen li
 
 - **Stand:** v3.37 auf `main`, gesichert als `stand-v3.37`. Chat-Name: „Foto Lotse v3.37“.
 - **Zuletzt fertig:** v3.37 (10. Nov.): die grünen Rahmen zeigen die gefundenen Kanten statt eines Rechtecks über die Perspektive des Blatts, beim Gesamtfoto wird jeder Flügel über sein eigenes Blatt eingezeichnet. Maße unverändert. Davor v3.35 (Nochmal von vorn bei „unsicher“ und nach „Nein“, Einigkeit 2 % → sicher, kurzer Prüfdialog mit Zoom in Levins Analyse) und v3.36 (Gesamtfoto erst, wenn alle Flügel ganz im Bild sind), beide 10. Nov. auf Levins Wunsch.
-- **In Arbeit:** nichts.
+- **In Arbeit:** unabhängige Prüfung durch Fable von `stand-v3.29` bis v3.37 (Levin 11. Nov.: „der Lotse ist schon sehr gut“). Start-Text steht unter „Prüfen ohne Code lesen“. Fables Ergebnis bringt Levin in den Bau-Chat; dann als „Prüfung … (Fable)“ mit Nummern G1, G2 … eintragen und mit Levin umsetzen.
 - **Handy-Test v3.36 (Levin 10. Nov. 14:03, Läufe 1359 und 1402, SZ mit 2 Flügeln):** Fragen 1–3 (Neustart nach „Nein“, großes Foto, Gesamtfoto „Geh noch … zurück“) mit Ja beantwortet; „die Maße waren okay, aber die grünen Rahmen waren verzogen“ → v3.37.
-- **Nächster Schritt:** Levin schaut am Handy (v3.37), ob die grünen Rahmen jetzt auf den Flügeln liegen (Flügel-Fotos und Gesamtfoto). Danach Kastenfenster bei Levins Mutter (erst wie der Kunde, dann einmal mit Haken „3 Fotos je Flügel“). Offen (noch kein Okay): Lotse erkennt Sonne/Gardine selbst. Später: F7 (Feinlegen), Dämmerung, Gardine rechts.
-- **Fragen an Levin:** keine offenen; warten auf seinen Handy-Test.
+- **Nächster Schritt:** Levin schaut am Handy (v3.37), ob die grünen Rahmen jetzt auf den Flügeln liegen (Flügel-Fotos und Gesamtfoto). Danach Kastenfenster bei Levins Mutter (erst wie der Kunde, dann einmal mit Haken „3 Fotos je Flügel“). Später (Levin 11. Nov.): Lotse erkennt Sonne/Gardine selbst. Ebenfalls später: F7 (Feinlegen), Dämmerung, Gardine rechts.
+- **Fragen an Levin:** keine offenen; warten auf seinen Handy-Test und auf Fables Prüfung.
 - **Entschieden 10. Nov. (Test 1237/1238):** Abstand bleibt, kein Ziel 2,5–3 m: aus 1,9 m +1,0 / +0,9 % (SZ links) bzw. +0,2 / +0,3 % (SZ rechts), aus 2,4 / 2,7 m +22 % / +62 %. Frühere Überlegung: Flügel-Foto weiter weg (ca. 2,5 m statt ab 1,8 m, Vergleich weiter 1,5 m)? Am Handy: aus 1,8 m −24 %, aus 2,6 m +0,2 % (SZ links); mit Abstandsreihe (Hauptfoto 2,8–3,1 m) immer auf ±1 %. Die Lernfotos zeigen das aber nicht eindeutig (Paare nach Abstand des Hauptfotos: 1,5–2 m 3 von 4 auf ±5 %, 2–2,3 m 9 von 9, 2,3–2,7 m 10 von 15), daher noch nicht geändert. Vorschlag: Levin testet SZ ohne Reihe und bleibt bewusst erst bei ca. 2,5 m stehen.
 - **Handy-Test 7. Nov. (Levin, v3.32):** SZ zweimal mit blauem Knopf **und Abstandsreihe** (0730: 2 Flügel, 1001: nur links). Mit Parallaxe am Handy: Blatt 1 809 × 1247 (−0,1 / +0,2 %), Blatt 2 1237 × 1242 (+0,7 / −0,2 %), nur links 811 × 1269 (+0,1 / +1,9 %); ohne Vergleich wäre der linke Flügel −21 bis −50 % (Baum). Countdown: je Flügel 1 Versuch, aber 42–63 s je Flügel mit Reihe, viele Wechsel „Geh ein kleines Stück zurück“ ↔ „erreicht“ bei 3 m und „Handy gerade halten“ ↔ „Geh nah an das Maßblatt“ beim Blattlesen (bis 8 Wechsel). Der Kundenablauf ohne Reihe wurde danach getestet (7. Nov. 10:55 und 10. Nov., siehe unten).
 - **Parallel (Levin, 7. Nov.):** Levin lässt in einem anderen Chat einen neuen Lotsen mit anderem Ansatz bauen. Die Anforderungen dafür stehen im claude.ai-Projekt „Holtcraft Foto lotse“ als Dokument `claude/Foto-Lotse-Anforderungen-Neubau.md` („Foto-Lotse – Anforderungen für einen Neubau mit anderem Ansatz“, beschreibt was, nicht wie, mit Start-Text). Testdaten bleiben `foto-lotse-daten`; dieser Lotse läuft weiter.
@@ -385,16 +385,19 @@ Levin kann den Code nicht selbst lesen. Kontrolle geht so:
 1. **Am Handy:** tut der Lotse, was im Bericht steht?
 2. **GitHub:** unter „Commits“ steht jede Version mit dem, was sich geändert hat (grün dazu, rot weg). Man sieht, welche Datei und wie viel, auch ohne den Code zu verstehen.
 3. **Zurückbauen:** jede Version liegt als Branch `stand-vX.Y`; „bau zurück auf vX.Y“ reicht.
-4. **Unabhängige Prüfung** durch einen zweiten Chat, der nichts weiß und nichts ändert (zuletzt 4. Nov., siehe unten; fand 8 Punkte, darunter echte Fehler). Die Testzahlen in diesem Bericht muss er mit denselben Tests selbst wieder herausbekommen. Am besten alle paar Versionen. Start-Text (kopieren, die Versionen anpassen):
+4. **Unabhängige Prüfung** durch einen zweiten Chat, der nichts weiß und nichts ändert (4. Nov. und 6. Nov. Fable, siehe unten; fanden echte Fehler). Die Testzahlen in diesem Bericht muss er mit denselben Tests selbst wieder herausbekommen. Am besten alle paar Versionen. Start-Text (Stand 11. Nov., für Fable ab `stand-v3.29`; beim nächsten Mal Versionen und Läufe anpassen):
 
 ```
-Du prüfst den Foto-Lotsen von Holtcraft unabhängig. Hol dir LevinTheo/foto-lotse (Code) und LevinTheo/foto-lotse-daten (Lernfotos; nur lesen). Lies CLAUDE.md und REGIE.md. Ändere nichts, lade nichts hoch, du prüfst nur.
-Prüfe alles seit dem Branch stand-v3.3 bis main:
-1. Passt jede Zeile im Änderungsprotokoll zu dem, was sich im Code wirklich geändert hat (git diff zwischen den stand-Branches)? Gibt es Änderungen oder Löschungen, die nicht im Protokoll stehen?
-2. Lass Ablauf-Test, Lernmodus-Test, Prüfstand und Wackeltest laufen. Kommen dieselben Zahlen heraus wie in REGIE.md?
-3. Sieht der Kunde etwas, das nur für Levin gedacht ist? Gehen Fotos oder Daten irgendwohin, wo sie nicht hin sollen?
-4. Was ist falsch, riskant oder unnötig kompliziert?
-Schreib das Ergebnis kurz und einfach für Levin (kein Programmierer, liest am Handy): was stimmt, was nicht, was du empfiehlst.
+Du prüfst den Foto-Lotsen von Holtcraft unabhängig (Levin, Tischlermeister in Berlin, kein Programmierer, liest am Handy; kurz und einfach auf Deutsch, „du“). Hol dir LevinTheo/foto-lotse (Code) und LevinTheo/foto-lotse-daten (privat, Lernfotos mit echten Maßen). Ändere nichts und lade nichts hoch, in keinem der beiden Repos. Du prüfst nur. Lies CLAUDE.md und REGIE.md, auch deine Prüfung vom 6. Nov. („Prüfung 6. Nov. 2026 (Fable)“).
+Prüfe alles seit dem Branch stand-v3.29 bis main (v3.37):
+1. Passt jede Zeile im Änderungsprotokoll v3.30 bis v3.37 zu dem, was sich im Code wirklich geändert hat (git diff zwischen den stand-Branches)? Gibt es Änderungen oder Löschungen, die nicht im Protokoll stehen?
+2. Sind deine Befunde F1 bis F6 richtig umgesetzt? Ist F7 noch offen und noch wichtig?
+3. Lass alle Tests laufen: Ablauf-Test (uebung.js), Lernmodus-Test, Prüfstand (auch wie der Kunde), Paar-Prüfstand --app, Wackeltest, zweit.js, vonvorn.js, gesamtbild.js, gesamtblatt.js. Kommen dieselben Zahlen heraus wie in REGIE.md? Läuft ein Test nicht, sag welcher und warum.
+4. Echte Handy-Läufe vom 7. bis 10. Nov. (Ordner 2026-11-07_* bis 2026-11-10_*): Passt das Ablaufprotokoll zu dem, was REGIE.md verspricht (Vergleichsfoto ab 1,5 m, Zweitmessung, „Nochmal von vorn“, Gesamtfoto erst mit allen Flügeln im Bild, ruhige Hinweise)? Stimmen die Maße gegen fenster.json und pruefstand/nachtrag.json?
+5. v3.37: Liegen die grünen Rahmen auf den gefundenen Flügelkanten, bei den Flügel-Fotos und beim Gesamtfoto? Prüf das an den Läufen 2026-11-10_1359 und _1402 und im Übungsmodus mit Bildschirmfotos.
+6. Sieht der Kunde etwas, das nur für Levin gedacht ist? Gehen Fotos oder Daten irgendwohin, wo sie nicht hin sollen (Gesichter verpixelt, ohne Zustimmung nichts vom Handy)?
+7. Kann ein Kunde irgendwo festhängen oder ein falsches Maß als sicher bekommen? Was ist falsch, riskant oder unnötig kompliziert?
+Trenne „gemessen“ (mit Test belegt) und „gelesen/Vermutung“. Gib jedem Befund eine Nummer (G1, G2 …), einen Vorschlag und sag, in welcher Reihenfolge du sie angehen würdest. Schreib das Ergebnis kurz und einfach für Levin: was stimmt, was nicht, was du empfiehlst.
 ```
 
 Das Ergebnis gibt Levin dem Bau-Chat; der trägt es unter „Prüfung …“ ein und setzt es um.
